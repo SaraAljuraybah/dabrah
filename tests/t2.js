@@ -1,0 +1,24 @@
+const {chromium}=require('playwright');
+(async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:1280,height:820}});
+const errs=[];p.on('pageerror',e=>errs.push(e.message));
+await p.goto('file:///home/claude/proto/dabrah.html');await p.waitForTimeout(800);
+const S=async n=>p.screenshot({path:'/home/claude/proto/v2-'+n+'.png'});
+await S('hero');
+for(const id of ['story','name','how','try','palm','impact']){await p.evaluate(i=>document.getElementById(i).scrollIntoView(),id);await p.waitForTimeout(1900);await S(id)}
+await p.click('#word button[data-i="3"]');await p.click('#lvUp');await p.fill('#age','12');await p.dispatchEvent('#age','input');await p.click('#growBtn');await p.click('#growBtn');
+await p.evaluate(()=>document.getElementById('try').scrollIntoView());await p.waitForTimeout(500);await S('try2');
+await p.evaluate(()=>location.hash='#app');await p.waitForTimeout(1800);await S('emp');
+await p.click('[data-act=toggle][data-id=xl]');await p.waitForTimeout(600);await p.click('[data-act=renew]');await p.waitForTimeout(500);
+await p.click('[data-act=openCase]');await p.waitForTimeout(700);await S('drawer');
+await p.click('[data-act=nextStep]');await p.click('[data-act=nextStep]');await p.waitForTimeout(300);await S('drawer3');await p.click('[data-act=submit]');await p.waitForTimeout(800);
+await p.click('[data-role=mgr]');await p.waitForTimeout(1600);await S('mgr');
+await p.fill('#mnote','وضّح كيف تحققت من التأخير');await p.click('[data-act=askEdit]');await p.waitForTimeout(400);
+await p.click('[data-act=goEmp]');await p.waitForTimeout(800);await S('emp-edit');
+await p.click('[data-act=resubmit]');await p.waitForTimeout(500);await p.click('[data-act=submit]');await p.waitForTimeout(400);
+await p.click('[data-role=mgr]');await p.click('[data-act=approve]');await p.waitForTimeout(500);await S('mgr-ok');
+await p.click('[data-role=emp]');await p.waitForTimeout(1500);await S('celebrate');await p.click('[data-act=closeModal]');
+await p.click('[data-role=haya]');await p.waitForTimeout(1700);await S('haya');await p.click('[data-act=plan]');await p.waitForTimeout(400);await p.click('#tbtn');await p.waitForTimeout(300);
+const planBack=await p.$('[data-act=plan]');console.log('undo works:',!!planBack);
+await p.setViewportSize({width:390,height:844});await p.click('[data-role=emp]');await p.waitForTimeout(1500);await S('m-emp');
+await p.click('.top a.back');await p.waitForTimeout(900);await S('m-hero');
+console.log('errors',errs);await b.close()})();

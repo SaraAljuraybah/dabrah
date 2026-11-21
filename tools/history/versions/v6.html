@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>دبره · اسأل عن الدبره</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&family=Kufam:wght@600;800&display=swap">
+<style>
+/* VOICE: نجدي دافي، واثق، ملهم
+   IDEA: ليل نجد وبيوت الطين؛ الشُّرفة مستوى، الكوّة فرصة، الباب وظيفة، النخلة نموّك
+   PICTURE: أفق نجدي متحرك بطبقات، نوافذ تضيء، ونخلة تكبر مع إنجازك
+   COLOUR and TYPE: ليل أخضر داكن، طين، رملي، جص، فيروزي الأبواب؛ Kufam للعناوين و IBM Plex Sans Arabic للنص
+   LAYOUT: صفحة هبوط بأقسام تتحرك مع التمرير + تطبيق بشاشة وحدة لكل دور ولوحة جانبية للتحدي */
+:root{color-scheme:light;--night:#0E1A17;--night2:#15271F;--night3:#1D3329;--teen:#A4643C;--teenD:#7E4626;--teenL:#C98A5C;--sand:#E3C48F;--jes:#F1E7D6;--paper:#F6EFE3;--card:#FFFCF6;--door:#2F6B60;--palm:#4C8A5E;--ink:#17130F;--mut:#62584C;--line:#E6DAC6;--ok:#2F6B60;--warn:#B7791F;--sh:0 1px 2px rgba(23,19,15,.06),0 8px 24px rgba(23,19,15,.08),0 24px 48px -24px rgba(23,19,15,.18);--shD:0 2px 4px rgba(0,0,0,.25),0 18px 40px -12px rgba(0,0,0,.45);--ease:cubic-bezier(.22,.8,.24,1)}
+*{box-sizing:border-box;min-width:0}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.7 'IBM Plex Sans Arabic','DejaVu Sans',system-ui,sans-serif;overflow-x:clip}
+h1,h2,h3,.kufi{font-family:'Kufam','IBM Plex Sans Arabic',sans-serif;font-weight:700;line-height:1.2;margin:0}
+p{margin:0 0 10px}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--sand);outline-offset:3px;border-radius:12px}
+[hidden]{display:none!important}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:50px;padding:0 26px;border-radius:999px;border:0;font-weight:700;font-size:16px;background:var(--teen);color:#fff;box-shadow:0 6px 18px -6px rgba(164,100,60,.7),inset 0 1px 0 rgba(255,255,255,.25);transition:transform .3s var(--ease),box-shadow .3s var(--ease),background .3s;text-decoration:none}
+.btn:hover{transform:translateY(-2px);box-shadow:0 12px 26px -8px rgba(164,100,60,.75),inset 0 1px 0 rgba(255,255,255,.25)}
+.btn:active{transform:translateY(0) scale(.98)}
+.btn.sand{background:var(--sand);color:var(--night);box-shadow:0 6px 18px -6px rgba(227,196,143,.6)}
+.btn.ghost{background:transparent;color:inherit;border:1.5px solid currentColor;box-shadow:none}
+.btn.dark{background:var(--night);color:var(--jes);box-shadow:0 6px 18px -6px rgba(14,26,23,.6)}
+.btn[disabled]{opacity:.45;pointer-events:none}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;border-radius:999px;padding:4px 12px;background:#EFE5D3;white-space:nowrap}
+.chip.g{background:#DDEDE6;color:#1D4D42}.chip.y{background:#F8E8C8;color:#7A4E0F}.chip.r{background:#F4DCCE;color:#7A3417}
+.reveal{opacity:0;transform:translateY(28px) scale(.98);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.reveal{opacity:1;transform:none}html{scroll-behavior:auto}}
+
+/* ---------- LANDING ---------- */
+#landing{background:var(--night);color:var(--jes)}
+.nav{position:fixed;inset-inline:0;top:0;z-index:20;display:flex;align-items:center;gap:16px;padding:14px max(4vw,16px);transition:background .4s,backdrop-filter .4s,box-shadow .4s}
+.nav.solid{background:rgba(14,26,23,.82);backdrop-filter:blur(12px);box-shadow:0 8px 24px -12px rgba(0,0,0,.5)}
+.nav img{height:34px}
+.nav .links{display:flex;gap:6px;margin-inline-start:auto;flex-wrap:wrap}
+.nav .links a{color:var(--jes);text-decoration:none;font-size:15px;padding:10px 14px;border-radius:999px;transition:background .3s}
+.nav .links a:hover{background:rgba(241,231,214,.1)}
+@media(max-width:760px){.nav .links a:not(.btn){display:none}}
+.hero{position:relative;min-height:100vh;display:grid;place-items:center;overflow:hidden;padding:120px max(5vw,18px) 40px}
+.sky{position:absolute;inset:0;width:100%;height:100%}
+.hero .copy{position:relative;z-index:2;text-align:center;max-width:860px}
+.hero h1{font-size:clamp(40px,7vw,86px);line-height:1.08;text-wrap:balance}
+.hero h1 span{color:var(--sand)}
+.hero p.lead{font-size:clamp(17px,2vw,21px);color:#D9CFBE;max-width:620px;margin:22px auto 30px}
+.hero .ctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.scrollhint{position:absolute;bottom:22px;inset-inline:0;margin:auto;width:28px;height:44px;border:2px solid rgba(241,231,214,.5);border-radius:16px;z-index:2}
+.scrollhint::after{content:"";position:absolute;top:8px;left:50%;width:4px;height:8px;margin-left:-2px;border-radius:2px;background:var(--sand);animation:sh 1.8s infinite}
+@keyframes sh{0%{opacity:0;transform:translateY(0)}40%{opacity:1}100%{opacity:0;transform:translateY(14px)}}
+.win{animation:glow 4s ease-in-out infinite}
+@keyframes glow{0%,100%{opacity:.35}50%{opacity:1}}
+.twinkle{animation:tw 3s ease-in-out infinite}
+@keyframes tw{0%,100%{opacity:.2}50%{opacity:1}}
+.sway{transform-origin:50% 100%;animation:sway 6s ease-in-out infinite}
+@keyframes sway{0%,100%{transform:rotate(-1.5deg)}50%{transform:rotate(1.5deg)}}
+.sec{padding:clamp(70px,10vw,130px) max(5vw,18px);position:relative}
+.wrap{max-width:1180px;margin:0 auto}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--sand);font-size:15px;font-weight:500;margin-bottom:14px}
+.sec h2{font-size:clamp(30px,4.4vw,52px);text-wrap:balance;margin-bottom:18px}
+.sec .sub{font-size:18px;color:#CFC4B2;max-width:640px}
+.light{background:var(--paper);color:var(--ink)}
+.light .sub{color:var(--mut)}
+.light .eyebrow{color:var(--teenD)}
+.story{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:clamp(24px,5vw,70px);align-items:center}
+@media(max-width:860px){.story{grid-template-columns:1fr}}
+.persona{background:var(--card);border-radius:28px;padding:28px;box-shadow:var(--sh);position:relative;overflow:hidden}
+.persona .av{width:64px;height:64px;border-radius:20px;background:var(--teen);color:#fff;display:grid;place-items:center;font:700 28px 'Kufam';box-shadow:0 10px 20px -8px rgba(164,100,60,.7)}
+.pains{display:grid;gap:12px;margin-top:20px}
+.pain{display:flex;gap:12px;align-items:flex-start;background:#F7EFE2;border-radius:18px;padding:14px 16px}
+.pain b{display:block}
+.pain .ic{flex:none;width:34px;height:34px;border-radius:12px;background:var(--night);color:var(--sand);display:grid;place-items:center}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:40px}
+@media(max-width:700px){.stats{grid-template-columns:1fr}}
+.stat{background:var(--card);border-radius:24px;padding:24px;box-shadow:var(--sh)}
+.stat .n{font:700 clamp(40px,5vw,58px)/1 'Kufam';color:var(--teenD);font-variant-numeric:tabular-nums}
+.stat .src{font-size:13px;color:var(--mut);margin-top:8px}
+.name{text-align:center}
+.word{display:flex;justify-content:center;gap:clamp(6px,2vw,22px);margin:36px 0 26px;direction:rtl}
+.word button{background:var(--night2);border:1px solid rgba(241,231,214,.12);border-radius:26px;width:clamp(70px,14vw,140px);aspect-ratio:3/4;font:700 clamp(46px,9vw,96px)/1 'Kufam';color:var(--jes);box-shadow:var(--shD);transition:transform .5s var(--ease),background .4s,color .4s}
+.word button:hover,.word button[aria-pressed=true]{transform:translateY(-10px) rotate(-2deg);background:var(--teen);color:#fff}
+.meaning{min-height:90px;max-width:620px;margin:0 auto;font-size:19px;color:#E6DCCB;transition:opacity .4s}
+.steps{position:relative;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;align-items:end;margin-top:50px}
+@media(max-width:900px){.steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.step{background:var(--card);border-radius:22px;padding:20px 18px;box-shadow:var(--sh);transition:transform .7s var(--ease),background .5s,color .5s}
+.step .k{width:40px;height:40px;border-radius:14px;background:#F1E5D1;color:var(--teenD);display:grid;place-items:center;font:700 18px 'Kufam';margin-bottom:12px;transition:background .5s,color .5s}
+.step b{display:block;font-size:17px;margin-bottom:4px}
+.step span{font-size:14px;color:var(--mut)}
+.step.on{background:var(--night);color:var(--jes)}
+.step.on span{color:#CFC4B2}
+.step.on .k{background:var(--teen);color:#fff}
+@media(min-width:901px){.step:nth-child(1){margin-bottom:0}.step:nth-child(2){margin-bottom:18px}.step:nth-child(3){margin-bottom:36px}.step:nth-child(4){margin-bottom:54px}.step:nth-child(5){margin-bottom:72px}.step:nth-child(6){margin-bottom:90px}}
+.try{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;margin-top:40px}
+@media(max-width:860px){.try{grid-template-columns:1fr}}
+.panel{background:var(--night2);border:1px solid rgba(241,231,214,.08);border-radius:28px;padding:26px;box-shadow:var(--shD)}
+.levels{display:flex;gap:10px;align-items:flex-end;justify-content:space-between;height:170px;margin:20px 0 12px}
+.lv{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;font-size:14px;color:#CFC4B2}
+.lv svg path{transition:fill .6s var(--ease)}
+.range{width:100%;accent-color:var(--teen);height:30px}
+.health{display:flex;align-items:center;gap:14px;margin-top:16px}
+.dot{width:16px;height:16px;border-radius:50%;flex:none;transition:background .5s,box-shadow .5s}
+.qa{margin-top:36px;display:grid;gap:12px}
+.qa details{background:var(--card);border-radius:20px;box-shadow:var(--sh);overflow:hidden}
+.qa summary{list-style:none;cursor:pointer;padding:20px 24px;font-weight:700;display:flex;justify-content:space-between;gap:16px;align-items:center;min-height:44px}
+.qa summary::-webkit-details-marker{display:none}
+.qa summary::after{content:"+";font:700 26px/1 'Kufam';color:var(--teen);transition:transform .4s var(--ease)}
+.qa details[open] summary::after{transform:rotate(45deg)}
+.qa .ans{padding:0 24px 20px;color:var(--mut)}
+.palmsec{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:40px;align-items:center}
+@media(max-width:860px){.palmsec{grid-template-columns:1fr}}
+.palmbox{background:radial-gradient(120% 90% at 50% 100%,#1F3A2E 0%,var(--night) 70%);border-radius:32px;aspect-ratio:1/1;max-height:460px;display:grid;place-items:end center;box-shadow:var(--shD);overflow:hidden;position:relative}
+.palmbox svg{width:78%;height:auto}
+.stagebar{display:flex;gap:8px;margin:18px 0}
+.stagebar span{flex:1;text-align:center;font-size:13px;padding:8px 4px;border-radius:12px;background:rgba(241,231,214,.08);color:#BFB4A2;transition:background .4s,color .4s}
+.stagebar span.on{background:var(--palm);color:#fff}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:40px}
+@media(max-width:900px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kpi{background:var(--night2);border-radius:24px;padding:22px;box-shadow:var(--shD);border:1px solid rgba(241,231,214,.06)}
+.kpi .n{font:700 clamp(34px,4vw,48px)/1.1 'Kufam';color:var(--sand)}
+.kpi .was{font-size:13px;color:#A99E8C;margin-top:6px}
+.trust{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:36px}
+@media(max-width:800px){.trust{grid-template-columns:1fr}}
+.trust div{background:var(--card);color:var(--ink);border-radius:24px;padding:24px;box-shadow:var(--sh)}
+.final{text-align:center;overflow:hidden}
+.final h2{font-size:clamp(34px,5.5vw,64px)}
+footer{padding:30px max(5vw,18px);font-size:14px;color:#A99E8C;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;border-top:1px solid rgba(241,231,214,.08)}
+.note{font-size:13px;color:#A99E8C;margin-top:12px}
+.light .note{color:var(--mut)}
+
+/* ---------- APP ---------- */
+#app{min-height:100vh;background:var(--paper)}
+.top{position:sticky;top:0;z-index:15;display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;padding:12px max(3vw,14px);background:rgba(14,26,23,.94);backdrop-filter:blur(10px);color:var(--jes);box-shadow:0 10px 30px -18px rgba(0,0,0,.6)}
+.top img{height:32px}
+.roles{display:flex;gap:4px;background:rgba(241,231,214,.08);padding:4px;border-radius:999px;margin-inline-start:auto}
+.roles button{min-height:44px;border:0;border-radius:999px;background:transparent;color:var(--jes);padding:0 18px;font-size:15px;transition:background .35s var(--ease),color .35s}
+.roles button[aria-pressed=true]{background:var(--jes);color:var(--night);font-weight:700}
+.top a.back{color:var(--jes);font-size:14px;text-decoration:none;padding:10px 12px;border-radius:999px}
+.top a.back:hover{background:rgba(241,231,214,.1)}
+@media(max-width:700px){.roles{margin-inline-start:0;width:100%;justify-content:space-between}.roles button{flex:1;padding:0 8px;font-size:14px}}
+.page{max-width:1180px;margin:0 auto;padding:clamp(18px,3vw,36px) max(3vw,14px) 60px;display:grid;gap:20px}
+.card{background:var(--card);border-radius:26px;padding:clamp(18px,2.4vw,28px);box-shadow:var(--sh);transition:transform .5s var(--ease),box-shadow .5s var(--ease)}
+.card.night{background:linear-gradient(160deg,var(--night3),var(--night) 70%);color:var(--jes);box-shadow:var(--shD)}
+.card.night .mut{color:#C3B8A6}
+.mut{color:var(--mut);font-size:14px}
+.row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.between{justify-content:space-between}
+.g2{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:20px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+@media(max-width:900px){.g2,.g3{grid-template-columns:1fr}.g4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.hello h1{font-size:clamp(28px,3.6vw,40px);margin-bottom:6px}
+.ring{position:relative;width:150px;height:150px;flex:none}
+.ring svg{transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:12}
+.ring .bg{stroke:rgba(241,231,214,.12)}
+.ring .fg{stroke:var(--sand);stroke-linecap:round;transition:stroke-dashoffset 1.4s var(--ease)}
+.ring .v{position:absolute;inset:0;display:grid;place-items:center;text-align:center;font:700 36px/1 'Kufam'}
+.ring .v small{display:block;font:500 12px 'IBM Plex Sans Arabic';color:#C3B8A6;margin-top:4px}
+.next{margin-top:18px;background:rgba(241,231,214,.07);border:1px solid rgba(241,231,214,.1);border-radius:20px;padding:16px 18px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.next .t{flex:1 1 220px}
+.banner{border-radius:20px;padding:14px 18px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.banner.y{background:#FBEFD6;color:#5E3B0A}
+.banner.g{background:#DDEDE6;color:#163F35}
+.ladder{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:6px 0 18px}
+.rung{flex:1 1 150px;border-radius:18px;padding:12px 16px;background:#F1E7D6;font-size:14px}
+.rung b{display:block;font-size:16px}
+.rung.now{background:var(--teen);color:#fff}
+.rung.goal{background:var(--night);color:var(--jes)}
+.arrow{color:var(--teen);font-size:20px}
+.skill{border-top:1px solid var(--line)}
+.skill>button{width:100%;display:grid;grid-template-columns:minmax(0,1.6fr) auto minmax(0,1fr) auto;gap:14px;align-items:center;background:none;border:0;text-align:start;padding:16px 4px;min-height:64px;border-radius:14px;transition:background .3s}
+.skill>button:hover{background:#F7EFE2}
+.skill .nm b{display:block}
+.skill .chev{transition:transform .4s var(--ease);color:var(--mut)}
+.skill.open .chev{transform:rotate(180deg)}
+.skill .more{display:grid;grid-template-rows:0fr;transition:grid-template-rows .5s var(--ease)}
+.skill.open .more{grid-template-rows:1fr}
+.skill .more>div{overflow:hidden}
+.skill .more .in{padding:2px 4px 18px;display:grid;gap:8px;color:var(--mut);font-size:15px}
+@media(max-width:640px){.skill>button{grid-template-columns:minmax(0,1fr) auto;row-gap:6px}.skill .req{display:none}}
+.cren{display:inline-flex;gap:4px;align-items:flex-end}
+.cren path{transition:fill .7s var(--ease)}
+.palmcard{position:relative;overflow:hidden}
+.palmcard .pv{height:190px;display:grid;place-items:end center;margin:-6px 0 6px}
+.palmcard .pv svg{height:100%}
+.fr{font:700 34px/1 'Kufam';color:var(--palm)}
+.prog{height:10px;border-radius:5px;background:#EADFCB;overflow:hidden}
+.prog i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,var(--palm),#7DB38A);transition:width 1.2s var(--ease)}
+.night .prog{background:rgba(241,231,214,.12)}.night .prog i{background:linear-gradient(90deg,var(--sand),var(--teenL))}
+.uc{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:12px;margin-top:14px}
+.uc div{background:#F7EFE2;border-radius:18px;padding:14px 16px}
+.uc b{display:block}
+.policy{background:linear-gradient(160deg,#F6DCCD,#F1D1BF);border-radius:20px;padding:16px 18px;color:#4E1F0D}
+.big{font:700 clamp(32px,4vw,46px)/1.05 'Kufam';font-variant-numeric:tabular-nums}
+.bars{display:grid;gap:14px;margin-top:10px}
+.bars .l{display:flex;justify-content:space-between;font-size:15px;margin-bottom:6px}
+.empty{text-align:center;padding:30px 10px}
+.empty svg{margin-bottom:10px}
+textarea{width:100%;min-height:96px;border:1.5px solid var(--line);border-radius:16px;padding:12px 14px;font-size:16px;background:#fff;resize:vertical}
+label.f{display:block;font-weight:700;margin:10px 0 6px}
+/* drawer */
+.scrim{position:fixed;inset:0;background:rgba(14,26,23,.5);backdrop-filter:blur(3px);z-index:30;opacity:0;pointer-events:none;transition:opacity .4s var(--ease)}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;bottom:0;inset-inline-start:0;width:min(560px,100%);background:var(--paper);z-index:31;transform:translateX(105%);transition:transform .55s var(--ease);display:flex;flex-direction:column;box-shadow:-30px 0 60px -20px rgba(0,0,0,.4)}
+[dir=rtl] .drawer{transform:translateX(105%)}
+.drawer.on{transform:none}
+.dh{padding:20px 24px;background:var(--night);color:var(--jes);display:flex;gap:12px;align-items:flex-start}
+.dh h2{font-size:22px}
+.dh .x{margin-inline-start:auto;width:44px;height:44px;border-radius:50%;border:1px solid rgba(241,231,214,.3);background:transparent;color:var(--jes);font-size:22px;flex:none}
+.dprog{display:flex;gap:6px;padding:14px 24px 0}
+.dprog span{flex:1;height:6px;border-radius:3px;background:#E6DAC6;transition:background .5s}
+.dprog span.on{background:var(--teen)}
+.db{padding:20px 24px;overflow:auto;flex:1}
+.df{padding:16px 24px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:space-between;background:var(--card)}
+.prompt{background:var(--night);color:var(--jes);border-radius:18px;padding:16px 18px;white-space:pre-line;font-size:15px}
+.crit{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+/* modal & toast */
+.modal{position:fixed;inset:0;z-index:40;display:grid;place-items:center;padding:20px;background:rgba(14,26,23,.7);backdrop-filter:blur(6px);opacity:0;pointer-events:none;transition:opacity .4s}
+.modal.on{opacity:1;pointer-events:auto}
+.modal .box{background:radial-gradient(120% 100% at 50% 100%,#22402F,var(--night) 70%);color:var(--jes);border-radius:30px;padding:30px;max-width:420px;width:100%;text-align:center;box-shadow:var(--shD);transform:translateY(30px) scale(.94);transition:transform .6s var(--ease)}
+.modal.on .box{transform:none}
+.toast{position:fixed;bottom:22px;inset-inline:0;margin:0 auto;width:fit-content;max-width:calc(100% - 28px);z-index:50;background:var(--night);color:var(--jes);border-radius:999px;padding:10px 12px 10px 22px;display:flex;gap:14px;align-items:center;box-shadow:var(--shD);transform:translateY(calc(100% + 60px));transition:transform .5s var(--ease)}
+.toast.on{transform:none}
+.toast button{min-height:40px;border-radius:999px;border:0;background:var(--sand);color:var(--night);font-weight:700;padding:0 16px}
+.demo{font-size:12.5px;color:var(--mut);text-align:center}
+
+/* rail */
+.rail{position:fixed;inset-inline-end:18px;top:50%;transform:translateY(-50%);z-index:19;display:flex;flex-direction:column;gap:6px;padding:10px 8px;border-radius:999px;background:rgba(14,26,23,.55);backdrop-filter:blur(8px);box-shadow:0 8px 24px -10px rgba(0,0,0,.5)}
+.rail a{position:relative;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;text-decoration:none}
+.rail a i{width:9px;height:9px;border-radius:50%;background:rgba(241,231,214,.45);transition:all .4s var(--ease)}
+.rail a.on i{width:13px;height:13px;background:var(--sand);box-shadow:0 0 0 4px rgba(227,196,143,.25)}
+.rail a span{position:absolute;inset-inline-end:38px;white-space:nowrap;background:var(--night);color:var(--jes);font-size:14px;padding:6px 12px;border-radius:999px;opacity:0;transform:translateX(-8px);pointer-events:none;transition:all .35s var(--ease);box-shadow:var(--shD)}
+.rail a:hover span,.rail a:focus-visible span{opacity:1;transform:none}
+.rail .bar{position:absolute;inset-inline-end:21px;top:16px;bottom:16px;width:2px;background:rgba(241,231,214,.12);z-index:-1;border-radius:2px}
+.rail .bar b{display:block;width:100%;background:var(--sand);border-radius:2px;height:0;transition:height .3s}
+@media(max-width:760px){.rail{inset-inline-end:6px;padding:8px 4px}.rail a{width:22px;height:22px}}
+/* compare card */
+.withd{background:linear-gradient(160deg,var(--night3),var(--night) 70%);color:var(--jes);border-radius:28px;padding:28px;box-shadow:var(--shD)}
+.withd .it{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-top:1px solid rgba(241,231,214,.1)}
+.withd .it:first-of-type{border-top:0}
+.withd .ok{flex:none;width:34px;height:34px;border-radius:12px;background:var(--palm);display:grid;place-items:center}
+.withd b{display:block;color:var(--sand)}
+.withd span{color:#D9CFBE}
+/* stairs */
+.stairs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;align-items:end;margin-top:50px}
+.sc{display:flex;flex-direction:column}
+.sc .step{min-height:168px;display:flex;flex-direction:column;border-radius:22px 22px 6px 6px}
+.sc .base{background:var(--teen);border-radius:0 0 14px 14px;position:relative;transition:background .5s}
+.sc .base::before{content:"";position:absolute;top:-1px;inset-inline:10%;height:10px;background:var(--teenD);clip-path:polygon(0 100%,0 60%,16% 60%,16% 30%,33% 30%,33% 0,67% 0,67% 30%,84% 30%,84% 60%,100% 60%,100% 100%);opacity:.5}
+.sc.on .base{background:var(--teenD)}
+@media(max-width:900px){.stairs{grid-template-columns:1fr;gap:10px}.sc .base{display:none}.sc .step{min-height:0;border-radius:22px}}
+/* house levels */
+.levels{display:flex;gap:10px;align-items:flex-end;justify-content:space-between;height:250px;margin:20px 0 12px}
+.lv svg{overflow:visible}
+.lv svg *{transition:fill .6s var(--ease),opacity .6s}
+/* faq palm */
+.qa summary::after{content:none}
+.qa .pi{flex:none;width:34px;height:34px;transition:transform .5s var(--ease)}
+.qa details[open] .pi{transform:scale(1.25) rotate(-8deg)}
+.qa details[open] summary{color:var(--teenD)}
+/* glow */
+.glow{color:var(--sand);text-shadow:0 0 18px rgba(227,196,143,.55),0 0 46px rgba(227,196,143,.35),0 0 90px rgba(164,100,60,.35);animation:pulse 3.2s ease-in-out infinite}
+@keyframes pulse{0%,100%{text-shadow:0 0 14px rgba(227,196,143,.45),0 0 36px rgba(227,196,143,.25),0 0 70px rgba(164,100,60,.25)}50%{text-shadow:0 0 22px rgba(227,196,143,.8),0 0 60px rgba(227,196,143,.5),0 0 110px rgba(164,100,60,.45)}}
+.meaning{white-space:pre-line}
+/* login */
+#login{min-height:100vh;background:radial-gradient(120% 80% at 50% 0%,var(--night3),var(--night) 60%);color:var(--jes)}
+.lwrap{max-width:900px;margin:0 auto;padding:40px max(4vw,16px) 60px}
+.lroles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:28px}
+@media(max-width:760px){.lroles{grid-template-columns:1fr}}
+.lrole{background:var(--night2);border:1.5px solid rgba(241,231,214,.1);border-radius:26px;padding:24px 20px;text-align:start;color:var(--jes);box-shadow:var(--shD);transition:transform .45s var(--ease),border-color .4s,background .4s;display:flex;flex-direction:column;gap:10px;min-height:190px}
+.lrole:hover,.lrole:focus-visible{transform:translateY(-6px);border-color:var(--sand);background:#1A3027}
+.lrole .ri{width:54px;height:54px;border-radius:18px;background:var(--teen);display:grid;place-items:center}
+.lrole b{font:800 21px 'Kufam'}
+.lrole span{color:#C3B8A6;font-size:15px}
+.lform{background:var(--card);color:var(--ink);border-radius:28px;padding:clamp(20px,3vw,32px);margin-top:26px;box-shadow:var(--shD)}
+.fgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 18px}
+@media(max-width:640px){.fgrid{grid-template-columns:1fr}}
+.fld label{display:block;font-weight:700;margin:12px 0 6px}
+.fld input,.fld select{width:100%;min-height:50px;border:1.5px solid var(--line);border-radius:14px;padding:0 14px;font-size:16px;background:#fff;color:var(--ink)}
+.fld input:focus,.fld select:focus{outline:none;border-color:var(--teen);box-shadow:0 0 0 4px rgba(164,100,60,.15)}
+.fld .err{color:#A33A16;font-size:13.5px;min-height:20px;display:block}
+.fld.bad input{border-color:#C0502A}
+
+.bellw{position:relative}
+.bell{position:relative;width:44px;height:44px;border-radius:50%;border:0;background:rgba(241,231,214,.08);color:var(--jes);display:grid;place-items:center}
+.bn{position:absolute;top:4px;inset-inline-end:4px;min-width:18px;height:18px;border-radius:9px;background:var(--teen);color:#fff;font-size:11px;font-weight:700;display:grid;place-items:center;padding:0 4px}
+.npanel{position:absolute;top:52px;inset-inline-start:0;width:min(320px,86vw);background:var(--card);color:var(--ink);border-radius:20px;box-shadow:var(--shD);padding:8px;z-index:30}
+.ni{padding:12px 14px;border-radius:14px}.ni+.ni{border-top:1px solid var(--line)}.ni b{display:block;font-size:13px;color:var(--teenD)}.ni span{font-size:14.5px}
+.legend{display:grid;gap:8px;margin-top:14px}.legend div{display:flex;align-items:center;gap:10px;justify-content:space-between;font-size:14px;color:var(--mut)}
+.frs{display:inline-flex;gap:1px}
+.hrow{display:inline-flex;gap:3px;align-items:flex-end}
+.hm{position:relative;display:inline-flex;align-items:flex-end;padding-bottom:8px}
+.hm.req::after{content:"";position:absolute;bottom:0;left:50%;width:7px;height:7px;margin-left:-3.5px;border-radius:50%;background:var(--sand)}
+.hlegend{display:flex;align-items:center;gap:6px;margin:-6px 0 6px;font-size:13px}.hlegend .hm{padding:0}
+.auto{background:#EEF5F1;border-radius:14px;padding:12px 14px;color:#1D4D42}.auto b{display:block}
+.uc .new{background:#E6F1EA;outline:2px solid #9CC7AE}
+.uc div span{display:block}
+.mhero{padding-bottom:0;overflow:hidden}
+.garden{margin:20px calc(-1*clamp(18px,2.4vw,28px)) 0;background:linear-gradient(180deg,rgba(14,26,23,0) 0%,#142A20 60%,#1E3A2B 100%);padding:14px clamp(18px,2.4vw,28px) 0;position:relative}
+.garden::after{content:"";position:absolute;inset-inline:0;bottom:0;height:26px;background:#5B3A22;opacity:.55}
+.gtitle{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}.gtitle span{color:#C3B8A6;font-size:14px}
+.gpalms{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;align-items:end;position:relative;z-index:1}
+@media(max-width:640px){.gpalms{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.gp{text-align:center;padding-bottom:6px}.gp .gs svg{width:100%;height:150px}.gp b{display:block;font-size:14px}.gp span{font-size:12px;color:#E3C48F}
+.tiles{margin:16px 0;gap:12px}.tiles>div{background:#F7EFE2;border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:2px}.tiles b{font-size:22px}
+.preview{background:#FBF7EF;border:1px solid var(--line);border-radius:16px;padding:14px 16px;white-space:pre-wrap;font:15px/1.8 'IBM Plex Sans Arabic',sans-serif;max-height:230px;overflow:auto;margin:0}
+.quote{background:#FBF7EF;border-radius:14px;padding:12px 14px;margin:0;border-inline-start:0}
+.crits{display:grid;gap:8px;margin-top:6px}
+.crit{display:flex;gap:12px;align-items:flex-start;background:#F7EFE2;border-radius:14px;padding:10px 12px}
+.crit b{display:block;font-size:15px}.crit .mut{font-size:13.5px}
+.ci{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#E6DAC6;color:var(--mut);font-weight:700;font-size:13px}
+.crit.p{background:#E3F0E8}.crit.p .ci{background:var(--ok);color:#fff}
+.crit.f{background:#F8E3D9}.crit.f .ci{background:#B4532E;color:#fff}
+.rescard{margin-top:14px;background:var(--card);border:1.5px solid #B9D6C4;border-radius:18px;padding:14px}.rescard.bad{border-color:#E6B9A4}
+.gap{border-top:1px solid var(--line)}.gap:first-of-type{border-top:0}
+.gap>button{width:100%;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) auto;gap:14px;align-items:center;background:none;border:0;text-align:start;padding:14px 4px;min-height:60px;border-radius:14px}
+.gap>button:hover{background:#F7EFE2}.gap>button>span:first-child b{display:block}
+.gbar{height:10px;border-radius:5px;background:#EADFCB;overflow:hidden}.gbar i{display:block;height:100%;background:linear-gradient(90deg,var(--teen),var(--teenL));border-radius:5px;transition:width 1.2s var(--ease)}
+.gap .more,.plan .more{display:grid;grid-template-rows:0fr;transition:grid-template-rows .5s var(--ease)}.gap.open .more{grid-template-rows:1fr}.gap .more>div{overflow:hidden}.gap.open .chev{transform:rotate(180deg)}.gap .chev{transition:transform .4s var(--ease);color:var(--mut)}
+.names{display:grid;gap:6px;padding:0 4px 14px}
+.nmrow{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#F7EFE2;border-radius:12px;padding:8px 12px;font-size:14.5px}.nmrow>span:first-child b{display:block}
+.plan{background:#FBF7EF;border:1px solid var(--line);border-radius:18px;padding:16px;margin-top:14px}
+.sim{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
+.track{display:grid;gap:6px;margin-top:12px}.tp{display:flex;align-items:center;gap:10px}
+.drawer.wide{width:min(720px,100%)}
+.ptabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.ptabs button{min-height:44px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);padding:0 14px;font-size:14px}
+.ptabs button[aria-selected=true]{background:var(--night);color:var(--jes);border-color:var(--night)}
+.ptabs button[disabled]{opacity:.45}
+.pinfo{background:#F1E7D6;border-radius:16px;padding:12px 14px;display:grid;gap:2px;margin-bottom:12px}
+.dept{background:var(--card);border-radius:18px;padding:6px 12px 10px;margin-bottom:10px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.dh2{display:flex;align-items:center;gap:10px;min-height:48px;font-size:16px;cursor:pointer}
+.emprow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;min-height:48px;padding:4px 6px;border-top:1px solid var(--line);cursor:pointer}
+.emprow b{display:block;font-weight:500}.emprow .mut{font-size:13px}.cost{white-space:nowrap}
+.dept input,.emprow input{width:20px;height:20px;accent-color:var(--teen)}
+.sum{position:sticky;bottom:-20px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;background:var(--night);color:var(--jes);border-radius:18px;padding:14px;margin-top:8px}
+.sum div{display:flex;flex-direction:column}.sum .mut{color:#C3B8A6;font-size:12.5px}.sum b{font-size:15px;white-space:nowrap}
+@media(max-width:640px){.sum{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.qz{text-align:start;display:grid;gap:10px;margin-top:12px}
+.qz fieldset{border:1px solid rgba(241,231,214,.15);border-radius:16px;padding:10px 14px}
+.qz legend{font-weight:700;padding:0 6px}
+.qz label{display:flex;align-items:center;gap:10px;min-height:40px;cursor:pointer}
+.qz input{width:18px;height:18px;accent-color:var(--sand)}
+.modal .box{position:relative;overflow:hidden;max-width:460px;max-height:92vh;overflow-y:auto}
+#conf{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
+.celeb{position:relative;z-index:1;cursor:pointer}
+.ladder .rung{flex:1 1 220px}
+.skill>button{grid-template-columns:minmax(0,1.5fr) 132px 150px 150px}
+.legend{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.legend div{flex-direction:column;justify-content:flex-start;text-align:center;gap:4px;font-size:12.5px;background:#F7EFE2;border-radius:14px;padding:10px 6px}
+@media(max-width:640px){.skill>button{grid-template-columns:minmax(0,1fr) auto}}
+
+.paths{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px}
+@media(max-width:640px){.paths{grid-template-columns:1fr}}
+.path{background:rgba(241,231,214,.07);border:1px solid rgba(241,231,214,.1);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.path h3{font-size:18px;margin-top:4px}.path .btn{margin-top:6px;min-height:46px}
+.small{font-size:12.5px}
+.garden{min-height:260px}
+.gsky{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.gtitle,.gpalms{position:relative;z-index:1}
+.gp{background:none;border:0;color:var(--jes);position:relative;cursor:pointer;border-radius:16px;transition:transform .4s var(--ease)}
+.gp:hover,.gp:focus-visible{transform:translateY(-6px)}
+.gp .tip{position:absolute;bottom:calc(100% - 20px);left:50%;transform:translate(-50%,8px);white-space:nowrap;background:var(--jes);color:var(--night);font-size:12.5px;padding:6px 10px;border-radius:999px;opacity:0;pointer-events:none;transition:all .3s var(--ease);box-shadow:var(--shD);z-index:3}
+.gp:hover .tip,.gp:focus-visible .tip{opacity:1;transform:translate(-50%,0)}
+.gpalms{grid-template-columns:repeat(7,minmax(0,1fr))}
+@media(max-width:640px){.gpalms{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.hist{display:grid;gap:6px;margin-top:10px}
+.hi{display:grid;grid-template-columns:auto minmax(0,1.3fr) minmax(0,1.2fr) auto;gap:12px;align-items:center;background:#F7EFE2;border-radius:14px;padding:10px 14px;font-size:14.5px}
+.hi>div b{display:block}
+@media(max-width:640px){.hi{grid-template-columns:auto minmax(0,1fr)}.hi>span:nth-child(3),.hi>span:last-child{grid-column:2}}
+.hd{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;color:#fff}.hd.ok{background:var(--ok)}.hd.no{background:#B4532E}
+.impact{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.impact>div{background:rgba(241,231,214,.07);border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:4px}
+.ia{display:flex;align-items:center;gap:10px;font:700 22px 'Kufam'}.ia .was{color:#A99E8C;font-size:17px;text-decoration:line-through}.ia .now{color:var(--sand)}.ia span{color:#A99E8C}
+.filters{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:12px 0 6px}
+@media(max-width:760px){.filters{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.filters label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--mut)}
+.filters select{min-height:44px;border:1.5px solid var(--line);border-radius:12px;background:#fff;padding:0 10px;font-size:15px;color:var(--ink)}
+.chip.sa{background:#DDEDE6;color:#1D4D42;font-size:11.5px;padding:2px 8px;margin-inline-start:4px;vertical-align:middle}
+.saprio{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;background:#E6F1EA;border-radius:16px;padding:12px 14px;margin-bottom:10px}.saprio b{color:#1D4D42}
+.emprow{grid-template-columns:auto minmax(0,1fr) auto}
+.certfile{display:flex;gap:12px;align-items:center;background:#F7EFE2;border-radius:14px;padding:12px 14px;margin-top:10px}.certfile b{display:block}
+.qz.light fieldset{border-color:var(--line);background:var(--card)}
+.qz.light{color:var(--ink)}
+.qz.light input{accent-color:var(--teen)}
+.wk{width:100%;border-collapse:collapse;font-size:14.5px;margin-top:10px;background:var(--card);border-radius:14px;overflow:hidden}
+.wk th{background:var(--night);color:var(--jes);font-weight:500;padding:8px 10px;text-align:start}.wk td{padding:8px 10px;border-top:1px solid var(--line)}.wk .num{text-align:end;font-variant-numeric:tabular-nums}
+.wk tr:nth-child(6) td{background:#FBEFD6;font-weight:700}
+hr.sep{border:0;border-top:1.5px dashed var(--line);margin:22px 0}
+.drawer .fld input,.drawer .fld select{width:100%}
+.ni{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}.ni>div b{display:block}
+.nx{flex:none;width:36px;height:36px;border-radius:50%;border:0;background:#F1E7D6;color:var(--mut);display:grid;place-items:center}.nx:hover{background:#E6DAC6;color:var(--ink)}
+.nall{width:100%;min-height:44px;border:0;border-top:1px solid var(--line);background:none;color:var(--teenD);font-weight:700;border-radius:0 0 14px 14px}
+
+.tabs{display:flex;gap:6px;background:#EADFCB;padding:5px;border-radius:999px;width:fit-content;max-width:100%;overflow-x:auto}
+.tabs button{min-height:44px;border:0;border-radius:999px;background:transparent;padding:0 20px;font-size:15px;white-space:nowrap;transition:background .35s var(--ease),color .35s}
+.tabs button[aria-selected=true]{background:var(--night);color:var(--jes);font-weight:700}
+.frozen .pv{filter:saturate(.3) hue-rotate(160deg) brightness(1.05)}
+.chip.ice{background:#DCEAF3;color:#21506B}
+.linkbtn{background:none;border:0;color:var(--teenD);font-size:13.5px;text-decoration:underline;padding:8px 0 0;min-height:36px;text-align:start}
+.mentor{display:flex;gap:14px;align-items:center;margin:10px 0}.mentor b{display:block}
+.av2{width:56px;height:56px;border-radius:18px;background:var(--palm);color:#fff;display:grid;place-items:center;font:800 24px 'Kufam'}
+.job{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:14px;align-items:center;padding:14px 0;border-top:1px solid var(--line)}.job:first-child{border-top:0}.job b{display:block}
+.mt{text-align:center;display:flex;flex-direction:column}.mt b{font:800 24px 'Kufam'}
+.cstrip{display:flex;height:16px;border-radius:8px;overflow:hidden;margin:12px 0 8px;gap:2px}
+.clegend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--mut);margin-bottom:6px}.clegend i,.gdot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-inline-end:6px}
+.rot{display:flex;gap:12px;align-items:center;justify-content:space-between;background:#F7EFE2;border-radius:16px;padding:12px 14px;margin-top:10px}.rot b{display:block;font-size:15px}
+.crit-row{display:flex;gap:16px;align-items:center;padding:16px 0;border-top:1px solid var(--line)}.crit-row:first-child{border-top:0}
+.risk{flex:none;width:76px;height:76px;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:12px}.risk b{font:800 26px/1 'Kufam'}
+.risk.hi{background:#F8E3D9;color:#8A2E10}.risk.md{background:#FBEFD6;color:#7A4E0F}
+.nine{display:grid;grid-template-columns:28px repeat(3,minmax(0,1fr));grid-template-rows:repeat(3,minmax(110px,auto)) 28px;gap:8px;margin-top:14px}
+.yax{grid-row:1/4;writing-mode:vertical-rl;transform:rotate(180deg);text-align:center;color:var(--mut);font-size:13px}
+.xax{grid-column:2/5;text-align:center;color:var(--mut);font-size:13px}
+.nb{background:#F7EFE2;border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:6px}.nb.star{background:#DDEDE6}
+.nbl{font-size:12.5px;font-weight:700;color:var(--teenD)}.nb.star .nbl{color:#1D4D42}
+.dots{display:flex;flex-wrap:wrap;gap:4px}.pd{font-size:12px;background:var(--card);border-radius:999px;padding:2px 8px;box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.votes{display:grid;gap:6px;margin:10px 0}.vote{display:flex;justify-content:space-between;align-items:center;background:#F7EFE2;border-radius:12px;padding:6px 12px;min-height:48px}
+.pos{display:flex;gap:14px;align-items:center;justify-content:space-between;padding:14px 0;border-top:1px solid var(--line);flex-wrap:wrap}.pos:first-of-type{border-top:0}.pos>div:first-child{display:flex;flex-direction:column;gap:2px;flex:1 1 320px}.pos b{font-size:16px}
+.wts{display:grid;gap:12px;margin-top:14px}.wt{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1.6fr) 54px;gap:14px;align-items:center}.wt label b{display:block}.wt input{width:100%;accent-color:var(--teen);height:30px}.wv{font:800 18px 'Kufam';text-align:end}
+@media(max-width:640px){.wt{grid-template-columns:1fr 54px}.wt input{grid-column:1/3;grid-row:2}}
+.psum{text-align:start}.pss{display:grid;gap:4px;margin-top:14px}.ps{display:grid;grid-template-columns:minmax(0,1.3fr) auto minmax(0,.8fr);gap:10px;align-items:center;padding:6px 0;border-top:1px solid rgba(241,231,214,.1);font-size:14px}
+.mods{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:36px}@media(max-width:860px){.mods{grid-template-columns:1fr}}
+.mod{background:var(--card);border-radius:26px;padding:24px;box-shadow:var(--sh)}.mod b{font-size:22px;color:var(--teenD)}.mod ul{margin:12px 0 0;padding-inline-start:18px;display:grid;gap:8px;color:var(--ink)}
+</style>
+</head>
+<body>
+
+<!-- ================= LANDING ================= -->
+<div id="landing" class="view">
+<nav class="nav" id="nav" aria-label="التنقل الرئيسي">
+  <img src="data:image/png;base64,__LOGO3__" alt="دبره">
+  <div class="links">
+    <a href="#story">المشكلة</a><a href="#how">كيف تشتغل</a><a href="#palm">نخلتك</a><a href="#impact">الأثر</a>
+    <a class="btn" href="#login" style="min-height:44px;padding:0 20px">تسجيل الدخول</a>
+  </div>
+</nav>
+
+<nav class="rail" id="rail" aria-label="أقسام الصفحة"><div class="bar"><b id="railbar"></b></div>
+<a href="#top" data-s="top"><i></i><span>البداية</span></a><a href="#story" data-s="story"><i></i><span>المشكلة</span></a><a href="#name" data-s="name"><i></i><span>معنى الاسم</span></a><a href="#how" data-s="how"><i></i><span>كيف تشتغل</span></a><a href="#try" data-s="try"><i></i><span>المستويات وعمر المهارة</span></a><a href="#palm" data-s="palm"><i></i><span>نخلتك</span></a><a href="#faq" data-s="faq"><i></i><span>أسئلة الحزمة</span></a><a href="#mods" data-s="mods"><i></i><span>المنصة كاملة</span></a><a href="#impact" data-s="impact"><i></i><span>الأثر</span></a><a href="#final" data-s="final"><i></i><span>صِر دبره</span></a></nav>
+<header class="hero" id="top">
+  <svg class="sky" id="sky" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice" aria-hidden="true"></svg>
+  <div class="copy">
+    <div class="eyebrow reveal">مهاراثون · مسار مسيرة للمستقبل</div>
+    <h1 class="reveal">لا تسأل عن الخبرة<br><span>اسأل عن الدبره</span></h1>
+    <p class="lead reveal">منصة تخلّي الموظف السعودي يثبت مهاراته بتحديات من شغله، فتنحسب له في الترقية بدل ما تضيع بين السنين.</p>
+    <div class="ctas reveal"><a class="btn" href="#login">تسجيل الدخول</a><a class="btn ghost" href="#story">شوف القصة</a></div>
+  </div>
+  <a class="scrollhint" href="#story" aria-label="انزل للقصة"></a>
+</header>
+
+<section class="sec light" id="story">
+  <div class="wrap story">
+    <div>
+      <div class="eyebrow reveal">المشكلة</div>
+      <h2 class="reveal">عبدالله سنع... بس محد داري</h2>
+      <p class="sub reveal">مشرف في مستودع شركة خدمات لوجستية من سنتين، وعينه على وظيفة مخطط عمليات. يتعلم كل يوم في شغله، لكن ملفه الوظيفي ما يقول عنه شي.</p>
+      <div class="pains">
+        <div class="pain reveal"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16v.5"/></svg></div><div><b>متطلبات الترقي مو واضحة</b>ما يدري وش ناقصه ولا من وين يبدأ</div></div>
+        <div class="pain reveal"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 6h16M4 12h10M4 18h6"/></svg></div><div><b>مهاراته ما تتوثّق</b>اللي يتعلمه في شغله اليومي ما يشوفه مديره</div></div>
+        <div class="pain reveal"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M6 6l2 2M16 16l2 2M6 18l2-2M16 8l2-2"/></svg></div><div><b>متردد مع الذكاء الاصطناعي</b>يوفّر عليه وقت، بس ما يدري هل الشركة تسمح فيه</div></div>
+      </div>
+    </div>
+    <div class="withd reveal">
+      <div class="eyebrow" style="color:var(--sand)">ومع دبره</div>
+      <h3 style="font-size:26px;margin-bottom:10px">كل وحدة لها حل</h3>
+      <div class="it"><div class="ok"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L19 7"/></svg></div><div><b>طريق ترقية واضح</b><span>يعرف خطوته الجاية بالضبط، ووش ناقصه للدرجة اللي بعدها.</span></div></div>
+      <div class="it"><div class="ok"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L19 7"/></svg></div><div><b>كل مهارة لها دليل</b><span>يثبتها بتحدي من شغله، ويعتمدها مديره بضغطة.</span></div></div>
+      <div class="it"><div class="ok"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L19 7"/></svg></div><div><b>ذكاء اصطناعي بأمان</b><span>سياسة شركته قدامه داخل كل تحدي، فيستخدمه وهو مطمئن.</span></div></div>
+    </div>
+  </div>
+  <div class="wrap stats">
+    <div class="stat reveal"><div class="n"><span data-count="33.1" data-dec="1">0</span>%</div><b>من المنشآت استخدمت الذكاء الاصطناعي في 2025</b><div class="src">الهيئة العامة للإحصاء</div></div>
+    <div class="stat reveal"><div class="n" data-count="2026">0</div><b>عام الذكاء الاصطناعي في المملكة</b><div class="src">سدايا</div></div>
+    <div class="stat reveal"><div class="n"><span data-count="1200">0</span></div><b>موظف ميداني تحتاج هيا تطوّرهم بميزانية محدودة</b><div class="src">من شخصيات حزمة التحدي</div></div>
+  </div>
+</section>
+
+<section class="sec name" id="name">
+  <div class="wrap">
+    <div class="eyebrow reveal">الاسم</div>
+    <h2 class="reveal">وش يعني «دبره»؟</h2>
+    <p class="sub reveal" style="margin:0 auto">اضغط على كل حرف</p>
+    <div class="word reveal" id="word">
+      <button data-i="0" aria-pressed="false">د</button><button data-i="1" aria-pressed="false">ب</button><button data-i="2" aria-pressed="false">ر</button><button data-i="3" aria-pressed="false">ه</button>
+    </div>
+    <p class="meaning" id="meaning" aria-live="polite">في نجد يقولون «فلان دبره» عن الشخص السنع اللي يتدبّر أموره ويُعتمد عليه.
+وما يقولونها على عمره ولا شهاداته... يقولونها يوم يشوفونه يشتغل.</p>
+  </div>
+</section>
+
+<section class="sec light" id="how">
+  <div class="wrap">
+    <div class="eyebrow reveal">كيف تشتغل</div>
+    <h2 class="reveal">ست درجات... مثل شُرفة بيت نجدي</h2>
+    <p class="sub reveal">انزل بالصفحة وشوف عبدالله يصعدها درجة درجة.</p>
+    <div class="stairs" id="steps"><div class="sc"><div class="step"><div class="k">1</div><b>اعرف خطوتك</b><span>خريطة الفجوة من سلّم شركتك</span></div><div class="base" style="height:14px"></div></div><div class="sc"><div class="step"><div class="k">2</div><b>تعلّم</b><span>محتوى قصير مربوط بمهامك</span></div><div class="base" style="height:36px"></div></div><div class="sc"><div class="step"><div class="k">3</div><b>أثبت</b><span>تحدي من شغلك الحقيقي</span></div><div class="base" style="height:58px"></div></div><div class="sc"><div class="step"><div class="k">4</div><b>يعتمدك مديرك</b><span>الذكاء الاصطناعي يقترح، والمدير يقرر</span></div><div class="base" style="height:80px"></div></div><div class="sc"><div class="step"><div class="k">5</div><b>تترقى</b><span>المهارة تنحسب في ملفك</span></div><div class="base" style="height:102px"></div></div><div class="sc"><div class="step"><div class="k">6</div><b>حافظ عليها</b><span>عمر المهارة يذكّرك تجددها</span></div><div class="base" style="height:124px"></div></div></div>
+  </div>
+</section>
+
+<section class="sec" id="try">
+  <div class="wrap">
+    <div class="eyebrow reveal">جرّبها بنفسك</div>
+    <h2 class="reveal">كل مهارة لها مستواها... ولها عمر</h2>
+    <p class="sub reveal">المستوى ما ينكسب إلا بإثبات، والمهارة اللي ما تستخدمها تذبل.</p>
+    <div class="try">
+      <div class="panel reveal">
+        <div class="row between"><h3 style="font-size:22px">درجات المهارة</h3><span class="chip" id="lvname" style="background:var(--teen);color:#fff">سنع</span></div>
+        <div class="levels" id="levels"></div>
+        <div class="row" style="gap:8px">
+          <button class="btn ghost" id="lvDown" style="flex:1;color:var(--jes)">تراجع درجة</button>
+          <button class="btn" id="lvUp" style="flex:1">أثبت تحدي</button>
+        </div>
+      </div>
+      <div class="panel reveal">
+        <h3 style="font-size:22px">عمر المهارة</h3>
+        <p style="color:#CFC4B2;margin-top:8px">حرّك الوقت وشوف وش يصير لمهارة Excel لو ما استخدمها عبدالله.</p>
+        <label for="age" class="f" style="color:var(--jes)">شهور بدون استخدام: <span id="ageV">2</span></label>
+        <input id="age" class="range" type="range" min="0" max="14" value="2">
+        <div class="health"><span class="dot" id="hdot"></span><b id="htxt">محدّثة</b></div>
+        <p id="hdesc" style="color:#CFC4B2;margin-top:8px">ممتاز، المهارة شغالة.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec light" id="palm">
+  <div class="wrap palmsec">
+    <div class="palmbox reveal" id="palmLand" aria-label="نخلة تكبر" role="img"></div>
+    <div>
+      <div class="eyebrow reveal">بدل النقاط</div>
+      <h2 class="reveal">نخلتك تكبر مع كل إنجاز</h2>
+      <p class="sub reveal">ما عندنا نقاط بأسماء أجنبية. كل تحدي تحله يعطيك سعفة، ونخلتك تكبر من فسيلة إلى نخلة باسقة. والسعف يقيس التزامك، لكنه ما يرفع مستوى مهارتك... المستوى ما ينكسب إلا بالإثبات.</p>
+      <div class="stagebar reveal" id="stLand"><span>فسيلة</span><span>نخلة صغيرة</span><span>نخلة</span><span>باسقة</span></div>
+      <div class="row reveal"><button class="btn" id="growBtn">حل تحدي (+3 سعفات)</button><span class="kufi" style="font-size:22px"><span id="frLand">2</span> سعفة</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec light" id="faq" style="padding-top:0">
+  <div class="wrap">
+    <div class="eyebrow reveal">أسئلة الحزمة</div>
+    <h2 class="reveal">خمسة أسئلة... وجوابنا عليها</h2>
+    <div class="qa">
+      <details class="reveal"><summary><span>وش المهمة اللي يوفّر فيها الذكاء الاصطناعي أكبر وقت؟</span><svg class="pi" viewBox="0 0 40 40" aria-hidden="true"><path d="M19 38 Q18.5 26 19.5 16 L21 16 Q22 26 22 38Z" fill="#8A5A35"/><g fill="#4C8A5E"><path d="M20 16 Q12 9 4 14 Q12 12 20 17Z"/><path d="M20 16 Q28 9 36 14 Q28 12 20 17Z"/><path d="M20 16 Q15 6 9 5 Q16 9 20 17Z"/><path d="M20 16 Q25 6 31 5 Q24 9 20 17Z"/><path d="M20 16 Q20 7 20 2 Q21 9 20.5 16Z"/></g></svg></summary><div class="ans">تقرير أداء المستودع الأسبوعي: 70 دقيقة يدوي صارت 25 دقيقة، وكل تحدي في دبره يقيس الوقت الموفّر.</div></details>
+      <details class="reveal"><summary><span>كيف تعرفون إن الموظف تعلّم فعلًا، مو بس حضر دورة؟</span><svg class="pi" viewBox="0 0 40 40" aria-hidden="true"><path d="M19 38 Q18.5 26 19.5 16 L21 16 Q22 26 22 38Z" fill="#8A5A35"/><g fill="#4C8A5E"><path d="M20 16 Q12 9 4 14 Q12 12 20 17Z"/><path d="M20 16 Q28 9 36 14 Q28 12 20 17Z"/><path d="M20 16 Q15 6 9 5 Q16 9 20 17Z"/><path d="M20 16 Q25 6 31 5 Q24 9 20 17Z"/><path d="M20 16 Q20 7 20 2 Q21 9 20.5 16Z"/></g></svg></summary><div class="ans">ما نعدّ شهادات الحضور. الموظف يحل تحدي عملي من مهامه الحقيقية، ونقيس النتيجة بمعايير واضحة.</div></details>
+      <details class="reveal"><summary><span>وش يخلي المدير يحتسب المهارة في الترقية؟</span><svg class="pi" viewBox="0 0 40 40" aria-hidden="true"><path d="M19 38 Q18.5 26 19.5 16 L21 16 Q22 26 22 38Z" fill="#8A5A35"/><g fill="#4C8A5E"><path d="M20 16 Q12 9 4 14 Q12 12 20 17Z"/><path d="M20 16 Q28 9 36 14 Q28 12 20 17Z"/><path d="M20 16 Q15 6 9 5 Q16 9 20 17Z"/><path d="M20 16 Q25 6 31 5 Q24 9 20 17Z"/><path d="M20 16 Q20 7 20 2 Q21 9 20.5 16Z"/></g></svg></summary><div class="ans">المهارة مربوطة بسلّم الشركة الوظيفي، والمدير يشوف الدليل ويعتمد بضغطة، فتنحسب مباشرة في ملف الترقية.</div></details>
+      <details class="reveal"><summary><span>كيف تتعاملون مع خوف الموظف إن التقنية تاخذ مكانه؟</span><svg class="pi" viewBox="0 0 40 40" aria-hidden="true"><path d="M19 38 Q18.5 26 19.5 16 L21 16 Q22 26 22 38Z" fill="#8A5A35"/><g fill="#4C8A5E"><path d="M20 16 Q12 9 4 14 Q12 12 20 17Z"/><path d="M20 16 Q28 9 36 14 Q28 12 20 17Z"/><path d="M20 16 Q15 6 9 5 Q16 9 20 17Z"/><path d="M20 16 Q25 6 31 5 Q24 9 20 17Z"/><path d="M20 16 Q20 7 20 2 Q21 9 20.5 16Z"/></g></svg></summary><div class="ans">الذكاء الاصطناعي في دبره أداة من أدوات الدبره، وإتقانه طريق للترقية. ياخذ عنك الشغل الممل، مو مكانك.</div></details>
+      <details class="reveal"><summary><span>وش اللي ما لازم يدخله الموظف في أداة عامة؟</span><svg class="pi" viewBox="0 0 40 40" aria-hidden="true"><path d="M19 38 Q18.5 26 19.5 16 L21 16 Q22 26 22 38Z" fill="#8A5A35"/><g fill="#4C8A5E"><path d="M20 16 Q12 9 4 14 Q12 12 20 17Z"/><path d="M20 16 Q28 9 36 14 Q28 12 20 17Z"/><path d="M20 16 Q15 6 9 5 Q16 9 20 17Z"/><path d="M20 16 Q25 6 31 5 Q24 9 20 17Z"/><path d="M20 16 Q20 7 20 2 Q21 9 20.5 16Z"/></g></svg></summary><div class="ans">سياسة الشركة تطلع داخل كل تحدي: لا أسماء ولا هويات ولا بيانات عملاء. وحماية البيانات معيار نقيسه في التقييم.</div></details>
+    </div>
+  </div>
+</section>
+
+<section class="sec light" id="mods">
+  <div class="wrap">
+    <div class="eyebrow reveal">المنصة كاملة</div>
+    <h2 class="reveal">لكل شخص في المنشأة شاشته</h2>
+    <p class="sub reveal">من الموظف اللي يثبت مهارته، إلى المدير اللي يقود فريقه، إلى مسؤولة التطوير اللي تخطط للمنشأة كلها.</p>
+    <div class="mods">
+      <div class="mod reveal"><b class="kufi">الموظف</b><ul><li>مسارين: تحدي من الشغل، أو شهادة خارجية يثبتها</li><li>جدارات بأوزان وظيفته الجاية</li><li>تقييم 360 من أكثر زملائه احتكاكًا فيه</li><li>مرشد وورش داخلية ومحتوى من شركته</li><li>فرص نقل داخلي تطابق مهاراته</li></ul></div>
+      <div class="mod reveal"><b class="kufi">المدير المباشر</b><ul><li>جاهزية فريقه بالألوان من نظرة وحدة</li><li>ملف ترقية موثّق وكشف تحيز</li><li>مؤشرات الأداء وتحليل عبء العمل</li><li>التدوير الوظيفي</li><li>المهارات الحرجة و«الظل» لنقل المعرفة</li></ul></div>
+      <div class="mod reveal"><b class="kufi">مسؤولة التطوير</b><ul><li>مصفوفة المواهب والتعاقب الوظيفي</li><li>تحليل الاحتياج وفتح الوظائف وإغلاقها</li><li>خطط تطوير بأولوية للسعوديين</li><li>ميزانية الأقسام من بيانات السنة الماضية</li><li>حوكمة الجدارات والتظلّمات والترقية الاستثنائية</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="impact">
+  <div class="wrap">
+    <div class="eyebrow reveal">الأثر المتوقع</div>
+    <h2 class="reveal">نقيسه بنفس مؤشرات الحزمة</h2>
+    <p class="sub reveal">أرقام تجريبية لمنشأة فيها 52 موظف ميداني بعد ستة شهور.</p>
+    <div class="kpis">
+      <div class="kpi reveal"><div class="n"><span data-count="43">0</span>%</div><b>يستخدمون الذكاء الاصطناعي أسبوعيًا</b><div class="was">قبل: 18%</div></div>
+      <div class="kpi reveal"><div class="n"><span data-count="45">0</span> د</div><b>توفير أسبوعي في التقارير</b><div class="was">لكل مشرف</div></div>
+      <div class="kpi reveal"><div class="n"><span data-count="66">0</span>%</div><b>أكملوا خطط التطوير</b><div class="was">قبل: 22%</div></div>
+      <div class="kpi reveal"><div class="n"><span data-count="8">0</span></div><b>جاهزون للترقية</b><div class="was">قبل: 3 من 52</div></div>
+    </div>
+    <div class="trust">
+      <div class="reveal"><h3 style="font-size:20px;margin-bottom:6px">الموظف يملك ملفه</h3><p style="color:var(--mut);margin:0">ويشوف ليش أخذ كل مستوى.</p></div>
+      <div class="reveal"><h3 style="font-size:20px;margin-bottom:6px">الآلة تقترح والمدير يقرر</h3><p style="color:var(--mut);margin:0">ما فيه تقييم آلي بدون علم الموظف.</p></div>
+      <div class="reveal"><h3 style="font-size:20px;margin-bottom:6px">مبادئ سدايا</h3><p style="color:var(--mut);margin:0">للاستخدام المسؤول للذكاء الاصطناعي.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec final" id="final">
+  <div class="wrap">
+    <h2 class="reveal glow">صِر دبره</h2>
+    <p class="sub reveal" style="margin:16px auto 28px">سجّل دخولك، وحل أول تحدي، وخلّ مديرك يعتمدك.</p>
+    <a class="btn reveal" href="#login">تسجيل الدخول</a>
+  </div>
+</section>
+<footer><span>دبره · مهاراثون 2026 · المسار الأول، السؤال 1.2</span><span>كل الأرقام والأسماء في العرض تجريبية</span></footer>
+</div>
+
+<!-- ================= LOGIN ================= -->
+<div id="login" class="view" hidden>
+  <div class="top" style="background:transparent;box-shadow:none;position:relative">
+    <img src="data:image/png;base64,__LOGO3__" alt="دبره">
+    <a class="back" href="#top" style="margin-inline-start:auto">الرجوع للتعريف</a>
+  </div>
+  <div class="lwrap" id="lbox"></div>
+</div>
+
+<!-- ================= APP ================= -->
+<div id="app" class="view" hidden>
+  <div class="top">
+    <img src="data:image/png;base64,__LOGO3__" alt="دبره">
+    <a class="back" href="#top">عن دبره</a><a class="back" href="#login" data-act="logout">تسجيل الخروج</a><span class="bellw"><button class="bell" id="bell" aria-label="التنبيهات" aria-expanded="false"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 16V11a6 6 0 1112 0v5l2 2H4z"/><path d="M10 20a2 2 0 004 0"/></svg><span id="bellN" class="bn"></span></button><div class="npanel" id="npanel" hidden></div></span>
+    <div class="roles" role="group" aria-label="تبديل سريع بين الأدوار للعرض">
+      <button data-role="emp" aria-pressed="true">موظف</button>
+      <button data-role="mgr" aria-pressed="false">مدير مباشر</button>
+      <button data-role="haya" aria-pressed="false">مسؤول تطوير</button>
+    </div>
+  </div>
+  <main class="page" id="page"></main>
+  <p class="demo">بيانات تجريبية · مستودعات الشرق اسم تجريبي</p>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dt" aria-hidden="true">
+  <div class="dh"><div><span class="mut" id="dkind" style="color:#C3B8A6"></span><h2 id="dt"></h2></div><button class="x" id="dClose" aria-label="إغلاق">×</button></div>
+  <div class="dprog" id="dprog"><span></span><span></span><span></span></div>
+  <div class="db" id="dbody"></div>
+  <div class="df" id="dfoot"></div>
+</aside>
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mt"><div class="box" id="mbox"></div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"><span id="tmsg"></span><button id="tbtn" hidden>تراجع</button></div>
+
+<script>
+{
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const LV=['مبتدي','شاطر','سنع','دبره','ذيب'];
+
+/* ---------- shared drawing ---------- */
+function cren(n,max=5,sz=20,on='#A4643C',off='#E6DAC6'){let o='';for(let i=0;i<max;i++){const h=sz*(.55+i*.2);const k=(h/sz*6).toFixed(2),a=(h/sz*4).toFixed(2),b=(h/sz*2).toFixed(2);o+=`<svg width="${sz}" height="${h.toFixed(0)}" viewBox="0 0 6 ${k}" aria-hidden="true"><path d="M0 ${k}V${a}H1V${b}H2V0H4V${b}H5V${a}H6V${k}Z" fill="${i<n?on:off}"/></svg>`}return `<span class="cren" role="img" aria-label="المستوى: ${LV[n-1]||'—'}">${o}</span>`}
+function palmSVG(fr){
+  const st=stageOf(fr),H=[70,130,180,215][st],L=[40,56,68,78][st],n=[7,9,11,13][st];
+  const cx=150,base=318,top=base-H;
+  let o=`<svg viewBox="0 0 300 330" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><ellipse cx="150" cy="320" rx="${40+st*14}" ry="6" fill="rgba(0,0,0,.22)"/>`;
+  o+=`<path d="M${cx-8} ${base} Q${cx-5} ${top+H*.45} ${cx-3} ${top} L${cx+3} ${top} Q${cx+5} ${top+H*.45} ${cx+8} ${base}Z" fill="#8A5A35"/>`;
+  for(let y=base-8,k=0;y>top+6;y-=9,k++){const w=8-(base-y)/H*5;o+=`<path d="M${cx-w} ${y} L${cx} ${y-5} L${cx+w} ${y}" stroke="#6B4126" stroke-width="1.6" fill="none"/>`}
+  o+=`<g class="sway" style="transform-origin:${cx}px ${top}px">`;
+  const fronds=[];for(let i=0;i<n;i++){const t=i/(n-1);const ang=(-180+t*180)*Math.PI/180;fronds.push(ang)}
+  fronds.sort((p,q)=>Math.abs(Math.sin(q))-Math.abs(Math.sin(p)));
+  fronds.forEach((a,i)=>{const up=Math.abs(Math.sin(a));const len=L*(.75+.25*(1-up*.4));const ex=cx+Math.cos(a)*len,ey=top-up*len*.55+(1-up)*len*.45;const mx=cx+Math.cos(a)*len*.5,my=top-up*len*.6-len*.12;const g=i%2?'#4C8A5E':'#3E7652';
+    o+=`<path d="M${cx} ${top} Q${mx.toFixed(1)} ${(my-5).toFixed(1)} ${ex.toFixed(1)} ${ey.toFixed(1)} Q${mx.toFixed(1)} ${(my+5).toFixed(1)} ${cx} ${top+3}Z" fill="${g}"/><path d="M${cx} ${top+1} Q${mx.toFixed(1)} ${my.toFixed(1)} ${ex.toFixed(1)} ${ey.toFixed(1)}" stroke="#2F5E42" stroke-width="1" fill="none"/>`});
+  if(st===3)[-1,1].forEach(sd=>{for(let j=0;j<6;j++)o+=`<circle cx="${cx+sd*13+(j%2?3:-3)*sd}" cy="${top+9+j*4}" r="3.6" fill="${j%2?'#C0702F':'#D98B3E'}"/>`});
+  o+=`<circle cx="${cx}" cy="${top+1}" r="5" fill="#5B3A22"/>`;
+  return o+'</g></svg>';
+}
+const stageOf=fr=>fr<6?0:fr<14?1:fr<24?2:3;
+const STN=['فسيلة','نخلة صغيرة','نخلة','باسقة'];
+
+/* ---------- counters & reveal ---------- */
+function countUp(el){if(el.dataset.done)return;el.dataset.done=1;const to=+el.dataset.count,dec=+(el.dataset.dec||0),dur=reduce?0:1600,t0=performance.now();
+  const f=t=>{const p=Math.min(1,(t-t0)/(dur||1)),e=1-Math.pow(1-p,3),v=to*e;el.textContent=dec?v.toFixed(dec):Math.round(v).toLocaleString('en-US').replace(/,/g,to>=2000&&to<2100?'':',');if(p<1)requestAnimationFrame(f)};requestAnimationFrame(f)}
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');e.target.querySelectorAll?.('[data-count]').forEach(countUp);if(e.target.dataset.count)countUp(e.target);io.unobserve(e.target)}}),{threshold:.18});
+function observe(root=document){root.querySelectorAll('.reveal,[data-count]').forEach(el=>io.observe(el))}
+
+/* ---------- hero sky ---------- */
+function buildSky(){
+  let s='<defs><radialGradient id="moon" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#FFF4DC"/><stop offset="1" stop-color="#E3C48F"/></radialGradient><radialGradient id="halo"><stop offset="0" stop-color="rgba(227,196,143,.35)"/><stop offset="1" stop-color="rgba(227,196,143,0)"/></radialGradient><linearGradient id="skyg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0A1311"/><stop offset=".7" stop-color="#13261F"/><stop offset="1" stop-color="#2A3A2C"/></linearGradient></defs><rect width="1600" height="900" fill="url(#skyg)"/>';
+  let rnd=7;const R=()=>(rnd=(rnd*9301+49297)%233280)/233280;
+  s+='<g data-depth=".05">';for(let i=0;i<90;i++)s+=`<circle class="twinkle" style="animation-delay:${(R()*3).toFixed(2)}s" cx="${(R()*1600).toFixed(0)}" cy="${(R()*480).toFixed(0)}" r="${(R()*1.6+.4).toFixed(1)}" fill="#F1E7D6"/>`;s+='</g>';
+  s+='<g data-depth=".12"><circle cx="1180" cy="210" r="160" fill="url(#halo)"/><circle cx="1180" cy="210" r="62" fill="url(#moon)"/></g>';
+  s+='<g data-depth=".2"><path d="M0 640 Q300 560 620 610 T1200 590 T1600 600 V900 H0Z" fill="#1A2D25"/></g>';
+  const house=(x,w,h,fill,win,d)=>{let p=`<rect x="${x}" y="${900-h}" width="${w}" height="${h}" fill="${fill}"/>`;const c=Math.max(3,Math.round(w/46)),cw=w/c;
+    for(let i=0;i<c;i++){const cx=x+i*cw+cw*.15,ww=cw*.7,st=ww/6,hh=18;p+=`<path d="M${cx} ${900-h} v-${hh/3} h${st} v-${hh/3} h${st} v-${hh/3} h${2*st} v${hh/3} h${st} v${hh/3} h${st} v${hh/3}Z" fill="${fill}"/>`}
+    if(win){const n=Math.max(1,Math.round(w/120));for(let k=0;k<n;k++){const wx=x+(k+.5)*w/n,wy=900-h+40,t=14;for(let r=0;r<3;r++)for(let q=0;q<=r;q++){const tx=wx+(q-r/2)*(t+5),ty=wy+r*(t*.9+5);p+=`<polygon class="win" style="animation-delay:${(R()*4).toFixed(2)}s" points="${tx-t/2},${ty+t*.9} ${tx},${ty} ${tx+t/2},${ty+t*.9}" fill="#F3C86B"/>`}}}
+    return p};
+  s+='<g data-depth=".32">'+house(40,260,250,'#5E3A22',1)+house(330,180,190,'#5E3A22',0)+house(1260,300,260,'#5E3A22',1)+'</g>';
+  const palm=(x,h,sc,col)=>{let p=`<g transform="translate(${x} ${900-h}) scale(${sc})"><path d="M-5 ${h/sc} C-3 ${h/sc*.5} 4 30 2 0 L8 0 C10 30 6 ${h/sc*.5} 6 ${h/sc}Z" fill="${col}"/><g class="sway" style="transform-origin:5px 0">`;for(let i=0;i<11;i++){const a=(-170+i*16)*Math.PI/180,L=70;p+=`<path d="M5 0 Q${(5+Math.cos(a)*L*.5).toFixed(0)} ${(Math.sin(a)*L*.6-14).toFixed(0)} ${(5+Math.cos(a)*L).toFixed(0)} ${(Math.sin(a)*L*.6+L*.3).toFixed(0)} Q${(10+Math.cos(a)*L*.5).toFixed(0)} ${(Math.sin(a)*L*.6).toFixed(0)} 5 4Z" fill="${col}"/>`}return p+'</g></g>'};
+  s+='<g data-depth=".45">'+palm(560,330,1.15,'#0F1F19')+palm(1130,300,1,'#0F1F19')+palm(250,260,.85,'#0F1F19')+'</g>';
+  s+='<g data-depth=".6">'+house(-40,380,170,'#A4643C',1)+house(640,420,210,'#8E5431',1)+house(1100,560,150,'#A4643C',1)+'<rect x="820" y="770" width="60" height="130" fill="#2F6B60"/><polygon points="842,800 850,786 858,800" fill="#F1E7D6"/><polygon points="842,826 850,812 858,826" fill="#F1E7D6"/></g>';
+  $('#sky').innerHTML=s;
+}
+function parallax(){const y=scrollY,layers=$$('#sky [data-depth]');let mx=0,my=0;
+  const apply=()=>layers.forEach(g=>{const d=+g.dataset.depth;g.setAttribute('transform',`translate(${(mx*d*40).toFixed(1)} ${(scrollY*d*.6+my*d*20).toFixed(1)})`)});
+  addEventListener('scroll',()=>{if(!reduce)requestAnimationFrame(apply);$('#nav').classList.toggle('solid',scrollY>40);stepsProgress()},{passive:true});
+  addEventListener('pointermove',e=>{if(reduce)return;mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5;requestAnimationFrame(apply)},{passive:true});}
+function stepsProgress(){const el=$('#steps');if(!el||$('#landing').hidden)return;const r=el.getBoundingClientRect(),p=(innerHeight*.85-r.top)/(r.height+innerHeight*.35);const n=Math.max(0,Math.min(6,Math.floor(p*7)));$$('#steps .sc').forEach((s,i)=>{s.classList.toggle('on',i<n);s.querySelector('.step').classList.toggle('on',i<n)})}
+
+/* ---------- landing interactions ---------- */
+const MEAN=['الدال من «دبّر»، يعني تصرّف بحكمة.\nالدبره يعرف وش ناقصه ويروح يكمّله.\nوهذي خريطة الفجوة.','الباء من «باب».\nكل مهارة تثبتها تفتح لك باب.\nوالترقية الجاية باب ينفتح بسنعك.','الراء من «رُقي».\nخمس درجات من مبتدي إلى ذيب.\nوكل درجة ما تنكسب إلا بإثبات.','الهاء عينها كوّة نجدية.\nمنها تطل على السوق وتعرف وش المطلوب قبل غيرك.'];
+$('#word').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;$$('#word button').forEach(x=>x.setAttribute('aria-pressed',x===b));const m=$('#meaning');m.style.opacity=0;setTimeout(()=>{m.textContent=MEAN[b.dataset.i];m.style.opacity=1},220)});
+let lvl=3;
+function house(i,on,k=1,light=false){const W=60,H=56+i*30,top=12,c=on?'#A4643C':light?'#EADFCB':'#2A3F35',d=on?'#7E4626':light?'#DCCDB3':'#22352C',w=on?'#F3C86B':light?'#D6C6AA':'#3A5146';let o=`<svg width="${(W*k).toFixed(1)}" height="${((H+top+8)*k).toFixed(1)}" viewBox="0 0 ${W} ${H+top+8}" aria-hidden="true"><ellipse cx="${W/2}" cy="${H+top+4}" rx="${W/2}" ry="4" fill="rgba(0,0,0,.3)"/><rect x="2" y="${top}" width="${W-4}" height="${H}" fill="${c}"/><rect x="${W-12}" y="${top}" width="10" height="${H}" fill="${d}" opacity=".55"/>`;
+ for(let q=0;q<3;q++){const x=4+q*18,st=2.6;o+=`<path d="M${x} ${top} v-4 h${st} v-4 h${st} v-4 h${st*2} v4 h${st} v4 h${st} v4Z" fill="${c}"/>`}
+ for(let q=0;q<4;q++)o+=`<rect x="${6+q*14}" y="${top+8}" width="5" height="4" fill="${on?'#4A2B17':light?'#CDBB9C':'#1A2A23'}"/>`;
+ o+=`<rect x="2" y="${top+14}" width="${W-4}" height="2" fill="${d}"/>`;
+ const rows=Math.min(3,1+Math.floor(i/1.4));for(let r=0;r<rows;r++)for(let q=0;q<=r;q++){const t=7,cx=W/2+(q-r/2)*(t+3),cy=top+24+r*(t*.9+3);o+=`<polygon points="${cx-t/2},${cy+t*.9} ${cx},${cy} ${cx+t/2},${cy+t*.9}" fill="${w}"/>`}
+ if(i>=2){const y2=top+H*.62;for(let q=0;q<2;q++){const t=6,cx=W/2+(q?12:-12);o+=`<polygon points="${cx-t/2},${y2+t*.9} ${cx},${y2} ${cx+t/2},${y2+t*.9}" fill="${w}" opacity=".9"/>`}}
+ o+=`<rect x="${W/2-7}" y="${top+H-24}" width="14" height="24" rx="1" fill="${on?'#2F6B60':light?'#D2C1A4':'#1C2D26'}"/><polygon points="${W/2-3},${top+H-14} ${W/2},${top+H-19} ${W/2+3},${top+H-14}" fill="${on?'#F1E7D6':light?'#E9DECB':'#3A5146'}"/>`;
+ return o+'</svg>'}
+function drawLv(){let o='';for(let i=0;i<5;i++)o+=`<div class="lv">${house(i,i<lvl)}<span ${i===lvl-1?'style="color:#fff;font-weight:700"':''}>${LV[i]}</span></div>`;$('#levels').innerHTML=o;$('#lvname').textContent=LV[lvl-1];$('#lvDown').disabled=lvl<=1;$('#lvUp').disabled=lvl>=5;$('#lvUp').textContent=lvl>=5?'وصلت ذيب!':'أثبت تحدي'}
+$('#lvUp').onclick=()=>{if(lvl<5){lvl++;drawLv()}};$('#lvDown').onclick=()=>{if(lvl>1){lvl--;drawLv()}};
+function age(){const v=+$('#age').value;$('#ageV').textContent=v;const st=v<6?['#5FB38A','محدّثة','ممتاز، المهارة شغّالة.']:v<11?['#E0A93B','بتصدّي','قرّب موعد التجديد، وبننبّهك قبلها بشهر.']:['#D0643A','مستواها نزل','نزلت درجة من سنع إلى شاطر، وتحدي قصير يرجّعها.'];$('#hdot').style.background=st[0];$('#hdot').style.boxShadow=`0 0 0 6px ${st[0]}33`;$('#htxt').textContent=st[1];$('#hdesc').textContent=st[2]}
+$('#age').oninput=age;
+let frL=5;function drawPalmL(){$('#palmLand').innerHTML=palmSVG(frL);$('#frLand').textContent=frL;const s=stageOf(frL);$$('#stLand span').forEach((x,i)=>x.classList.toggle('on',i<=s));$('#growBtn').textContent=s===3?'ابدأ من جديد':'حل تحدي (+3 سعفات)'}
+$('#growBtn').onclick=()=>{frL=stageOf(frL)===3?5:frL+3;drawPalmL()};
+
+/* ================= APP DATA ================= */
+const DEPTS=['المستودع المركزي','التوزيع','خدمة العملاء'];
+const E=(n,g,nat,d,fr,cap,ai,inv,lead,xl,b360,perf,pot,hrs)=>({n,g,nat,d,fr,cap,ai,inv,lead,xl,b360,perf,pot,hrs});
+const EMP=[
+ E('عبدالله الشمري','m','sa',0,9,1,2,3,4,'y',4.2,2,3,46),E('ماجد القحطاني','m','sa',0,21,3,3,5,4,'g',4.4,3,3,52),E('فهد الدوسري','m','sa',0,12,1,2,2,3,'g',3.6,2,2,36),E('سلطان العتيبي','m','sa',0,6,1,1,3,2,'y',4.9,1,2,31),E('نورة السبيعي','f','sa',0,16,2,3,3,3,'g',4.1,3,2,41),E('خالد المطيري','m','sa',0,4,1,1,2,2,'y',3.4,1,1,27),E('عمر الحسيني','m','الأردن',0,14,2,2,3,3,'g',3.9,2,2,44),
+ E('ريم الحربي','f','sa',1,14,2,2,4,3,'g',4.0,2,3,40),E('تركي الغامدي','m','sa',1,8,1,2,3,2,'y',3.5,2,1,35),E('سارة الزهراني','f','sa',1,19,3,2,3,4,'g',4.6,3,3,47),E('بندر الشهري','m','sa',1,5,1,1,2,2,'g',3.3,1,2,30),E('لمى العمري','f','sa',1,11,2,3,3,3,'y',4.0,2,2,39),E('ناصر البقمي','m','sa',1,7,1,2,2,2,'g',3.6,2,1,37),E('أنيل كومار','m','الهند',1,10,1,2,3,2,'g',3.8,2,1,42),
+ E('منيرة العنزي','f','sa',2,10,1,2,3,3,'g',4.1,2,2,38),E('عبدالرحمن السهلي','m','sa',2,13,2,2,4,3,'y',3.9,2,2,41),E('أمل الرشيدي','f','sa',2,3,1,1,2,2,'g',3.7,1,2,33),E('يوسف الجهني','m','sa',2,9,1,3,3,2,'g',3.8,2,2,36),E('هند الشمراني','f','sa',2,15,2,2,3,3,'y',4.2,3,2,40),E('دانة المالكي','f','sa',2,6,1,1,3,2,'g',3.5,1,2,34),E('ماريا سانتوس','f','الفلبين',2,8,1,2,2,2,'g',3.6,2,1,39)];
+const SK={cap:{n:'تخطيط الطاقة الاستيعابية',t:'فنية',req:3},ai:{n:'تقارير الأداء بالذكاء الاصطناعي',t:'فنية',req:3},inv:{n:'إدارة المخزون',t:'فنية',req:4},lead:{n:'قيادة فريق المستودع',t:'قيادية',req:3},xl:{n:'Excel',t:'فنية',req:3}};
+const PROG={cap:{n:'تخطيط الطاقة الاستيعابية',req:3,p:'برنامج تخطيط الطاقة (أسبوعين) + تحديين',cost:3200,hadaf:.7},ai:{n:'تقارير الأداء بالذكاء الاصطناعي',req:3,p:'ورشة داخلية يقدمها ماجد + تحدي عملي',cost:0,hadaf:0},inv:{n:'إدارة المخزون',req:4,p:'دورة دروب المجانية + تحدي جرد',cost:150,hadaf:0},xl:{n:'Excel (تجديد)',req:0,p:'تحدي تجديد 10 دقائق',cost:0,hadaf:0}};
+const BUDGET={total:120000};
+const DONE=[{n:'السلامة والجودة في المستودع',cost:24000,d:0,kpi:['أخطاء التجهيز','3.9%','2.8%']},{n:'ورشة الذكاء الاصطناعي · الدفعة الأولى',cost:13500,d:1,kpi:['الاستخدام الأسبوعي للذكاء الاصطناعي','18%','41%']},{n:'شهادات Excel المتقدم',cost:9000,d:2,kpi:['وقت إعداد التقارير','70 د','45 د']}];
+const DEPTB=[{last:31000,impact:'عالي',need:9},{last:21500,impact:'متوسط',need:11},{last:15000,impact:'منخفض',need:10}];
+const spentDone=DONE.reduce((a,p)=>a+p.cost,0);
+const isSa=e=>e.nat==='sa';
+const sar=v=>Math.round(v).toLocaleString('en-US')+' ر.س';
+const esc=t=>String(t??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ================= STATE ================= */
+const S={dis:new Set(),logged:false,names:{emp:'عبدالله',mgr:'محمد',haya:'هيا'},role:'emp',tab:{emp:'path',mgr:'team',haya:'talent'},
+ step:0,excel:'y',fr:9,leave:false,celebrate:null,undo:null,t0:0,openSk:{},openGap:{},plans:[],builder:null,notifOpen:false,newUC:false,
+ lv:{ai:2,inv:3,cap:1},attempts:0,rep:{status:'idle',note:''},cert:{status:'idle'},queue:[],
+ W:{cap:30,ai:25,inv:20,lead:15,xl:10},Wdraft:null,Wpending:null,audit:[{who:'هيا',what:'اعتماد ملف جدارات «مخطط عمليات»',when:'قبل شهرين'},{who:'لجنة الموارد البشرية',what:'إضافة جدارة «تقارير الأداء بالذكاء الاصطناعي» بوزن 25%',when:'قبل 3 شهور'}],
+ majed:{interview:false,status:'open',reason:''},appeals:[],shadows:{},rot:{},applied:{},positions:{},exc:{status:'pending',votes:{}},mentorBook:false,ws:{},content:{},deptAdj:{},
+ hist:[{who:'ماجد القحطاني',what:'تحدي جرد ذكي · إدارة المخزون',dec:'اعتماد تلقائي «ذيب» (8 من 8)',when:'قبل 5 أيام',ok:1},{who:'نورة السبيعي',what:'تقرير الأداء بالذكاء الاصطناعي',dec:'اعتمد «سنع»',when:'قبل أسبوعين',ok:1},{who:'فهد الدوسري',what:'شهادة خارجية · تخطيط الطاقة',dec:'رجّعها: معرفة نظرية بدون تطبيق',when:'قبل 3 أسابيع',ok:0},{who:'سلطان العتيبي',what:'تحدي تجديد Excel',dec:'تجديد تلقائي (3 من 3)',when:'قبل شهر',ok:1}],
+ gf:{g:'',nat:'',d:'',lv:'',rd:''}};
+const lvOf=(i,k)=>i===0&&S.lv[k]!=null?S.lv[k]:EMP[i][k];
+const readyOf=i=>{let t=0,w=0;for(const k in S.W){const req=SK[k].req;const L=k==='xl'?((i===0?S.excel:EMP[i].xl)==='g'?3:2):lvOf(i,k);t+=S.W[k]*Math.min(1,L/req);w+=S.W[k]}return Math.round(t/w*100)};
+const ready=()=>readyOf(0);
+const enm=i=>i===0?S.names.emp+' الشمري':EMP[i].n;
+const missing=k=>EMP.map((e,i)=>i).filter(i=>k==='xl'?(i===0?S.excel==='y':EMP[i].xl==='y'):lvOf(i,k)<PROG[k].req);
+const passF=(i,f,k)=>{const e=EMP[i];const rd=readyOf(i);return (!f.g||e.g===f.g)&&(!f.nat||(f.nat==='sa'?isSa(e):!isSa(e)))&&(f.d===''||e.d===+f.d)&&(!f.lv||k==='xl'||lvOf(i,k)===+f.lv)&&(!f.rd||(f.rd==='l'?rd<40:f.rd==='m'?rd>=40&&rd<60:rd>=60))};
+const prio=(a,b)=>(isSa(EMP[b])-isSa(EMP[a]))||(readyOf(a)-readyOf(b));
+const usedBudget=()=>spentDone+S.plans.filter(p=>p.st==='ok').reduce((a,p)=>a+p.net,0);
+const GRP=[['جاهز الآن',80,'#2F6B60'],['قريب',60,'#C9A24A'],['يحتاج تطوير',40,'#C3743F'],['بداية الطريق',0,'#9A8F80']];
+const grpOf=v=>GRP.findIndex(g=>v>=g[1]);
+const loadOf=i=>Math.round(EMP[i].hrs/40*100);
+const ICN={chev:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>',ok:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L19 7"/></svg>',no:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',warn:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 8v5M12 16.5v.5"/><path d="M10.3 3.9L2 18a2 2 0 001.7 3h16.6a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg>',snow:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M4 6l16 12M20 6L4 18"/></svg>'};
+const frond=()=>`<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21 Q9 9 21 3 Q15 15 3 21Z" fill="#4C8A5E"/><path d="M3 21 Q12 12 21 3" stroke="#2F5E42" stroke-width="1.2" fill="none"/></svg>`;
+const fronds=n=>`<span class="frs" role="img" aria-label="${n} سعفات">${Array.from({length:n},frond).join('')}</span>`;
+function houses(n,req,light=true){let o='';for(let i=0;i<5;i++)o+=`<span class="hm ${i===req-1?'req':''}">${house(i,i<n,.34,light)}</span>`;return `<span class="hrow" role="img" aria-label="المستوى ${LV[n-1]||'—'}، المطلوب ${LV[req-1]||'—'}">${o}</span>`}
+function ring(v){const C=2*Math.PI*62;return `<div class="ring" role="img" aria-label="جاهزية ${v}%"><svg width="150" height="150"><circle class="bg" cx="75" cy="75" r="62"/><circle class="fg" cx="75" cy="75" r="62" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${C.toFixed(1)}" data-to="${(C*(1-v/100)).toFixed(1)}"/></svg><div class="v"><div><span data-count="${v}">0</span>%<small>جاهز للترقية</small></div></div></div>`}
+const nm=t=>t.replaceAll('عبدالله',S.names.emp).replaceAll('محمد',S.names.mgr).replaceAll('هيا',S.names.haya);
+const tabs=(role,list)=>`<div class="tabs" role="tablist" aria-label="أقسام الصفحة">${list.map(([k,t])=>`<button role="tab" aria-selected="${S.tab[role]===k}" data-tab="${k}">${t}</button>`).join('')}</div>`;
+const critList=(C,r)=>`<div class="crits">${C.map((c,i)=>`<div class="crit ${r?(r[i]?'p':'f'):''}"><span class="ci">${r?(r[i]?ICN.ok:ICN.no):i+1}</span><div><b>${c[0]}</b><span class="mut">${c[1]}</span></div></div>`).join('')}</div>`;
+const bar=(v,col)=>`<div class="prog"><i style="width:0;${col?'background:'+col:''}" data-w="${Math.min(100,v)}"></i></div>`;
+
+/* ================= REPORT CHALLENGE ================= */
+const WEEK=[['السبت',520,2.4,30],['الأحد',560,2.5,32],['الإثنين',590,2.6,34],['الثلاثاء',610,2.7,35],['الأربعاء',640,2.9,38],['الخميس',780,3.6,52],['الجمعة',420,2.3,28]];
+const CRIT=[['يغطي المؤشرات الثلاثة','الطلبات، وأخطاء التجهيز، والتأخير'],['ثلاث ملاحظات مرقّمة','كل ملاحظة في سطر لحالها'],['المجاميع صحيحة','4,120 طلب، 2.8% أخطاء، 37 دقيقة، وبدون خطأ الأداة'],['يحدد يوم الذروة صح','من الجدول اليومي'],['يقارن بالأسبوع الماضي','نسبة التغيّر في الطلبات (3,887 طلب الأسبوع الماضي)'],['توصية قابلة للقياس','فيها رقم أو هدف تقدر تتابعه'],['البيانات محمية','ما فيه أسماء ولا هويات ولا جوالات'],['تحقق من مخرجات الأداة','يذكر وش راجع وبأي رقم']];
+function readable(t){if(!t||t.length<20)return false;const bad=(t.match(/[\u0000-\u0008\u000E-\u001F\uFFFD]/g)||[]).length;return bad/t.length<.02}
+function analyze(text,verify){const D=s=>(s||'').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d));const t=D(text),v=D(verify);
+ const lines=t.split(/\n/).filter(l=>/^\s*(\d+\s*[\.\-\)ـ]|[-•*])/.test(l)).length;const nums=[/4[,،]?120/.test(t),/2[\.٫]8/.test(t),/\b37\b/.test(t)].filter(Boolean).length;const rec=(t.match(/(التوصية|توصية|نوصي|أوصي|نقترح)[^\n]*/)||[''])[0];
+ const r=[/طلب/.test(t)&&/(خطأ|أخطاء|اخطاء)/.test(t)&&/تأخ/.test(t),lines>=3,nums>=3&&!/3[\.٫]4/.test(t),/الخميس/.test(t),/6\s*[%٪]/.test(t)||/(3[,،]?887)/.test(t),rec.length>0&&/\d/.test(rec),!/\b\d{10}\b/.test(t)&&!/05\d{8}/.test(t)&&!/(رقم الهوية|اسم الموظف)/.test(t),v.trim().length>=30&&/\d/.test(v)];
+ const score=r.filter(Boolean).length;return {r,score,level:score>=7?3:2,ok:score>=5&&t.trim().length>=120}}
+const SAMPLE=`تقرير أداء المستودع المركزي · الأسبوع 46
+1. الطلبات الصادرة 4,120 طلب، بزيادة 6% عن الأسبوع الماضي (3,887).
+2. نسبة أخطاء التجهيز 2.8%، وأعلاها يوم الخميس 3.6% في منطقة التبريد.
+3. متوسط التأخير 37 دقيقة، ويوم الخميس هو الذروة بـ780 طلب وتأخير 52 دقيقة.
+التوصية: نضيف مجهّزين يوم الخميس من 3 إلى 7 العصر، وهدفنا ننزل تأخير الخميس تحت 40 دقيقة خلال أسبوعين.`;
+const SAMPLEV='الأداة حسبت نسبة الأخطاء 3.4% لأنها أخذت متوسط بسيط، فرجعت للنظام وحسبتها مرجّحة بعدد الطلبات وطلعت 2.8%.';
+
+/* ================= CERT PATH ================= */
+const CQ={inv:[['صنف يطلع منه 40 حبة يوميًا، ومدة التوريد 5 أيام، ومخزون الأمان 60. عند كم حبة تطلب؟',['200','260','300'],1],['طلع فرق جرد 3% في صنف عالي القيمة. وش أول خطوة؟',['تعدّل الرصيد مباشرة','تراجع حركات الصنف الأخيرة وتعيد العد','تتجاهله لأنه أقل من 5%'],1],['أي فئة في تصنيف ABC تحتاج جرد دوري أكثر؟',['A','B','C'],0],['مخزون بطيء الحركة من 3 شهور، وش القرار الأنسب؟',['تطلب كمية أكبر عشان الخصم','تحلل الطلب وتقترح تخفيض أو نقل','تتركه لين يطلع'],1]],
+ cap:[['المستودع يجهّز 90 طلب في الساعة بـ6 مجهزين. الخميس متوقع 780 طلب خلال 7 ساعات. كم مجهز تحتاج تقريبًا؟',['6','8','10'],1],['نسبة الاستغلال 95% طول الأسبوع. وش الخطر؟',['ما فيه مرونة للذروة','هذا أفضل وضع','المستودع فاضي'],0],['أي مؤشر يقيس كفاءة استخدام المساحة؟',['نسبة إشغال المواقع','عدد الموظفين','ساعات الدوام'],0],['توقعت 600 طلب وجا 780. وش تسوي في توقع الأسبوع الجاي؟',['تثبّت 600','تعيد التوقع بإضافة اتجاه آخر 4 أسابيع','تزيد 50% احتياط'],1]]};
+const certResult=(k,sc)=>{const cur=S.lv[k];if(sc<=2)return {lv:cur,label:'معرفة نظرية',desc:'الشهادة تثبت إنك درست، لكن التحدي ما أثبت التطبيق'};const lv=k==='inv'?(sc===4?4:3):(sc===4?3:2);return {lv:Math.max(cur,lv),label:sc===4?'مهارة عملية مثبتة':'تطبيق جزئي',desc:sc===4?'جاوب كل المواقف العملية صح':'فهم أغلب المواقف، وباقي له تطبيق'}};
+
+/* ================= EMPLOYEE ================= */
+const V={};
+const skList=()=>{const inPlan=S.plans.some(p=>p.k==='cap'&&p.st!=='rej'&&p.sel.includes(0));return [
+ {id:'ai',c:S.lv.ai,h:'g',d:S.rep.status==='ok'?'اليوم':'قبل 4 شهور',plan:S.lv.ai>=3?'وصلت المطلوب.':'تثبتها بتحدي التقرير الأسبوعي من المسار 1.'},
+ {id:'cap',c:S.lv.cap,h:'g',d:S.cert.status==='ok'&&S.cert.k==='cap'?'اليوم':'قبل 6 شهور',plan:S.lv.cap>=3?'وصلت المطلوب.':inPlan?'هيا أضافتك لخطة تطوير هالمهارة، ويوصلك موعد البداية.':'ناقصك درجتين: برنامج مدعوم من هدف، أو أضف شهادتك وأثبتها.'},
+ {id:'inv',c:S.lv.inv,h:'g',d:S.cert.status==='ok'&&S.cert.k==='inv'?'اليوم':'قبل 3 أسابيع',plan:S.lv.inv>=4?'وصلت المطلوب.':'ناقصك درجة. مرشدك ماجد «ذيب» فيها، احجز جلسة من تبويب «التعلّم».'},
+ {id:'lead',c:4,h:'g',d:'تقييم 360 قبل شهر',plan:'جدارة قيادية: تنقاس بتقييم 360 من زملائك، مو بتحدي.'},
+ {id:'xl',c:3,h:S.excel,d:S.excel==='g'?'اليوم':'قبل 11 شهر',plan:S.excel==='g'?'تجددت. التذكير الجاي بعد سنة.':'ما استخدمتها من 11 شهر، ومستواها ينزل بعد 12 يوم.'}].map(s=>({...s,...SK[s.id],w:S.W[s.id]}))};
+V.emp=()=>tabs('emp',[['path','مساري'],['perf','أدائي'],['learn','التعلّم'],['jobs','فرص داخلية']])+({path:empPath,perf:empPerf,learn:empLearn,jobs:empJobs})[S.tab.emp]();
+function empPath(){const rs=S.rep.status,cs=S.cert.status;const stg=stageOf(S.fr),nextAt=[6,14,24][stg];const rem=skList().filter(s=>s.c<s.req).length;
+ const nx=rs==='sent'?['بانتظار اعتماد محمد','تقريرك عند محمد يراجعه.',0]:rs==='edit'?['عدّل تقريرك وسلّمه','محمد رجّعه لك بملاحظة، تلقاها فوق.',0]:rs==='ok'?['تقرير الأداء: انعتمد','تابع المهارات الناقصة تحت.',0]:['تحدي: تقرير أداء المستودع الأسبوعي','بيانات أسبوع حقيقية، وتقريبًا 40 دقيقة.',1];
+ return `
+ ${rs==='edit'?`<div class="banner y reveal"><b>محمد طلب تعديل:</b><span style="flex:1">${esc(S.rep.note)||'راجع المجاميع.'}</span><button class="btn dark" data-act="resubmit" style="min-height:44px">عدّل وسلّم</button></div>`:''}
+ ${cs==='back'?`<div class="banner y reveal"><b>شهادتك:</b><span style="flex:1">${esc(S.cert.note)}</span></div>`:''}
+ <div class="g2">
+  <div class="card night reveal hello">
+   <div class="row between" style="align-items:center;gap:20px"><div style="flex:1 1 260px"><span class="mut">مشرف مستودع · المستودع المركزي</span><h1>حياك عبدالله</h1><p style="color:#D9CFBE;margin:0">${rem?`باقي لك ${['','مهارة وحدة','مهارتين','ثلاث مهارات','أربع مهارات'][rem]} وتكون جاهز للترقية.`:'أنت جاهز للترقية!'}</p></div>${ring(ready())}</div>
+   <div class="paths">
+    <div class="path"><span class="chip" style="background:var(--teen);color:#fff">المسار 1 · تحدي من شغلك</span><h3>${nx[0]}</h3><span class="mut">${nx[1]}</span>${nx[2]?`<button class="btn" data-act="openCase">ابدأ التحدي</button><span class="mut small">المحاولة ${S.attempts+1} من 2 هالشهر · لو الدليل كامل ينعتمد تلقائيًا</span>`:''}</div>
+    <div class="path"><span class="chip" style="background:var(--door);color:#fff">المسار 2 · شهادة خارجية</span><h3>${cs==='sent'?'شهادتك عند محمد':cs==='ok'?'شهادتك انحسبت':'عندك شهادة؟'}</h3><span class="mut">${cs==='sent'?'أثبتها بالتحدي، وتنتظر اعتماده.':cs==='ok'?`${SK[S.cert.k].n}: ${LV[S.lv[S.cert.k]-1]}`:'ارفعها، وحل مواقف عملية تثبت إنك تطبّقها.'}</span>${cs==='idle'||cs==='back'?'<button class="btn sand" data-act="openCert">أضف شهادة</button>':''}</div>
+   </div>
+  </div>
+  <div class="card palmcard reveal ${S.leave?'frozen':''}">
+   <div class="row between"><h3 style="font-size:20px">نخلتك</h3><span class="chip ${S.leave?'ice':'g'}">${S.leave?ICN.snow+' مجمّدة · في إجازة':STN[stg]}</span></div>
+   <div class="pv">${palmSVG(S.fr)}</div>
+   <div class="row between"><span class="fr"><span data-count="${S.fr}">0</span> <small style="font-size:16px">سعفة</small></span><span class="mut">${S.leave?'عمر مهاراتك متوقف لين ترجع':stg<3?`باقي ${nextAt-S.fr} وتصير ${STN[stg+1]}`:'نخلتك باسقة'}</span></div>
+   ${bar(S.fr/24*100)}
+   <div class="legend"><div>${fronds(3)}<span>تحدي معتمد</span></div><div>${fronds(1)}<span>تجديد مهارة</span></div><div>${fronds(5)}<span>مهارة توصل المطلوب</span></div></div>
+   <button class="linkbtn" data-act="leave">${S.leave?'محاكاة: رجعت من الإجازة':'محاكاة: بدأت إجازتي (يتفعّل تلقائيًا من نظام الإجازات)'}</button>
+  </div>
+ </div>
+ <div class="card reveal">
+  <div class="row between"><h2 style="font-size:24px">جداراتي وطريقي للترقية</h2><span class="mut">الوزن = أهمية الجدارة في الوظيفة الجاية</span></div>
+  <div class="ladder"><div class="rung now"><b>مشرف مستودع</b>وظيفتك الحالية</div><span class="arrow" aria-hidden="true">←</span><div class="rung goal"><b>مخطط عمليات</b>رشّحتك لها هيا · ${ready()}% جاهز</div></div>
+  <div class="hlegend mut"><span class="hm"><svg width="10" height="10"><circle cx="5" cy="5" r="4" fill="#E3C48F"/></svg></span> النقطة تحت البيت = المستوى المطلوب</div>
+  ${skList().map(s=>`<div class="skill ${S.openSk[s.id]?'open':''}"><button data-act="toggle" data-id="${s.id}" aria-expanded="${!!S.openSk[s.id]}"><span class="nm"><b>${s.n}</b><span class="mut">${s.t} · وزنها ${s.w}% · ${s.d}</span></span>${houses(s.c,s.req)}<span class="req mut">${LV[s.c-1]} · المطلوب ${LV[s.req-1]}</span><span class="row" style="gap:8px;justify-content:flex-end">${s.c>=s.req?(s.h==='y'?'<span class="chip y">بتصدّي</span>':'<span class="chip g">جاهزة</span>'):`<span class="chip">ناقصك ${s.req-s.c===1?'درجة':'درجتين'}</span>`}<span class="chev">${ICN.chev}</span></span></button><div class="more"><div><div class="in"><span>${s.plan}</span>${s.id==='xl'&&S.excel==='y'?`<div class="auto"><b>تذكير تلقائي ${S.leave?'متوقف أثناء الإجازة':'مفعّل'}</b><span>نذكّرك قبل 30 يوم وقبل 7 أيام من نزول المستوى.</span></div><div><button class="btn sand" data-act="renew" style="min-height:44px">ابدأ تحدي التجديد (3 أسئلة)</button></div>`:''}</div></div></div></div>`).join('')}
+ </div>`}
+function empPerf(){const k=[['أخطاء التجهيز في ورديتك','2.6%','الهدف 2.5%',90],['متوسط التأخير','34 د','الهدف 30 د',82],['دقة الجرد','98.6%','الهدف 99%',96],['الالتزام بالمحافظة على المهارات',S.excel==='g'?'100%':'80%','يدخل في تقييمك السنوي',S.excel==='g'?100:80]];
+ return `<div class="card night reveal hello"><span class="mut">إدارة الأداء</span><h1 style="font-size:32px">أداؤك هالربع</h1><p style="color:#D9CFBE;margin:0">مؤشراتك مربوطة بأهداف قسمك، والمحافظة على مهاراتك جزء من تقييمك السنوي.</p></div>
+ <div class="g4">${k.map(([n,v,t,p])=>`<div class="card reveal"><span class="mut">${n}</span><div class="big" style="margin:8px 0;color:var(--teenD)">${v}</div>${bar(p,p>=95?'var(--ok)':'')}<span class="mut">${t}</span></div>`).join('')}</div>
+ <div class="g2"><div class="card reveal"><div class="row between"><h3 style="font-size:20px">تقييم 360 · الجدارات السلوكية</h3><span class="chip g">متّسق مع أدلتك</span></div><p class="mut">النظام اختار 4 زملاء اشتغلوا معك أكثر شي هالربع (من الورديات والمهام المشتركة)، وما تقدر تشوف مين قيّم وش.</p>
+  <div class="bars">${[['التواصل',4.2,'«يوضح المطلوب قبل بداية الوردية»'],['العمل الجماعي',4.5,'«يغطي الناقص وقت الذروة»'],['حل المشكلات',3.9,'«يحتاج يرجع للبيانات أكثر قبل القرار»']].map(([n,v,q])=>`<div><div class="l"><span>${n}</span><b>${v} من 5</b></div>${bar(v/5*100)}<span class="mut small">${q}</span></div>`).join('')}</div></div>
+  <div class="card reveal"><h3 style="font-size:20px">ليش 360 صادق هنا؟</h3><div class="crits">${[['المقيّمين يختارهم النظام','حسب الاحتكاك الفعلي في الشغل، مو أنت'],['معدّل لثلاثة أشخاص أو أكثر','وما يطلع اسم أي مقيّم'],['أسئلة عن سلوك محدد','وأي تقييم متطرف لازم معه مثال'],['مقارنة بالأدلة','لو التقييم عالي والأداء ضعيف، يطلع تنبيه لمديرك']].map(c=>`<div class="crit p"><span class="ci">${ICN.ok}</span><div><b>${c[0]}</b><span class="mut">${c[1]}</span></div></div>`).join('')}</div></div></div>`}
+function empLearn(){const ws=[['wms','نظام إدارة المستودع المتقدم','يقدمها ماجد القحطاني · الأحد 10 ص'],['cold','تحميل التبريد بأمان','يقدمها عمر الحسيني · الثلاثاء 1 م'],['ai','تقارير الأداء بالذكاء الاصطناعي','تقدمها نورة السبيعي · الخميس 11 ص']];const ct=[['c1','دليل إجراءات الجرد الدوري','PDF · 12 صفحة · رفعته الشركة'],['c2','فيديو: ترتيب الرفوف حسب ABC','8 دقائق · رفعه ماجد'],['c3','قوالب تقرير الأداء الأسبوعي','ملف Excel · رفعته هيا']];
+ return `<div class="card night reveal hello"><span class="mut">الشركة تعلّم نفسها</span><h1 style="font-size:32px">تعلّم من أهل الدبره</h1><p style="color:#D9CFBE;margin:0">بدون ميزانية: مرشدك، وورش يقدمها خبراء الشركة، ومحتوى رفعته شركتك. وكل تعلّم تثبته بتحدي.</p></div>
+ <div class="g2"><div class="card reveal"><h3 style="font-size:20px">مرشدك</h3><div class="mentor"><div class="av2">م</div><div><b>ماجد القحطاني</b><span class="mut">«ذيب» في إدارة المخزون · مرشد المستودع المركزي</span></div></div><p class="mut">اختاره النظام لأنه الأعلى في المهارة اللي تنقصك، ومن نفس قسمك.</p>${S.mentorBook?'<span class="chip g">حجزت جلسة الأحد 2 م</span>':'<button class="btn" data-act="mentor">احجز جلسة 30 دقيقة</button>'}</div>
+ <div class="card reveal"><h3 style="font-size:20px">ورش داخلية</h3>${ws.map(([k,n,d])=>`<div class="nmrow" style="margin-top:8px"><span><b>${n}</b><span class="mut">${d}</span></span>${S.ws[k]?'<span class="chip g">سجّلت</span>':`<button class="btn ghost" data-act="ws" data-k="${k}" style="min-height:40px;color:var(--ink)">سجّل</button>`}</div>`).join('')}<p class="mut small" style="margin-top:8px">مقدّم الورشة ياخذ 5 سعفات، وتنحسب له جدارة «نقل المعرفة».</p></div></div>
+ <div class="card reveal"><h3 style="font-size:20px">محتوى من شركتك</h3><div class="uc">${ct.map(([k,n,d])=>`<div><b>${n}</b><span class="mut">${d}</span><button class="linkbtn" data-act="content" data-k="${k}">${S.content[k]?'✓ خلّصته':'علّم إنك خلّصته'}</button></div>`).join('')}</div><p class="mut small" style="margin-top:8px">المحتوى يساعدك تتعلم، بس المستوى ما يرتفع إلا بتحدي.</p></div>`}
+function empJobs(){const J=[['p1','منسّق تخطيط عمليات','العمليات · مهمة مؤقتة 3 شهور',Math.min(99,ready()+6),'تخطيط الطاقة، تقارير البيانات'],['p2','مدرّب Excel داخلي','الموارد البشرية · 4 ساعات أسبوعيًا',S.excel==='g'?88:72,'Excel، التواصل'],['p3','مصوّر محتوى','التسويق · مهمة مؤقتة',18,'التصوير، المونتاج']];
+ return `<div class="card night reveal hello"><span class="mut">سوق المواهب الداخلي</span><h1 style="font-size:32px">فرص داخل شركتك</h1><p style="color:#D9CFBE;margin:0">قبل ما تدوّر الشركة برّا، تدوّر فيك. التطابق محسوب من مهاراتك المثبتة بس.</p></div>
+ <div class="card reveal">${J.map(([k,n,d,m,s])=>`<div class="job"><div><b>${n}</b><span class="mut">${d} · المهارات: ${s}</span></div><div class="mt"><b style="color:${m>=70?'var(--ok)':m>=40?'var(--warn)':'var(--mut)'}">${m}%</b><span class="mut small">تطابق</span></div>${S.applied[k]?'<span class="chip g">قدّمت · عند هيا</span>':m>=40?`<button class="btn" data-act="apply" data-k="${k}" style="min-height:44px">قدّم</button>`:'<span class="chip">التطابق ضعيف</span>'}</div>`).join('')}<p class="mut small" style="margin-top:10px">التجربة مؤقتة أول، ومديرك الحالي ما يقدر يمنعك بدون سبب مكتوب.</p></div>`}
+
+/* ================= MANAGER ================= */
+const team=()=>EMP.map((e,i)=>i).filter(i=>EMP[i].d===0);
+V.mgr=()=>tabs('mgr',[['team','فريقي'],['perf','الأداء والعبء'],['know','المعرفة الحرجة'],['budget','الخطط والميزانية']])+({team:mgrTeam,perf:mgrPerf,know:mgrKnow,budget:mgrBudget})[S.tab.mgr]();
+function garden(){const T=team();let st='';let rnd=3;const R=()=>(rnd=(rnd*9301+49297)%233280)/233280;for(let i=0;i<55;i++)st+=`<circle class="twinkle" style="animation-delay:${(R()*3).toFixed(2)}s" cx="${(R()*1000).toFixed(0)}" cy="${(R()*150).toFixed(0)}" r="${(R()*1.5+.4).toFixed(1)}" fill="#F1E7D6"/>`;
+ return `<div class="garden" id="garden" aria-label="حديقة الفريق"><svg class="gsky" viewBox="0 0 1000 230" preserveAspectRatio="none" aria-hidden="true"><g data-gd=".3">${st}</g><circle cx="90" cy="40" r="18" fill="#F3DFB2" data-gd=".5"/></svg><div class="gtitle"><b>حديقة فريقك</b><span>كل نخلة موظف. اضغط على أي نخلة لملخص مهاراته.</span></div><div class="gpalms">${T.map(i=>{const f=i===0?S.fr:EMP[i].fr;return `<button class="gp" data-act="palmInfo" data-i="${i}"><div class="gs">${palmSVG(f)}</div><b>${i===0?S.names.emp:EMP[i].n.split(' ')[0]}</b><span>${f} سعفة</span><span class="tip">${enm(i)} · ${STN[stageOf(f)]}</span></button>`}).join('')}</div></div>`}
+function colorStrip(ids){const c=[0,0,0,0];ids.forEach(i=>c[grpOf(readyOf(i))]++);return `<div class="cstrip">${c.map((n,g)=>n?`<span style="flex:${n};background:${GRP[g][2]}" title="${GRP[g][0]}"></span>`:'').join('')}</div><div class="clegend">${GRP.map((g,j)=>`<span><i style="background:${g[2]}"></i>${g[0]} <b>${c[j]}</b></span>`).join('')}</div>`}
+function mgrTeam(){const pend=S.queue.filter(q=>q.st==='pending');const T=team();return `
+ <div class="card night reveal hello mhero"><div class="row between" style="align-items:flex-end;gap:16px"><div><span class="mut">المدير المباشر · المستودع المركزي · ${T.length} موظفين</span><h1>حياك محمد</h1><p style="color:#D9CFBE;margin:0">${pend.length?`عندك ${pend.length===1?'طلب واحد':pend.length+' طلبات'} ينتظرك.`:'ما عندك طلبات معلّقة.'} والمهارات الفنية ذات الدليل الكامل ينعتمد أغلبها تلقائيًا.</p></div></div>${garden()}</div>
+ <div class="g2">
+  <div class="card reveal"><h2 style="font-size:22px;margin-bottom:12px">طلبات الاعتماد</h2>${pend.length?pend.map(reqCard).join('<hr class="sep">'):`<div class="empty"><b style="display:block;font-size:18px">ما فيه طلبات الحين</b><p class="mut">لما يسلّم أحد من فريقك شهادة أو تحدي يحتاج رأيك، يطلع هنا.</p><button class="btn dark" data-act="goEmp">جرّب كأنك عبدالله</button></div>`}</div>
+  <div class="card reveal"><h3 style="font-size:20px">جاهزية فريقك</h3>${colorStrip(T)}<div class="bars">${T.map(i=>{const v=readyOf(i),g=grpOf(v);return `<div><div class="l"><span><i class="gdot" style="background:${GRP[g][2]}"></i>${enm(i)}</span><b>${v}%</b></div>${bar(v,GRP[g][2])}</div>`}).join('')}</div></div>
+ </div>
+ <div class="card reveal">${promoFile()}</div>
+ <div class="card reveal"><div class="row between"><h3 style="font-size:20px">تنبيه فجوة</h3><span class="chip y">${ICN.warn} كشف التحيز</span></div><p style="margin:8px 0">سلطان العتيبي تقييمه في 360 عالي جدًا (4.9 من 5)، لكن أدلته الفنية ضعيفة (جاهزية ${readyOf(3)}%). ممكن يكون محبوب أكثر من إنه جاهز. أي ترشيح له يحتاج تحدي إضافي.</p></div>
+ <div class="card reveal"><div class="row between"><h2 style="font-size:22px">سجل القرارات</h2><span class="mut">كل قرار ينحفظ</span></div><div class="hist">${S.hist.map(h=>`<div class="hi"><span class="hd ${h.ok?'ok':'no'}">${h.ok?ICN.ok:ICN.no}</span><div><b>${h.who}</b><span class="mut">${h.what}</span></div><span>${h.dec}</span><span class="mut">${h.when}</span></div>`).join('')}</div></div>`}
+function promoFile(){const m=S.majed,rd=readyOf(1);const checks=[['أدلة الجدارات الفنية','4 تحديات معتمدة، آخرها «ذيب» في المخزون',true],['تقييم 360','4.4 من 5 من 5 زملاء، ومتّسق مع الأدلة',true],['كشف التحيز','ما فيه فجوة بين التقييم والأداء',true],['مقابلة الدفاع','يشرح لك تحدي حلّه عشان تتأكد إنه حلّه بنفسه',m.interview]];const all=checks.every(c=>c[2]);
+ return `<div class="row between"><div><h2 style="font-size:22px">ملف ترقية · ماجد القحطاني</h2><span class="mut">مشرف مستودع ← مخطط عمليات · جاهزية ${rd}%</span></div><span class="chip ${m.status==='sent'?'g':m.status==='rej'?'r':'y'}">${m.status==='sent'?'رشّحته، عند اللجنة':m.status==='rej'?'رفضته، تحوّل لهيا':'مكتمل '+checks.filter(c=>c[2]).length+' من 4'}</span></div>
+ ${critList(checks.map(c=>[c[0],c[1]]),checks.map(c=>c[2]))}
+ ${m.status==='open'?`<div class="row" style="margin-top:12px">${m.interview?'':'<button class="btn dark" data-act="interview">سجّل: المقابلة تمت وأثبت</button>'}<button class="btn" data-act="nominate" ${all?'':'disabled'}>رشّحه للترقية</button><button class="btn ghost" data-act="rejMajed">ما أرشّحه</button></div><p class="mut small" style="margin-top:8px">أنت توصي، والقرار الأخير عند لجنة الموارد البشرية. ولو رفضت موظف أدلته قوية، لازم تكتب السبب، والملف يتحوّل لهيا.</p><label class="f" for="mjr">سبب الرفض (إلزامي لو رفضت)</label><textarea id="mjr" placeholder="سبب مهني محدد"></textarea>`:''}`}
+function reqCard(q){if(q.type==='report'){const sb=q.sub;return `
+   <div class="row between"><div><b style="font-size:18px">عبدالله · تقرير الأداء الأسبوعي</b><div class="mut">المسار 1 · ${sb.score} من 8 · يحتاج رأيك لأن الدليل مو كامل</div></div>${houses(sb.level,3)}</div>
+   <div class="g3 tiles"><div><span class="mut">اقتراح النظام</span><b class="kufi">${LV[sb.level-1]}</b><span class="mut">${sb.level===3?'ترقية من شاطر':'يبقى شاطر'}</span></div><div><span class="mut">المعايير</span><b class="kufi">${sb.score} من 8</b><span class="mut">${sb.score>=7?'أداء قوي':'يحتاج تحسين'}</span></div><div><span class="mut">المحاولة</span><b class="kufi">${S.attempts} من 2</b><span class="mut">هالشهر</span></div></div>
+   <h3 style="font-size:17px;margin:6px 0 8px">معاينة التسليم ${sb.file?`<span class="mut">· ${esc(sb.file)}</span>`:''}</h3><pre class="preview">${esc(sb.text)}</pre>
+   <h3 style="font-size:17px;margin:14px 0 4px">كيف تحقق من الأداة</h3><p class="quote">${esc(sb.verify)}</p>
+   <h3 style="font-size:17px;margin:14px 0 4px">نتيجة المعايير</h3>${critList(CRIT,sb.r)}
+   <label class="f" for="mn-${q.id}">ملاحظتك (تنرسل لعبدالله لو طلبت تعديل)</label><textarea id="mn-${q.id}" placeholder="مثلًا: وضّح سبب التأخير يوم الخميس"></textarea>
+   <div class="row" style="margin-top:12px"><button class="btn" data-act="approve" data-q="${q.id}">اعتمد «${LV[sb.level-1]}»</button><button class="btn ghost" data-act="askEdit" data-q="${q.id}">اطلب تعديل</button></div>`}
+ const c=q.cert,res=certResult(c.k,c.score);return `
+   <div class="row between"><div><b style="font-size:18px">عبدالله · شهادة خارجية</b><div class="mut">المسار 2 · ${SK[c.k].n} · الشهادات تحتاج تحقق بشري</div></div>${houses(res.lv,SK[c.k].req)}</div>
+   <div class="g3 tiles"><div><span class="mut">الشهادة</span><b style="font-size:16px">${esc(c.title)}</b><span class="mut">${esc(c.issuer)} · ${esc(c.date)}</span></div><div><span class="mut">تحدي التطبيق</span><b class="kufi">${c.score} من 4</b><span class="mut">${res.label}</span></div><div><span class="mut">اقتراح النظام</span><b class="kufi">${c.score<=2?'بدون ترقية':LV[res.lv-1]}</b><span class="mut">${res.desc}</span></div></div>
+   <div class="certfile"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#A4643C" stroke-width="2"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6"/></svg><span><b>${esc(c.file)}</b><span class="mut">المرفق اللي رفعه عبدالله</span></span></div>
+   <h3 style="font-size:17px;margin:14px 0 4px">إجاباته على المواقف العملية</h3><div class="crits">${CQ[c.k].map((qq,j)=>`<div class="crit ${c.ans[j]===qq[2]?'p':'f'}"><span class="ci">${c.ans[j]===qq[2]?ICN.ok:ICN.no}</span><div><b>${qq[0]}</b><span class="mut">جوابه: ${qq[1][c.ans[j]]}${c.ans[j]===qq[2]?'':` · الصحيح: ${qq[1][qq[2]]}`}</span></div></div>`).join('')}</div>
+   <label class="f" for="mn-${q.id}">ملاحظتك</label><textarea id="mn-${q.id}" placeholder="مثلًا: الشهادة حلوة، بس تحتاج تطبيق على مستودعنا"></textarea>
+   <div class="row" style="margin-top:12px">${c.score>2?`<button class="btn" data-act="approve" data-q="${q.id}">اعتمد «${LV[res.lv-1]}»</button>`:''}<button class="btn ${c.score>2?'ghost':''}" data-act="askEdit" data-q="${q.id}">${c.score>2?'رجّعها':'سجّلها نظرية ورجّعها'}</button></div>`}
+function mgrPerf(){const T=team();const K=[['أخطاء التجهيز','2.8%','2.5%',89],['متوسط التأخير','37 د','30 د',81],['دقة الجرد','98.1%','99%',95],['طلبات في الساعة','92','95',97]];
+ return `<div class="g4">${K.map(([n,v,t,p])=>`<div class="card reveal"><span class="mut">${n}</span><div class="big" style="margin:8px 0;color:var(--teenD)">${v}</div>${bar(p,p>=95?'var(--ok)':'')}<span class="mut">الهدف ${t} · ${p}% من الهدف</span></div>`).join('')}</div>
+ <div class="g2"><div class="card reveal"><div class="row between"><h3 style="font-size:20px">تحليل عبء العمل</h3><span class="mut">ساعات فعلية من 40 أسبوعيًا</span></div>
+  <div class="bars">${T.map(i=>{const l=loadOf(i);const c=l>110?'#B4532E':l<80?'#9A8F80':'var(--ok)';return `<div><div class="l"><span>${enm(i)}</span><b style="color:${c}">${l}%${l>110?' · مضغوط':l<80?' · عنده مساحة':''}</b></div>${bar(l/1.4,c)}</div>`}).join('')}</div>
+  <p class="mut small" style="margin-top:10px">مأخوذ من الورديات والمهام المسجلة في نظام المستودع.</p></div>
+ <div class="card reveal"><h3 style="font-size:20px">اقتراحات التدوير الوظيفي</h3><p class="mut">النظام يوازن العبء ويوزّع المعرفة في نفس الوقت:</p>
+  ${[['r1','خالد المطيري (68%) يتدوّر 3 شهور مع ماجد (130%) في نظام إدارة المستودع','يخفف ضغط ماجد، ويكسر احتكار المعرفة'],['r2','سلطان العتيبي (78%) ينتقل شهرين لمنطقة التبريد مع عمر','يتعلم مهارة حرجة، ويرفع أدلته الفنية'],['r3','عبدالله الشمري (115%) يسلّم تقرير الخميس لفهد (90%)','يوازن العبء ويطوّر فهد في التقارير']].map(([k,t,w])=>`<div class="rot"><div><b>${t}</b><span class="mut">${w}</span></div>${S.rot[k]?'<span class="chip g">اعتمدته</span>':`<button class="btn" data-act="rot" data-k="${k}" style="min-height:44px">اعتمد</button>`}</div>`).join('')}</div></div>`}
+function mgrKnow(){const C=[['wms','نظام إدارة المستودع (المتقدم)',[1],'ماجد القحطاني',8,'لو غاب، يتوقف إعداد الموجات والتقارير الكاملة'],['cold','صيانة رافعات التبريد',[6],'عمر الحسيني',14,'مهارة نادرة، ونقلها لموظف سعودي أولوية'],['cap','تخطيط الطاقة الاستيعابية',[1,9],'ماجد وسارة',30,'شخصين بس على مستوى الشركة']];
+ return `<div class="card night reveal hello"><span class="mut">إدارة المعرفة</span><h1 style="font-size:32px">المهارات الحرجة</h1><p style="color:#D9CFBE;margin:0">مهارات لو راح صاحبها تتأثر الشركة. النظام يكشف المحتكرين، ويقترح «ظل» ينقل المعرفة.</p></div>
+ <div class="card reveal">${C.map(([k,n,ids,who,days,why])=>`<div class="crit-row"><div class="risk ${ids.length===1?'hi':'md'}">${ids.length===1?ICN.warn:''}<b>${ids.length}</b><span>${ids.length===1?'شخص واحد':'أشخاص'}</span></div><div style="flex:1"><b style="font-size:17px">${n}</b><span class="mut" style="display:block">يتقنها: ${who} · آخر نقل معرفة قبل ${days} يوم</span><span class="mut small">${why}</span></div>${S.shadows[k]?`<span class="chip g">بدأ الظل: ${S.shadows[k]}</span>`:`<button class="btn" data-act="shadow" data-k="${k}" style="min-height:44px">ابدأ ظل</button>`}</div>`).join('')}
+ <p class="mut small" style="margin-top:10px">الظل: موظف يرافق صاحب المهارة 6 أسابيع، وبعدها يثبت تعلّمه بتحدي. وصاحب المهارة ياخذ سعف وتنحسب له جدارة «نقل المعرفة».</p></div>`}
+function mgrBudget(){const used=usedBudget();return `
+ <div class="g2"><div class="card reveal"><h2 style="font-size:22px">خطط التطوير في الشركة</h2>
+   <div class="g3 tiles"><div><span class="mut">الميزانية السنوية</span><b class="kufi">${sar(BUDGET.total)}</b></div><div><span class="mut">المصروف</span><b class="kufi">${sar(used)}</b></div><div><span class="mut">المتبقي</span><b class="kufi" style="color:var(--ok)">${sar(BUDGET.total-used)}</b></div></div>
+   <h3 style="font-size:17px;margin:4px 0 8px">وين انصرفت</h3>
+   <div class="bars">${[...DONE.map(p=>[p.n,p.cost,'منتهية']),...S.plans.filter(p=>p.st!=='rej').map(p=>[PROG[p.k].n,p.net,p.st==='ok'?'جارية':'بانتظار الاعتماد'])].map(([n,c,s])=>`<div><div class="l"><span>${n} <span class="chip ${s==='منتهية'?'g':s==='جارية'?'':'y'}" style="font-size:12px">${s}</span></span><b>${sar(c)}</b></div>${bar(c/BUDGET.total*100,'linear-gradient(90deg,var(--teen),var(--teenL))')}</div>`).join('')}</div></div>
+  <div class="card night reveal"><h2 style="font-size:22px">أثرها على الشركة</h2><p class="mut" style="margin:4px 0 12px">قبل الخطة ← بعدها</p><div class="impact">${DONE.map(p=>`<div><span class="mut">${p.kpi[0]}</span><div class="ia"><b class="was">${p.kpi[1]}</b><span aria-hidden="true">←</span><b class="now">${p.kpi[2]}</b></div><span class="mut small">${p.n}</span></div>`).join('')}<div><span class="mut">جاهزون للترقية في الفريق</span><div class="ia"><b class="was">1</b><span aria-hidden="true">←</span><b class="now">${team().filter(i=>readyOf(i)>=80).length}</b></div><span class="mut small">من ${team().length} في المستودع المركزي</span></div></div></div></div>`}
+
+/* ================= HAYA ================= */
+V.haya=()=>tabs('haya',[['talent','المواهب'],['needs','الاحتياج والوظائف'],['dev','التطوير والميزانية'],['gov','الحوكمة']])+({talent:hTalent,needs:hNeeds,dev:hDev,gov:hGov})[S.tab.haya]();
+function hTalent(){const N=EMP.length;const cell=(p,q)=>EMP.map((e,i)=>i).filter(i=>EMP[i].perf===p&&EMP[i].pot===q);const LBL={'3-3':'نجوم المستقبل','3-2':'أداء عالي','3-1':'محترف ثابت','2-3':'إمكانات عالية','2-2':'الأساس المتين','2-1':'أداء مقبول','1-3':'جوهرة مخفية','1-2':'يحتاج دعم','1-1':'يحتاج مراجعة'};
+ const ex=S.exc;const votes=Object.values(ex.votes).filter(Boolean).length;
+ return `<div class="g4">${[['يستخدمون الذكاء الاصطناعي أسبوعيًا',S.lv.ai>=3?43:41,'%','قبل: 18%'],['أكملوا خطط التطوير',S.plans.some(p=>p.st==='ok')?70:64,'%','قبل: 22%'],['جاهزون للترقية',EMP.filter((e,i)=>readyOf(i)>=80).length,' من '+N,'قبل دبره: 1'],['أدوار حرجة لها خليفة','2',' من 3','الهدف: 3 من 3']].map(([n,v,u,w],i)=>`<div class="card reveal ${i===0?'night':''}"><span class="mut">${n}</span><div class="big" style="margin:8px 0;${i?'color:var(--teenD)':'color:var(--sand)'}"><span data-count="${v}">0</span>${u}</div><span class="mut">${w}</span></div>`).join('')}</div>
+ <div class="card reveal"><div class="row between"><h2 style="font-size:22px">مصفوفة المواهب (9 مربعات)</h2><span class="mut">الأداء من المؤشرات · الإمكانات من الجدارات و360</span></div>
+  <div class="nine"><div class="yax">الإمكانات ←</div>${[3,2,1].map(q=>[1,2,3].map(p=>{const ids=cell(p,q);return `<div class="nb ${p===3&&q===3?'star':''}"><span class="nbl">${LBL[p+'-'+q]}</span><div class="dots">${ids.map(i=>`<span class="pd" title="${enm(i)}">${enm(i).split(' ')[0]}</span>`).join('')}</div></div>`}).join('')).join('')}<div class="xax">الأداء ←</div></div></div>
+ <div class="g2"><div class="card reveal"><h3 style="font-size:20px">التعاقب الوظيفي</h3><p class="mut">مين يقدر يمسك الدور لو صاحبه راح؟</p>${[['مخطط عمليات',`ماجد القحطاني ${readyOf(1)}%، سارة الزهراني ${readyOf(9)}%`,'g'],['مشرف التبريد','ما فيه خليفة جاهز. ابدأ ظل مع عمر','r'],['قائد فريق التوزيع',`ريم الحربي ${readyOf(7)}%`,'y']].map(([r,s,c])=>`<div class="nmrow" style="margin-top:8px"><span><b>${r}</b><span class="mut">${s}</span></span><span class="chip ${c}">${c==='g'?'مغطّى':c==='y'?'قريب':'خطر'}</span></div>`).join('')}</div>
+ <div class="card reveal"><div class="row between"><h3 style="font-size:20px">ترقية استثنائية</h3><span class="chip ${ex.status==='ok'?'g':'y'}">${ex.status==='ok'?'معتمدة · تجربة 3 شهور':'بانتظار اللجنة'}</span></div><p style="margin:8px 0"><b>سارة الزهراني</b> · من مشرفة توزيع إلى مديرة توزيع مباشرة، بدون المرور بقائدة فريق.</p><p class="mut">السبب: أعادت تصميم مسارات التوزيع ووفّرت 340 ألف ريال بالسنة. وأثبتت 4 من 5 جدارات المنصب الأعلى بتحديات.</p>
+  <div class="votes">${[['m','مدير القسم'],['h','هيا (الموارد البشرية)'],['c','المدير التنفيذي']].map(([k,n])=>`<div class="vote"><span>${n}</span>${ex.votes[k]?'<span class="chip g">وافق</span>':ex.status==='ok'?'':`<button class="btn ghost" data-act="vote" data-k="${k}" style="min-height:40px;color:var(--ink)">وافق (محاكاة)</button>`}</div>`).join('')}</div><p class="mut small">الترقية الاستثنائية تحتاج موافقة الثلاثة، وتنسجل مع سببها في سجل الحوكمة. حاليًا ${votes} من 3.</p></div></div>`}
+function hNeeds(){const P=[['p1','مخطط عمليات ثاني','المستودع المركزي','العبء 128% على ماجد، والطلبات زادت 6%','داخلي','2 داخليين جاهزين (ماجد، سارة)'],['p2','فني تبريد','المستودع المركزي','مهارة حرجة يحتكرها شخص واحد','داخلي مع ظل','سلطان بعد ظل 6 أسابيع'],['p3','مدخل بيانات','خدمة العملاء','الأتمتة خففت العمل 40%','إغلاق','حوّل الموظفين لمهام أعلى قيمة'],['p4','محلل بيانات','التوزيع','ما فيه أحد عنده المهارة داخليًا','خارجي','بعد ما تجرّبين سوق المواهب الداخلي']];
+ return `<div class="card night reveal hello"><span class="mut">تحليل الاحتياج التنظيمي</span><h1 style="font-size:32px">وش تحتاج الشركة فعلًا؟</h1><p style="color:#D9CFBE;margin:0">من عبء العمل، والمهارات الحرجة، والأهداف. ودايمًا الداخلي أول.</p></div>
+ <div class="g3">${DEPTS.map((d,di)=>{const ids=EMP.map((e,i)=>i).filter(i=>EMP[i].d===di);const load=Math.round(ids.reduce((a,i)=>a+loadOf(i),0)/ids.length);return `<div class="card reveal"><span class="mut">${d}</span><div class="big" style="margin:6px 0;color:${load>105?'#B4532E':'var(--teenD)'}">${load}%</div><span class="mut">متوسط العبء · ${ids.length} موظفين</span>${bar(load/1.4,load>105?'#B4532E':'')}</div>`}).join('')}</div>
+ <div class="card reveal"><div class="row between"><h2 style="font-size:22px">إدارة الوظائف</h2><span class="mut">النظام يقترح، وأنتِ تقررين</span></div>
+  ${P.map(([k,n,d,why,rec,note])=>`<div class="pos"><div><b>${n}</b><span class="mut">${d} · ${why}</span><span class="chip ${rec==='إغلاق'?'r':rec==='خارجي'?'y':'g'}" style="margin-top:6px;width:fit-content">التوصية: ${rec==='إغلاق'?'أغلقي الوظيفة':rec==='خارجي'?'توظيف خارجي':'افتحيها داخليًا'} · ${note}</span></div>${S.positions[k]?`<span class="chip g">${S.positions[k]}</span>`:`<div class="row" style="gap:6px"><button class="btn" data-act="pos" data-k="${k}" data-v="${rec==='إغلاق'?'أُغلقت':rec==='خارجي'?'فُتحت خارجيًا':'أُعلنت داخليًا'}" style="min-height:42px">طبّقي التوصية</button><button class="btn ghost" data-act="pos" data-k="${k}" data-v="تأجلت" style="min-height:42px;color:var(--ink)">أجّلي</button></div>`}</div>`).join('')}</div>
+ <div class="card reveal"><h3 style="font-size:20px">المتقدمين داخليًا</h3>${Object.keys(S.applied).length?Object.keys(S.applied).map(k=>`<div class="nmrow" style="margin-top:8px"><span><b>${enm(0)}</b><span class="mut">${({p1:'منسّق تخطيط عمليات',p2:'مدرّب Excel داخلي'})[k]} · تجربة مؤقتة</span></span><span class="chip y">قيد المراجعة</span></div>`).join(''):'<p class="mut">ما فيه متقدمين للحين. لما يقدّم موظف على فرصة داخلية، يطلع هنا.</p>'}</div>`}
+const FOPTS=[['g','الجنس',[['','الكل'],['m','ولد'],['f','بنت']]],['nat','الجنسية',[['','الكل'],['sa','سعودي'],['o','غير سعودي']]],['d','القسم',[['','الكل'],...DEPTS.map((d,i)=>[String(i),d])]],['lv','المستوى',[['','الكل'],...LV.map((l,i)=>[String(i+1),l])]],['rd','الجاهزية',[['','الكل'],['l','أقل من 40%'],['m','40 إلى 60%'],['h','60% وأكثر']]]];
+const filters=(f,scope)=>`<div class="filters" role="group" aria-label="فرز">${FOPTS.map(([k,l,o])=>`<label><span>${l}</span><select data-f="${k}" data-scope="${scope}">${o.map(([v,t])=>`<option value="${v}" ${f[k]===v?'selected':''}>${t}</option>`).join('')}</select></label>`).join('')}</div>`;
+const who=i=>`<span><b>${enm(i)} ${isSa(EMP[i])?'<span class="chip sa">أولوية</span>':''}</b><span class="mut">${DEPTS[EMP[i].d]} · ${EMP[i].g==='f'?'بنت':'ولد'} · ${isSa(EMP[i])?'سعودي':EMP[i].nat}</span></span>`;
+const planOf=k=>S.plans.find(p=>p.k===k&&p.st!=='rej');
+const planLabel=p=>p.st==='wait'?'خطة بانتظار الاعتماد':p.st==='ok'?'في خطة جارية':'';
+const progOf=i=>[75,40,100,20,60,10,85,55,30,90,45,65,15,70,50,35,80,25,95,5,60][i%21];
+function hDev(){const f=S.gf;const gaps=['cap','ai','inv','xl'].map(k=>({k,list:missing(k).filter(i=>passF(i,f,k)).sort(prio)}));const used=usedBudget();const N=EMP.length;
+ return `<div class="card reveal"><div class="row between"><h3 style="font-size:20px">أكثر المهارات الناقصة في الفريق</h3><span class="mut">اضغطي على المهارة لترين الأسماء · السعوديين أول</span></div>${filters(f,'gap')}
+   ${gaps.map(({k,list})=>`<div class="gap ${S.openGap[k]?'open':''}"><button data-act="gap" data-k="${k}" aria-expanded="${!!S.openGap[k]}"><span><b>${PROG[k].n}</b><span class="mut">${list.length} موظف · ${list.filter(i=>isSa(EMP[i])).length} سعودي${planOf(k)?` · <span style="color:var(--ok)">${planLabel(planOf(k))}</span>`:''}</span></span><span class="gbar"><i style="width:0" data-w="${list.length/N*100}"></i></span><span class="chev">${ICN.chev}</span></button><div class="more"><div><div class="names">${list.map(i=>`<div class="nmrow">${who(i)}<span class="mut">${k==='xl'?'بتصدّي':'مستواه '+LV[lvOf(i,k)-1]} · جاهزية ${readyOf(i)}%</span></div>`).join('')||'<span class="mut">ما فيه أحد يطابق الفرز</span>'}</div></div></div></div>`).join('')}</div>
+ <div class="card reveal"><div class="row between"><h3 style="font-size:20px">ميزانية الأقسام للسنة الجاية</h3><span class="mut">مقترحة من صرف السنة الماضية وأثرها والاحتياج</span></div>
+  <div class="scroll"><table class="wk" style="margin-top:10px"><thead><tr><th>القسم</th><th class="num">صرف السنة الماضية</th><th>الأثر</th><th class="num">موظفين ناقصهم مهارات</th><th class="num">المقترح</th></tr></thead><tbody>${DEPTS.map((d,i)=>{const b=DEPTB[i];const prop=Math.round(b.last*(b.impact==='عالي'?1.15:b.impact==='متوسط'?1:.85)+b.need*600);return `<tr><td>${d}</td><td class="num">${sar(b.last)}</td><td><span class="chip ${b.impact==='عالي'?'g':b.impact==='متوسط'?'y':'r'}">${b.impact}</span></td><td class="num">${b.need}</td><td class="num"><b>${sar(prop)}</b></td></tr>`}).join('')}</tbody></table></div><p class="mut small" style="margin-top:8px">القسم اللي صرف وما تحسّن، ما ياخذ نفس الزيادة.</p></div>
+ <div class="card reveal"><div class="row between"><h3 style="font-size:20px">خطط التطوير</h3><button class="btn" data-act="newPlan" style="min-height:44px">خطة جديدة</button></div>
+   <div class="row" style="margin:12px 0 4px;gap:16px"><span class="mut">الميزانية <b style="color:var(--ink)">${sar(BUDGET.total)}</b></span><span class="mut">المصروف <b style="color:var(--ink)">${sar(used)}</b></span><span class="mut">المتبقي <b style="color:var(--ok)">${sar(BUDGET.total-used)}</b></span></div>${bar(used/BUDGET.total*100,'linear-gradient(90deg,var(--teen),var(--teenL))')}
+   ${S.plans.length?S.plans.map((p,pi)=>planCard(p,pi)).join(''):'<div class="empty" style="padding:24px 6px"><b style="display:block">ما فيه خطط جديدة للحين</b><span class="mut">اختاري مهارة ناقصة، وفرزي الموظفين، وشوفي التكلفة قبل الإرسال.</span></div>'}</div>`}
+function planCard(p,pi){const P=PROG[p.k];const avg=p.st==='ok'?Math.round(p.sel.reduce((a,i)=>a+progOf(i),0)/p.sel.length):0;const sa=p.sel.filter(i=>isSa(EMP[i])).length;
+ return `<div class="plan"><div class="row between"><div><b>${P.n}</b><div class="mut">${p.sel.length} موظف (${sa} سعودي) · صافي التكلفة ${sar(p.net)}${p.hadaf?` · دعم هدف ${sar(p.hadaf)}`:''}</div></div><span class="chip ${p.st==='ok'?'g':p.st==='rej'?'r':'y'}">${p.st==='ok'?'معتمدة وجارية':p.st==='rej'?'مرفوضة':'بانتظار اعتماد الإدارة'}</span></div>
+ ${p.st==='wait'?`<div class="sim"><span class="mut">محاكاة قرار الإدارة:</span><button class="btn" data-act="planOk" data-i="${pi}" style="min-height:40px">اعتمدت</button><button class="btn ghost" data-act="planRej" data-i="${pi}" style="min-height:40px;color:var(--ink)">رفضت</button></div>`:''}
+ ${p.st==='ok'?`<div style="margin-top:12px"><div class="l row between"><span>تقدّم الخطة</span><b>${avg}%</b></div>${bar(avg)}<button class="btn ghost" data-act="track" data-i="${pi}" style="min-height:40px;margin-top:12px;color:var(--ink)">${p.open?'أخفِ المتابعة':'تابعي تقدّم الموظفين'}</button>${p.open?`<div class="track">${[...p.sel].sort(prio).map(i=>{const v=progOf(i);return `<div class="nmrow">${who(i)}<span class="tp"><span class="prog" style="width:110px"><i style="width:${v}%"></i></span><span class="mut">${v>=100?'أنهى وأثبت':v>=60?'في التحدي':'يتعلّم'}</span></span></div>`}).join('')}<button class="btn sand" data-act="copyPlan" data-i="${pi}" style="min-height:44px;margin-top:10px">انسخي ملخص الخطة</button></div>`:''}</div>`:''}
+ ${p.st==='rej'?`<button class="btn ghost" data-act="editPlan" data-i="${pi}" style="min-height:40px;margin-top:10px;color:var(--ink)">عدّلي وأعيدي الإرسال</button>`:''}</div>`}
+function hGov(){const W=S.Wdraft||S.W;const tot=Object.values(W).reduce((a,b)=>a+b,0);
+ return `<div class="card reveal"><div class="row between"><div><h2 style="font-size:22px">ملف جدارات «مخطط عمليات»</h2><span class="mut">الأوزان تحدد الجاهزية. أي تعديل يحتاج اعتماد لجنة، وينسجل.</span></div>${S.Wpending?'<span class="chip y">تعديل بانتظار اللجنة</span>':''}</div>
+  <div class="wts">${Object.keys(SK).map(k=>`<div class="wt"><label for="w-${k}"><b>${SK[k].n}</b><span class="mut">${SK[k].t} · المطلوب ${LV[SK[k].req-1]}</span></label><input id="w-${k}" type="range" min="0" max="50" step="5" value="${W[k]}" data-w="${k}" ${S.Wpending?'disabled':''}><b class="wv">${W[k]}%</b></div>`).join('')}</div>
+  <div class="row between" style="margin-top:10px"><span class="mut">المجموع: <b style="color:${tot===100?'var(--ok)':'#A33A16'}">${tot}%</b>${tot!==100?' · لازم يكون 100%':''}</span>${S.Wpending?`<span class="row" style="gap:6px"><button class="btn" data-act="wApprove" style="min-height:42px">اعتمدت اللجنة (محاكاة)</button><button class="btn ghost" data-act="wReject" style="min-height:42px;color:var(--ink)">رفضت</button></span>`:`<button class="btn" data-act="wSend" ${S.Wdraft&&tot===100?'':'disabled'} style="min-height:42px">أرسلي التعديل للجنة</button>`}</div></div>
+ <div class="g2"><div class="card reveal"><h3 style="font-size:20px">التظلّمات</h3>${S.appeals.length?S.appeals.map(a=>`<div class="nmrow" style="margin-top:8px"><span><b>${a.who}</b><span class="mut">${a.what}</span></span><span class="chip y">${a.st}</span></div>`).join(''):'<p class="mut">ما فيه تظلّمات. لو مدير رفض موظف أدلته قوية، يتحوّل الملف هنا تلقائيًا.</p>'}</div>
+ <div class="card reveal"><h3 style="font-size:20px">رصد تحيز المديرين</h3>${[['محمد · المستودع المركزي','تقييماته متوازنة، و18% منها «ممتاز»','g','سليم'],['مدير التوزيع','92% من تقييماته «ممتاز»، وما يطابق الأدلة','r','يحتاج مراجعة'],['مديرة خدمة العملاء','رفضت موظفة واحدة 3 مرات','y','تحت المتابعة']].map(([n,d,c,s])=>`<div class="nmrow" style="margin-top:8px"><span><b>${n}</b><span class="mut">${d}</span></span><span class="chip ${c}">${s}</span></div>`).join('')}</div></div>
+ <div class="card reveal"><h3 style="font-size:20px">سجل الحوكمة</h3><div class="hist">${S.audit.map(a=>`<div class="hi" style="grid-template-columns:minmax(0,1fr) minmax(0,2fr) auto"><b>${a.who}</b><span>${a.what}</span><span class="mut">${a.when}</span></div>`).join('')}</div></div>`}
+
+function builder(){const b=S.builder,P=PROG[b.k];const list=missing(b.k).sort(prio).filter(i=>passF(i,b.f,b.k));const per=P.cost,net=per*(1-P.hadaf);const rem=BUDGET.total-usedBudget();const n=b.sel.length;const nt=n*net;const nsa=b.sel.filter(i=>isSa(EMP[i])).length;
+ return `<div class="ptabs" role="tablist">${['cap','ai','inv','xl'].map(k=>`<button role="tab" aria-selected="${k===b.k}" data-act="bk" data-k="${k}" ${planOf(k)&&k!==b.k?'disabled':''}>${PROG[k].n}${planOf(k)?' ✓':''}</button>`).join('')}</div>
+ <div class="pinfo"><b>${P.p}</b><span class="mut">${per?`تكلفة الموظف ${sar(per)}${P.hadaf?` · يدعم هدف ${P.hadaf*100}% فيصير الصافي ${sar(net)}`:''}`:'بدون تكلفة: يقدمها خبراء الشركة'}</span></div>
+ <div class="saprio"><b>الأولوية القصوى للسعوديين</b><span class="mut">يطلعون أول القائمة، ولو ضاقت الميزانية يتقدّمون في الاختيار.</span><button class="btn dark" data-act="autoSa" style="min-height:40px">اختاري السعوديين أول ضمن الميزانية</button></div>
+ ${filters(b.f,'plan')}
+ ${DEPTS.map((d,di)=>{const ids=list.filter(i=>EMP[i].d===di);if(!ids.length)return '';const allc=ids.every(i=>b.sel.includes(i));return `<div class="dept"><label class="dh2"><input type="checkbox" data-act="selDept" data-d="${di}" ${allc?'checked':''}> <b>${d}</b> <span class="mut">(${ids.length})</span></label>${ids.map(i=>`<label class="emprow"><input type="checkbox" data-act="selEmp" data-i="${i}" ${b.sel.includes(i)?'checked':''}>${who(i)}<span class="mut cost">${b.k==='xl'?'بتصدّي':LV[lvOf(i,b.k)-1]} · ${readyOf(i)}% · ${sar(net)}</span></label>`).join('')}</div>`}).join('')||'<div class="empty"><span class="mut">ما فيه أحد يطابق الفرز</span></div>'}
+ <div class="sum"><div><span class="mut">المختارين</span><b>${n} (${nsa} سعودي)</b></div><div><span class="mut">التكلفة الكاملة</span><b>${sar(n*per)}</b></div><div><span class="mut">دعم هدف</span><b>${sar(n*per*P.hadaf)}</b></div><div><span class="mut">الصافي</span><b>${sar(nt)}</b></div><div><span class="mut">المتبقي بعدها</span><b style="color:${rem-nt<0?'#F4B29A':'#9FD3B4'}">${sar(rem-nt)}</b></div></div>
+ ${rem-nt<0?'<div class="banner y" style="margin-top:10px">الخطة تتعدى الميزانية المتبقية. قللي العدد، أو اضغطي «اختاري السعوديين أول».</div>':''}`}
+
+/* ================= RENDER ================= */
+function render(){
+ $$('.roles button').forEach(b=>{b.setAttribute('aria-pressed',b.dataset.role===S.role);b.textContent=S.names[b.dataset.role]+' · '+{emp:'موظف',mgr:'مدير مباشر',haya:'تطوير'}[b.dataset.role]});
+ $('#page').innerHTML=nm(V[S.role]());observe($('#page'));notif();
+ requestAnimationFrame(()=>setTimeout(()=>{$$('#page .fg').forEach(c=>c.style.strokeDashoffset=c.dataset.to);$$('#page [data-w]').forEach(i=>{if(i.tagName!=='INPUT')i.style.width=i.dataset.w+'%'})},120));
+ if(S.role==='emp'&&S.celebrate){const c=S.celebrate;S.celebrate=null;setTimeout(()=>celebrate(c),450)}
+ const g=$('#garden');if(g&&!reduce)g.onpointermove=e=>{const r=g.getBoundingClientRect(),mx=(e.clientX-r.left)/r.width-.5;g.querySelectorAll('[data-gd]').forEach(x=>x.setAttribute('transform',`translate(${(mx*x.dataset.gd*40).toFixed(1)} 0)`))};
+}
+function notif(){const it=[];if(S.role==='emp'){if(S.excel==='y'&&!S.leave)it.push(['تذكير تلقائي','مهارة Excel بتصدّي بعد 12 يوم. جدّدها بتحدي قصير.']);if(S.rep.status==='edit')it.push(['طلب تعديل','محمد رجّع تقريرك بملاحظة.']);if(S.rep.status==='ok')it.push(['اعتماد','تقريرك انعتمد.']);if(S.cert.status==='ok')it.push(['اعتماد','محمد اعتمد شهادتك.']);if(S.cert.status==='back')it.push(['شهادة','محمد رجّع شهادتك بملاحظة.']);if(S.mentorBook)it.push(['تذكير تلقائي','جلستك مع ماجد الأحد 2 م.']);it.push(['تذكير تلقائي','باقي أسبوع على مراجعة خطتك الشهرية.'])}
+ if(S.role==='mgr'){S.queue.filter(q=>q.st==='pending').forEach(q=>it.push(['طلب اعتماد',q.type==='cert'?'عبدالله أضاف شهادة خارجية.':'عبدالله سلّم تقرير يحتاج رأيك.']));if(S.rep.status==='ok')it.push(['اعتماد تلقائي','تقرير عبدالله انعتمد تلقائيًا (دليل كامل).']);it.push(['مهارة حرجة','نظام إدارة المستودع يتقنه شخص واحد.']);it.push(['تذكير تلقائي','3 من فريقك مهاراتهم بتصدّي هالشهر.'])}
+ if(S.role==='haya'){S.plans.forEach(p=>it.push(['خطة',PROG[p.k].n+': '+(p.st==='ok'?'معتمدة وجارية':p.st==='rej'?'مرفوضة':'بانتظار الاعتماد')]));S.appeals.forEach(a=>it.push(['تظلّم',a.who+': '+a.what]));Object.keys(S.applied).forEach(()=>it.push(['نقل داخلي','عبدالله قدّم على فرصة داخلية.']));if(S.majed.status==='sent')it.push(['ترشيح','محمد رشّح ماجد للترقية.']);it.push(['تذكير تلقائي','تقرير أثر التدريب الربعي يطلع بعد 10 أيام.'])}
+ const vis=it.filter(([a,b])=>!S.dis.has(S.role+a+b));$('#bellN').textContent=vis.length;$('#bellN').hidden=!vis.length;$('#npanel').innerHTML=vis.length?nm(vis.map(([a,b])=>`<div class="ni"><div><b>${a}</b><span>${b}</span></div><button class="nx" data-dis="${esc(S.role+a+b)}" aria-label="اطّلعت، احذف التنبيه">${ICN.no}</button></div>`).join('')+'<button class="nall" data-disall="1">اطّلعت على الكل</button>'):'<div class="ni"><span class="mut">ما عندك تنبيهات جديدة</span></div>'}
+
+/* ================= DRAWER ================= */
+let curText='',curFile='',lastA=null;
+function drawer(on,kind='case'){$('#drawer').classList.toggle('on',on);$('#scrim').classList.toggle('on',on);$('#drawer').setAttribute('aria-hidden',!on);$('#drawer').classList.toggle('wide',kind==='plan');if(on){kind==='plan'?drawPlan():kind==='cert'?drawCert():drawStep();setTimeout(()=>$('#dClose').focus(),300)}}
+function setProg(n,s){$('#dprog').hidden=false;$('#dprog').innerHTML=Array.from({length:n},(_,i)=>`<span class="${i<=s?'on':''}"></span>`).join('')}
+function drawStep(){const s=S.step;$('#dkind').textContent='المسار 1 · تقارير الأداء بالذكاء الاصطناعي';$('#dt').textContent='تقرير أداء المستودع الأسبوعي';setProg(3,s);
+ $('#dbody').innerHTML=nm([
+ `<h3 style="font-size:20px">الموقف</h3><p style="margin-top:8px">هذي بيانات المستودع المركزي للأسبوع الماضي من النظام. الأسبوع اللي قبله كانت الطلبات 3,887. المطلوب تقرير لمحمد فيه ثلاث ملاحظات مرقّمة وتوصية قابلة للقياس.</p>
+ <div class="scroll"><table class="wk"><thead><tr><th>اليوم</th><th class="num">الطلبات</th><th class="num">أخطاء التجهيز</th><th class="num">التأخير (د)</th></tr></thead><tbody>${WEEK.map(r=>`<tr><td>${r[0]}</td><td class="num">${r[1]}</td><td class="num">${r[2]}%</td><td class="num">${r[3]}</td></tr>`).join('')}</tbody></table></div>
+ <p class="mut" style="margin-top:6px">النسب والتأخير الأسبوعية تنحسب مرجّحة بعدد الطلبات.</p>
+ <h3 style="font-size:18px;margin:16px 0 6px">كيف بينقيّم تقريرك</h3>${critList(CRIT,null)}<p class="mut" style="margin-top:10px">8 من 8 = ينعتمد «سنع» تلقائيًا · 7 = «سنع» بعد مراجعة محمد · 5 أو 6 = يبقى «شاطر» · أقل من 5 ما يتسلّم</p>`,
+ `<h3 style="font-size:20px">استخدم الأداة المعتمدة</h3><div class="policy" style="margin:10px 0"><b>سياسة شركتك:</b> المعتمد هو المساعد الداخلي للشركة. لا تدخل أسماء الموظفين ولا هوياتهم ولا بيانات العملاء.</div><p>مثال على طلب صحيح:</p><div class="prompt">هذا جدول أداء مستودع لسبعة أيام (بدون أسماء).
+احسب مجموع الطلبات، ونسبة الأخطاء والتأخير مرجّحة بعدد الطلبات،
+وحدد يوم الذروة، وقارن بالأسبوع الماضي (3,887 طلب).</div><p class="mut" style="margin-top:10px">انتبه: الأدوات أحيانًا تحسب المتوسط البسيط بدل المرجّح. راجع كل رقم.</p>`,
+ `<h3 style="font-size:20px">سلّم وافحص</h3><p class="mut" style="margin:4px 0 8px">ارفع ملف نصي (TXT أو CSV أو MD)، أو الصق تقريرك تحت. بنقرأ المحتوى فعليًا ونفحصه.</p>
+ <div class="row"><label class="btn ghost" for="rep" style="color:var(--ink)">اختر ملف التقرير</label><input id="rep" type="file" accept=".txt,.csv,.md,text/plain" hidden><span id="repn" class="mut">${esc(curFile)}</span></div>
+ <label class="f" for="rtext">نص التقرير</label><textarea id="rtext" style="min-height:160px" placeholder="الصق تقريرك هنا">${esc(curText)}</textarea>
+ <label class="f" for="chk">كيف تحققت من مخرجات الأداة؟</label><textarea id="chk" placeholder="اذكر وش راجعت وبأي رقم"></textarea>
+ <div class="row" style="margin-top:10px"><button class="btn dark" data-act="check">افحص التقرير</button><button class="btn ghost" data-act="sample" style="color:var(--ink)">عبّ تقرير نموذجي (للعرض)</button></div><div id="res" aria-live="polite"></div>`][s]);
+ $('#dfoot').innerHTML=nm(`${s>0?'<button class="btn ghost" data-act="prev" style="color:var(--ink)">رجوع</button>':'<span></span>'}${s<2?'<button class="btn" data-act="nextStep">التالي</button>':'<button class="btn" data-act="submit" id="subBtn" disabled>سلّم</button>'}`);
+ if(s===2){$('#rep').onchange=e=>{const f=e.target.files[0];if(!f)return;curFile=f.name;$('#repn').textContent=f.name;const r=new FileReader();r.onload=()=>{const t=String(r.result);if(!readable(t)){$('#rtext').value='';curText='';$('#res').innerHTML='<div class="banner y" style="margin-top:12px">ما قدرنا نقرأ هالملف. ارفع ملف نصي (TXT أو CSV أو MD)، أو الصق التقرير بنفسك.</div>';$('#subBtn').disabled=true;return}$('#rtext').value=t;curText=t;runCheck()};r.readAsText(f)};
+  $('#rtext').oninput=()=>{curText=$('#rtext').value;$('#subBtn').disabled=true;$('#res').innerHTML=''};$('#chk').oninput=()=>{$('#subBtn').disabled=true}}}
+function runCheck(){const t=$('#rtext').value,v=$('#chk').value;if(t.trim().length<120||!readable(t)){$('#res').innerHTML='<div class="banner y" style="margin-top:12px">التقرير قصير أو فاضي. لازم يكون فيه الملاحظات الثلاث والتوصية.</div>';$('#subBtn').disabled=true;return}
+ const a=analyze(t,v);lastA=a;$('#res').innerHTML=`<div class="rescard ${a.ok?'':'bad'}"><div class="row between"><b>${a.score} من 8 معايير</b><span class="chip ${a.score>=7?'g':a.ok?'y':'r'}">${a.score===8?'ينعتمد تلقائيًا: سنع':a.score===7?'المقترح: سنع (يراجعه محمد)':a.ok?'المقترح: يبقى شاطر':'ما يتسلّم بعد'}</span></div>${critList(CRIT,a.r)}</div>`;$('#subBtn').disabled=!a.ok;$('#subBtn').textContent=a.score===8?'سلّم (اعتماد تلقائي)':'سلّم لمحمد'}
+function drawCert(){const c=S.cert;$('#dkind').textContent='المسار 2 · شهادة خارجية';$('#dt').textContent=c.step===1?'أثبت إنك تطبّقها':'أضف شهادتك';setProg(2,c.step||0);
+ if(!c.step){$('#dbody').innerHTML=nm(`<p class="mut" style="margin:0 0 10px">الشهادة وحدها ما ترفع المستوى. بعد ما ترفعها، تحل مواقف عملية من شغل المستودع، والنظام يحدد هل عندك المهارة فعلًا أو بس معرفة نظرية.</p>
+ <div class="fld"><label for="ck">مسار الشهادة</label><select id="ck"><option value="inv" ${c.k==='inv'?'selected':''}>إدارة المخزون</option><option value="cap" ${c.k==='cap'?'selected':''}>تخطيط الطاقة الاستيعابية</option></select></div>
+ <div class="fld"><label for="ct">اسم الشهادة</label><input id="ct" value="${esc(c.title||'شهادة إدارة المخزون والمستودعات')}"><span class="err"></span></div>
+ <div class="fgrid"><div class="fld"><label for="ci">الجهة المانحة</label><input id="ci" value="${esc(c.issuer||'معهد سلاسل الإمداد')}"><span class="err"></span></div><div class="fld"><label for="cd">تاريخ الحصول عليها</label><input id="cd" value="${esc(c.date||'سبتمبر 2026')}"><span class="err"></span></div></div>
+ <div class="fld"><span style="display:block;font-weight:700;margin:12px 0 6px">ملف الشهادة (PDF أو صورة)</span><div class="row"><label class="btn ghost" for="cf" style="color:var(--ink)">اختر الملف</label><input id="cf" type="file" accept=".pdf,image/*" hidden><span id="cfn" class="mut">${esc(c.file||'')}</span></div><span class="err" id="cfe"></span></div>`);
+  $('#cf').onchange=e=>{const f=e.target.files[0];if(f){S.cert.file=f.name;$('#cfn').textContent=f.name;$('#cfe').textContent=''}};
+  $('#ck').onchange=e=>{if(e.target.value==='cap'&&!$('#ct').value.includes('الطاقة'))$('#ct').value='شهادة تخطيط الطاقة والعمليات'};
+  $('#dfoot').innerHTML='<button class="btn ghost" data-act="closeD" style="color:var(--ink)">إلغاء</button><button class="btn" data-act="certNext">التالي: التحدي</button>';return}
+ const qs=CQ[c.k];$('#dbody').innerHTML=nm(`<p class="mut" style="margin:0 0 10px">أربع مواقف من شغل المستودع. 4 من 4 = مهارة عملية مثبتة · 3 = تطبيق جزئي · 2 أو أقل = معرفة نظرية.</p><div class="qz light">${qs.map((q,i)=>`<fieldset><legend>${i+1}. ${q[0]}</legend>${q[1].map((o,j)=>`<label><input type="radio" name="c${i}" value="${j}"> ${o}</label>`).join('')}</fieldset>`).join('')}</div><div id="cres" aria-live="polite"></div>`);
+ $('#dfoot').innerHTML=nm('<button class="btn ghost" data-act="certBack" style="color:var(--ink)">رجوع</button><button class="btn" data-act="certSend">سلّم لمحمد</button>')}
+function drawPlan(){$('#dkind').textContent='خطة تطوير جديدة';$('#dt').textContent='حددي المهارة والموظفين';$('#dprog').hidden=true;$('#dbody').innerHTML=nm(builder());const n=S.builder.sel.length,P=PROG[S.builder.k];const over=BUDGET.total-usedBudget()-n*P.cost*(1-P.hadaf)<0;
+ $('#dfoot').innerHTML=`<button class="btn ghost" data-act="closeD" style="color:var(--ink)">إلغاء</button><button class="btn" data-act="sendPlan" ${!n||over?'disabled':''}>أرسلي للاعتماد (${n})</button>`}
+
+/* quiz, celebrate, palm summary */
+const QZ=[['أي دالة تجمع مبيعات مستودع واحد بس؟',['SUMIF','VLOOKUP','COUNT'],0],['وش يسوي الـPivot Table؟',['يرسم خريطة','يلخّص البيانات ويجمعها حسب فئات','يحذف التكرار بس'],1],['تبي تجيب اسم المنتج من رقمه في جدول ثاني، وش تستخدم؟',['SUM','ROUND','XLOOKUP'],2]];
+function quiz(){modal(`<h2 id="mt" style="font-size:26px;margin-bottom:6px">تحدي تجديد Excel</h2><p style="color:#D9CFBE">جاوب صح على سؤالين من ثلاثة وترجع المهارة خضراء. هذا ينعتمد تلقائيًا.</p><div class="qz">${QZ.map((q,i)=>`<fieldset><legend>${i+1}. ${q[0]}</legend>${q[1].map((o,j)=>`<label><input type="radio" name="q${i}" value="${j}"> ${o}</label>`).join('')}</fieldset>`).join('')}</div><div id="qres" aria-live="polite"></div><div class="row" style="justify-content:center;margin-top:12px"><button class="btn sand" data-act="quizGo">تحقق من إجاباتي</button><button class="btn ghost" data-act="closeModal" style="color:var(--jes)">بعدين</button></div>`)}
+function celebrate(c){modal(`<canvas id="conf" aria-hidden="true"></canvas><div class="celeb">${houses(c.lv,c.req,false)}<h2 id="mt" style="font-size:40px;margin:14px 0 6px">كفو!</h2><p>${c.by} «${LV[c.lv-1]}» في ${c.skill}.</p><div class="row" style="justify-content:center;gap:8px;margin:6px 0">${fronds(c.fr)}</div><p style="color:var(--sand)">+${c.fr} سعفات · جاهزيتك صارت ${ready()}%</p><p class="mut" style="color:#C3B8A6">اضغط على الشاشة لاحتفال ثاني</p><button class="btn sand" data-act="closeModal">أبشر</button></div>`);setTimeout(confetti,200)}
+function confetti(){const c=$('#conf');if(!c||reduce)return;const r=c.parentElement.getBoundingClientRect();c.width=r.width;c.height=r.height;const x=c.getContext('2d');const P=Array.from({length:90},()=>({x:Math.random()*c.width,y:-20-Math.random()*c.height*.6,vx:(Math.random()-.5)*2,vy:2+Math.random()*3,r:Math.random()*6.28,vr:(Math.random()-.5)*.2,t:Math.floor(Math.random()*3),s:6+Math.random()*7}));let f=0;
+ const step=()=>{x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;x.save();x.translate(p.x,p.y);x.rotate(p.r);if(p.t===0){x.fillStyle='#E3C48F';x.beginPath();x.moveTo(0,-p.s);x.lineTo(p.s*.8,p.s*.6);x.lineTo(-p.s*.8,p.s*.6);x.fill()}else if(p.t===1){x.fillStyle='#D98B3E';x.beginPath();x.ellipse(0,0,p.s*.45,p.s*.6,0,0,6.28);x.fill()}else{x.fillStyle='#4C8A5E';x.beginPath();x.ellipse(0,0,p.s*1.3,p.s*.35,0,0,6.28);x.fill()}x.restore()});if(++f<200)requestAnimationFrame(step);else x.clearRect(0,0,c.width,c.height)};step()}
+function palmSummary(i){const f=i===0?S.fr:EMP[i].fr,rd=readyOf(i),g=grpOf(rd);const rows=Object.keys(SK).map(k=>{const L=k==='xl'?3:lvOf(i,k);const h=k==='xl'?((i===0?S.excel:EMP[i].xl)==='g'?'محدّثة':'بتصدّي'):'';return `<div class="ps"><span>${SK[k].n}</span>${houses(L,SK[k].req,false)}<span class="mut">${LV[L-1]}${h?' · '+h:''}</span></div>`}).join('');
+ modal(`<div class="psum"><div class="row between" style="align-items:center"><div style="text-align:start"><h2 id="mt" style="font-size:24px">${enm(i)}</h2><span class="mut" style="color:#C3B8A6">${STN[stageOf(f)]} · ${f} سعفة · عبء ${loadOf(i)}%</span></div><span class="chip" style="background:${GRP[g][2]};color:#fff">${GRP[g][0]} · ${rd}%</span></div><div class="pss">${rows}</div><div class="row" style="gap:10px;justify-content:space-between;margin-top:8px"><span class="mut" style="color:#C3B8A6">360: ${EMP[i].b360} من 5</span><span class="mut" style="color:#C3B8A6">الأداء: ${['','يحتاج دعم','جيد','عالي'][EMP[i].perf]}</span></div><button class="btn sand" data-act="closeModal" style="margin-top:14px">تمام</button></div>`)}
+
+function modal(h){$('#mbox').innerHTML=nm(h);$('#modal').classList.add('on');setTimeout(()=>$('#mbox button')?.focus(),300)}
+let tt;function toast(m,undo){$('#tmsg').textContent=nm(m);$('#tbtn').hidden=!undo;S.undo=undo||null;$('#toast').classList.add('on');clearTimeout(tt);tt=setTimeout(()=>$('#toast').classList.remove('on'),undo?6000:3200)}
+$('#tbtn').onclick=()=>{if(S.undo){S.undo();S.undo=null;$('#toast').classList.remove('on')}};
+$('#bell').onclick=e=>{e.stopPropagation();S.notifOpen=!S.notifOpen;$('#npanel').hidden=!S.notifOpen;$('#bell').setAttribute('aria-expanded',S.notifOpen)};
+$('#npanel').addEventListener('click',e=>{e.stopPropagation();const d=e.target.closest('[data-dis]');if(d){S.dis.add(d.dataset.dis);notif()}if(e.target.closest('[data-disall]')){$$('#npanel [data-dis]').forEach(x=>S.dis.add(x.dataset.dis));notif()}});
+document.addEventListener('click',e=>{if(S.notifOpen&&!e.target.closest('#npanel')){S.notifOpen=false;$('#npanel').hidden=true;$('#bell').setAttribute('aria-expanded',false)}});
+
+document.addEventListener('input',e=>{const t=e.target;if(t.dataset&&t.dataset.w&&t.tagName==='INPUT'){S.Wdraft={...(S.Wdraft||S.W),[t.dataset.w]:+t.value};const tot=Object.values(S.Wdraft).reduce((a,b)=>a+b,0);t.parentElement.querySelector('.wv').textContent=t.value+'%';const sp=t.closest('.card').querySelector('.row.between .mut b');if(sp){sp.textContent=tot+'%';sp.style.color=tot===100?'var(--ok)':'#A33A16'}const sb=$('[data-act=wSend]');if(sb)sb.disabled=tot!==100}});
+document.addEventListener('change',e=>{const t=e.target;
+ if(t.dataset&&t.dataset.f){const tgt=t.dataset.scope==='gap'?S.gf:S.builder.f;tgt[t.dataset.f]=t.value;t.dataset.scope==='gap'?render():drawPlan();return}
+ if(t.dataset&&t.dataset.w&&t.tagName==='INPUT'){render();return}
+ if(!S.builder)return;
+ if(t.dataset.act==='selEmp'){const i=+t.dataset.i;S.builder.sel=t.checked?[...S.builder.sel,i]:S.builder.sel.filter(x=>x!==i);drawPlan()}
+ if(t.dataset.act==='selDept'){const d=+t.dataset.d;const ids=missing(S.builder.k).filter(i=>EMP[i].d===d&&passF(i,S.builder.f,S.builder.k));S.builder.sel=t.checked?[...new Set([...S.builder.sel,...ids])]:S.builder.sel.filter(x=>!ids.includes(x));drawPlan()}});
+
+const newBuilder=k=>({k,f:{g:'',nat:'',d:'',lv:'',rd:''},sel:missing(k).filter(i=>isSa(EMP[i]))});
+function decideCert(q,ok,note){const c=q.cert,res=certResult(c.k,c.score);
+ if(ok){S.cert.status='ok';const prev=S.lv[c.k];S.lv[c.k]=res.lv;const met=res.lv>=SK[c.k].req&&prev<SK[c.k].req;const fr=3+(met?5:0);S.fr+=fr;S.celebrate={lv:res.lv,req:SK[c.k].req,skill:SK[c.k].n,fr,by:'محمد اعتمدك'};S.hist.unshift({who:enm(0),what:'شهادة خارجية · '+SK[c.k].n,dec:`اعتمد «${LV[res.lv-1]}»`,when:'اليوم',ok:1});return ()=>{S.cert.status='sent';S.lv[c.k]=prev;S.fr-=fr;S.celebrate=null;S.hist.shift();q.st='pending'}}
+ S.cert.status='back';S.cert.note=note||(c.score<=2?'انسجلت كمعرفة نظرية. جرّب التحدي العملي بعد ما تطبّق في المستودع.':'رجّعها محمد للمراجعة.');S.hist.unshift({who:enm(0),what:'شهادة خارجية · '+SK[c.k].n,dec:c.score<=2?'رجّعها: معرفة نظرية':'رجّعها',when:'اليوم',ok:0});return ()=>{S.cert.status='sent';S.hist.shift();q.st='pending'}}
+
+document.addEventListener('click',e=>{
+ const tb=e.target.closest('[data-tab]');if(tb){S.tab[S.role]=tb.dataset.tab;render();return}
+ const r=e.target.closest('[data-role]');if(r){S.role=r.dataset.role;render();scrollTo({top:0});return}
+ if(e.target.id==='conf'||e.target.closest('.celeb')&&!e.target.closest('button')){confetti();return}
+ const b=e.target.closest('[data-act]');if(!b||b.tagName==='INPUT')return;const a=b.dataset.act;
+ if(a==='openCase'){if(S.attempts>=2){toast('خلّصت محاولاتك هالشهر');return}S.step=0;S.t0=Date.now();curText='';curFile='';drawer(true)}
+ if(a==='resubmit'){S.step=2;curText=S.rep.sub?.text||'';drawer(true)}
+ if(a==='nextStep'){S.step++;drawStep()}
+ if(a==='prev'){S.step--;drawStep()}
+ if(a==='sample'){$('#rtext').value=SAMPLE;curText=SAMPLE;$('#chk').value=SAMPLEV;curFile='';$('#repn').textContent='';runCheck()}
+ if(a==='check')runCheck();
+ if(a==='submit'){if(!lastA||!lastA.ok)return;S.attempts++;const sub={text:$('#rtext').value,verify:$('#chk').value,file:curFile,r:lastA.r,score:lastA.score,level:lastA.level};S.rep.sub=sub;drawer(false);
+  if(sub.score===8){S.rep.status='ok';const prev=S.lv.ai;S.lv.ai=3;const fr=3+(prev<3?5:0);S.fr+=fr;S.newUC=true;S.hist.unshift({who:enm(0),what:'تقرير الأداء الأسبوعي',dec:'اعتماد تلقائي «سنع» (8 من 8)',when:'اليوم',ok:1});render();celebrate({lv:3,req:3,skill:'تقارير الأداء بالذكاء الاصطناعي',fr,by:'انعتمدت تلقائيًا'})}
+  else{S.rep.status='sent';S.queue.push({id:'q'+Date.now(),type:'report',sub,st:'pending'});render();toast('سلّمت التحدي لمحمد. السعف ينضاف بعد اعتماده.')}}
+ if(a==='openCert'){S.cert={status:S.cert.status,k:S.cert.k||'inv',step:0,title:S.cert.title,issuer:S.cert.issuer,date:S.cert.date,file:S.cert.file};drawer(true,'cert')}
+ if(a==='certNext'){let ok=true;[['ct','اكتب اسم الشهادة'],['ci','اكتب الجهة المانحة'],['cd','اكتب التاريخ']].forEach(([id,m])=>{const el=$('#'+id);const bad=el.value.trim().length<2;el.parentElement.classList.toggle('bad',bad);el.parentElement.querySelector('.err').textContent=bad?m:'';if(bad)ok=false});if(!S.cert.file){$('#cfe').textContent='أرفق ملف الشهادة';ok=false}if(!ok)return;Object.assign(S.cert,{k:$('#ck').value,title:$('#ct').value.trim(),issuer:$('#ci').value.trim(),date:$('#cd').value.trim(),step:1});drawCert()}
+ if(a==='certBack'){S.cert.step=0;drawCert()}
+ if(a==='certSend'){const qs=CQ[S.cert.k];const ans=qs.map((q,i)=>+(document.querySelector(`input[name=c${i}]:checked`)?.value??-1));if(ans.includes(-1)){$('#cres').innerHTML='<div class="banner y" style="margin-top:10px">جاوب على المواقف الأربعة.</div>';return}const score=ans.filter((v,i)=>v===qs[i][2]).length;S.cert.status='sent';S.queue.push({id:'c'+Date.now(),type:'cert',cert:{k:S.cert.k,title:S.cert.title,issuer:S.cert.issuer,date:S.cert.date,file:S.cert.file,ans,score},st:'pending'});drawer(false);render();toast(`جاوبت ${score} من 4. وصلت شهادتك لمحمد مع نتيجة التحدي.`)}
+ if(a==='toggle'){S.openSk[b.dataset.id]=!S.openSk[b.dataset.id];const w=b.parentElement;w.classList.toggle('open');b.setAttribute('aria-expanded',w.classList.contains('open'))}
+ if(a==='renew')quiz();
+ if(a==='quizGo'){const ans=QZ.map((q,i)=>+(document.querySelector(`input[name=q${i}]:checked`)?.value??-1));if(ans.includes(-1)){$('#qres').innerHTML='<p style="color:var(--sand)">جاوب على الأسئلة الثلاثة.</p>';return}const sc=ans.filter((v,i)=>v===QZ[i][2]).length;
+  if(sc>=2){S.excel='g';S.fr+=1;S.hist.unshift({who:enm(0),what:'تحدي تجديد Excel',dec:`تجديد تلقائي (${sc} من 3)`,when:'اليوم',ok:1});$('#modal').classList.remove('on');render();toast(`جاوبت ${sc} من 3 صح. رجعت Excel خضراء (+1 سعفة)`)}else $('#qres').innerHTML=`<p style="color:#F4B29A">جاوبت ${sc} من 3 صح. راجع وجرّب مرة ثانية.</p>`}
+ if(a==='leave'){S.leave=!S.leave;render();toast(S.leave?'تجمّدت نخلتك وعمر مهاراتك لين ترجع':'رجعت من الإجازة، ورجع العداد يمشي')}
+ if(a==='mentor'){S.mentorBook=true;render();toast('حجزت جلسة مع ماجد الأحد 2 م')}
+ if(a==='ws'){S.ws[b.dataset.k]=1;render();toast('سجّلت في الورشة')}
+ if(a==='content'){S.content[b.dataset.k]=!S.content[b.dataset.k];render()}
+ if(a==='apply'){S.applied[b.dataset.k]=1;render();toast('قدّمت، ووصل طلبك لهيا')}
+ if(a==='approve'||a==='askEdit'){const q=S.queue.find(x=>x.id===b.dataset.q);const note=($('#mn-'+q.id)?.value||'').trim();q.st='done';let und;
+  if(q.type==='cert')und=decideCert(q,a==='approve',note);else{const sb=q.sub;if(a==='approve'){const prev=S.lv.ai;S.lv.ai=Math.max(prev,sb.level);const fr=3+(S.lv.ai>=3&&prev<3?5:0);S.fr+=fr;S.rep.status='ok';S.celebrate={lv:S.lv.ai,req:3,skill:'تقارير الأداء بالذكاء الاصطناعي',fr,by:'محمد اعتمدك'};S.hist.unshift({who:enm(0),what:'تقرير الأداء الأسبوعي',dec:`اعتمد «${LV[sb.level-1]}»`,when:'اليوم',ok:1});und=()=>{S.lv.ai=prev;S.fr-=fr;S.rep.status='sent';S.celebrate=null;S.hist.shift();q.st='pending'}}else{S.rep.status='edit';S.rep.note=note;S.hist.unshift({who:enm(0),what:'تقرير الأداء الأسبوعي',dec:'طلب تعديل',when:'اليوم',ok:0});und=()=>{S.rep.status='sent';S.hist.shift();q.st='pending'}}}
+  render();toast(a==='approve'?'اعتمدت، وانضاف للسجل':'رجّعته لعبدالله مع ملاحظتك',()=>{und();render()})}
+ if(a==='interview'){S.majed.interview=true;render();toast('سجّلت: ماجد شرح تحديه بنفسه')}
+ if(a==='nominate'){S.majed.status='sent';S.hist.unshift({who:'ماجد القحطاني',what:'ملف ترقية · مخطط عمليات',dec:'رشّحه للجنة',when:'اليوم',ok:1});render();toast('رشّحت ماجد، ووصل ملفه للجنة',()=>{S.majed.status='open';S.hist.shift();render()})}
+ if(a==='rejMajed'){const r=($('#mjr')?.value||'').trim();if(r.length<10){toast('اكتب سبب مهني واضح قبل الرفض');$('#mjr')?.focus();return}S.majed.status='rej';S.appeals.push({who:'ماجد القحطاني',what:'رُفض ترشيحه وأدلته قوية · السبب: '+r,st:'تحوّل لهيا'});S.hist.unshift({who:'ماجد القحطاني',what:'ملف ترقية · مخطط عمليات',dec:'رفض: '+r,when:'اليوم',ok:0});render();toast('رفضت، وتحوّل الملف لهيا للمراجعة لأن الأدلة قوية')}
+ if(a==='rot'){S.rot[b.dataset.k]=1;render();toast('اعتمدت التدوير، ووصل إشعار للموظفين')}
+ if(a==='shadow'){const k=b.dataset.k;S.shadows[k]={wms:'خالد المطيري',cold:'سلطان العتيبي',cap:'عبدالله الشمري'}[k];render();toast('بدأ الظل 6 أسابيع')}
+ if(a==='palmInfo')palmSummary(+b.dataset.i);
+ if(a==='goEmp'){S.role='emp';S.tab.emp='path';render();scrollTo({top:0})}
+ if(a==='gap'){const k=b.dataset.k;S.openGap[k]=!S.openGap[k];const w=b.parentElement;w.classList.toggle('open');b.setAttribute('aria-expanded',w.classList.contains('open'))}
+ if(a==='vote'){S.exc.votes[b.dataset.k]=1;if(Object.values(S.exc.votes).filter(Boolean).length===3){S.exc.status='ok';S.audit.unshift({who:'اللجنة',what:'ترقية استثنائية: سارة الزهراني إلى مديرة توزيع (تجربة 3 شهور)',when:'اليوم'})}render()}
+ if(a==='pos'){S.positions[b.dataset.k]=b.dataset.v;render();toast('انطبق القرار: '+b.dataset.v)}
+ if(a==='wSend'){S.Wpending=S.Wdraft;S.audit.unshift({who:'هيا',what:'طلبت تعديل أوزان «مخطط عمليات»',when:'اليوم'});render();toast('أرسلتِ التعديل للجنة')}
+ if(a==='wApprove'){S.W=S.Wpending;S.Wpending=null;S.Wdraft=null;S.audit.unshift({who:'لجنة الموارد البشرية',what:'اعتمدت أوزان «مخطط عمليات» الجديدة',when:'اليوم'});render();toast('اعتمدت اللجنة الأوزان، وتحدّثت الجاهزية للكل')}
+ if(a==='wReject'){S.Wpending=null;S.Wdraft=null;S.audit.unshift({who:'لجنة الموارد البشرية',what:'رفضت تعديل الأوزان',when:'اليوم'});render()}
+ if(a==='newPlan'){const k=['cap','ai','inv','xl'].find(k=>!planOf(k));if(!k){toast('كل المهارات الناقصة لها خطط');return}S.builder=newBuilder(k);drawer(true,'plan')}
+ if(a==='bk'){S.builder=newBuilder(b.dataset.k);drawPlan()}
+ if(a==='autoSa'){const P=PROG[S.builder.k],net=P.cost*(1-P.hadaf);let rem=BUDGET.total-usedBudget();const order=missing(S.builder.k).filter(i=>passF(i,S.builder.f,S.builder.k)).sort(prio);const sel=[];for(const i of order){if(rem-net<0)break;sel.push(i);rem-=net}S.builder.sel=sel;drawPlan();toast(`اخترنا ${sel.length} موظف، السعوديين أول`)}
+ if(a==='sendPlan'){const P=PROG[S.builder.k],n=S.builder.sel.length;S.plans=S.plans.filter(p=>!(p.k===S.builder.k&&p.st==='rej'));S.plans.push({k:S.builder.k,sel:[...S.builder.sel],net:n*P.cost*(1-P.hadaf),hadaf:n*P.cost*P.hadaf,st:'wait',open:false});S.builder=null;drawer(false);render();toast('أرسلتِ الخطة للاعتماد')}
+ if(a==='planOk'){S.plans[+b.dataset.i].st='ok';render();toast('اعتمدت الإدارة الخطة، ووصل الموظفين إشعار')}
+ if(a==='planRej'){S.plans[+b.dataset.i].st='rej';render();toast('رفضت الإدارة الخطة، تقدرين تعدّلينها')}
+ if(a==='editPlan'){const p=S.plans[+b.dataset.i];S.builder={k:p.k,f:{g:'',nat:'',d:'',lv:'',rd:''},sel:[...p.sel]};drawer(true,'plan')}
+ if(a==='track'){const p=S.plans[+b.dataset.i];p.open=!p.open;render()}
+ if(a==='copyPlan'){const p=S.plans[+b.dataset.i];const txt=nm(`خطة تطوير: ${PROG[p.k].n}\n${PROG[p.k].p}\nعدد الموظفين: ${p.sel.length}\nصافي التكلفة: ${sar(p.net)}\n`+[...p.sel].sort(prio).map(i=>`- ${enm(i)} (${DEPTS[EMP[i].d]}): ${progOf(i)}%`).join('\n'));navigator.clipboard?.writeText(txt).then(()=>toast('نسختِ ملخص الخطة'),()=>toast('ما قدرنا ننسخ في هالمتصفح'))}
+ if(a==='closeD'){S.builder=null;drawer(false)}
+ if(a==='closeModal'){$('#modal').classList.remove('on')}
+ if(a==='logout'){S.logged=false}
+});
+$('#dClose').onclick=()=>{S.builder=null;drawer(false)};$('#scrim').onclick=()=>{S.builder=null;drawer(false)};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){drawer(false);$('#modal').classList.remove('on')}});
+
+/* login */
+const RI={emp:'<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>',mgr:'<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>',haya:'<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M4 20V11M10 20V5M16 20v-6M22 20H2"/></svg>'};
+const ROLES={
+ emp:{t:'موظف',d:'أثبت مهاراتك، واعرف طريقك للترقية.',f:[['name','الاسم الكامل','text','عبدالله الشمري'],['eid','الرقم الوظيفي','text','10482'],['title','المسمى الحالي','text','مشرف مستودع'],['dept','الإدارة','text','العمليات']]},
+ mgr:{t:'مدير مباشر',d:'تابع فريقك وأداءهم وعبء شغلهم، ورشّح الجاهزين.',f:[['name','الاسم الكامل','text','محمد العنزي'],['eid','الرقم الوظيفي','text','20117'],['dept','الإدارة','text','العمليات'],['team','عدد أعضاء فريقك','number','12']]},
+ haya:{t:'مسؤول تطوير',d:'المواهب والوظائف والتدريب والحوكمة في مكان واحد.',f:[['name','الاسم الكامل','text','هيا القحطاني'],['eid','الرقم الوظيفي','text','30561'],['org','المنشأة','text','مستودعات الشرق'],['count','عدد الموظفين','number','52']]}};
+function loginStep(role){
+ if(!role){$('#lbox').innerHTML=`<div class="eyebrow">تسجيل الدخول · الخطوة 1 من 2</div><h1 style="font-size:clamp(32px,4.5vw,48px)">مين أنت في المنشأة؟</h1><p style="color:#CFC4B2;margin-top:10px">اختر دورك، ونجهّز لك الشاشة اللي تناسبك.</p><div class="lroles">${Object.entries(ROLES).map(([k,r])=>`<button class="lrole" data-pick="${k}"><span class="ri">${RI[k]}</span><b>${r.t}</b><span>${r.d}</span></button>`).join('')}</div>`;return}
+ const r=ROLES[role];
+ $('#lbox').innerHTML=`<div class="eyebrow">تسجيل الدخول · الخطوة 2 من 2</div><h1 style="font-size:clamp(30px,4vw,44px)">بياناتك الأساسية · ${r.t}</h1><p style="color:#CFC4B2;margin-top:10px">عبّينا الحقول ببيانات تجريبية، وتقدر تعدّلها.</p>
+ <form class="lform" id="lform" novalidate data-lrole="${role}"><div class="fgrid">${r.f.map(([id,l,t,v])=>`<div class="fld" id="f-${id}"><label for="i-${id}">${l}</label>${t==='select'?`<select id="i-${id}">${v.map(o=>`<option>${o}</option>`).join('')}</select>`:`<input id="i-${id}" type="${t==='number'?'text':'text'}" ${t==='number'||id==='eid'?'inputmode="numeric"':''} value="${v}" autocomplete="off">`}<span class="err" aria-live="polite"></span></div>`).join('')}</div>
+ <div class="row between" style="margin-top:18px"><button type="button" class="btn ghost" data-pick="" style="color:var(--ink)">غيّر الدور</button><button type="submit" class="btn">دخول</button></div></form>`;
+ setTimeout(()=>$('#i-name')?.focus(),200)}
+document.addEventListener('click',e=>{const p=e.target.closest('[data-pick]');if(p)loginStep(p.dataset.pick||null)});
+document.addEventListener('submit',e=>{const f=e.target;if(f.id!=='lform')return;e.preventDefault();const role=f.dataset.lrole;let okk=true;
+ const chk=(id,cond,msg)=>{const w=$('#f-'+id);if(!w)return;const bad=!cond(($('#i-'+id).value||'').trim());w.classList.toggle('bad',bad);w.querySelector('.err').textContent=bad?msg:'';if(bad&&okk){okk=false;$('#i-'+id).focus()}};
+ chk('name',v=>v.split(/\s+/).length>=2&&v.length>=5,'اكتب اسمك الأول واسم العائلة');
+ chk('eid',v=>/^[0-9٠-٩]{4,8}$/.test(v),'الرقم الوظيفي من 4 إلى 8 أرقام');
+ ['team','count'].forEach(id=>chk(id,v=>/^[0-9٠-٩]+$/.test(v)&&+v>0,'اكتب رقم صحيح أكبر من صفر'));
+ ['title','dept','org'].forEach(id=>chk(id,v=>v.length>=2,'هذا الحقل مطلوب'));
+ if(!okk)return;
+ S.names[role]=$('#i-name').value.trim().split(/\s+/)[0];S.role=role;S.logged=true;location.hash='#app';setTimeout(()=>toast(`حياك ${S.names[role]}، سجّلت دخولك`),400)});
+
+/* scroll spy */
+const SECS=['top','story','name','how','try','palm','faq','mods','impact','final'];
+function spy(){if($('#landing').hidden)return;let cur='top';for(const id of SECS){const el=document.getElementById(id);if(el&&el.getBoundingClientRect().top<innerHeight*.45)cur=id}
+ $$('#rail a').forEach(a=>a.classList.toggle('on',a.dataset.s===cur));const h=document.documentElement;$('#railbar').style.height=Math.min(100,scrollY/(h.scrollHeight-innerHeight)*100)+'%'}
+addEventListener('scroll',spy,{passive:true});
+
+/* router */
+function route(){const h=location.hash;const v=h==='#app'?(S.logged?'app':'login'):h==='#login'?'login':'landing';
+ $('#app').hidden=v!=='app';$('#login').hidden=v!=='login';$('#landing').hidden=v!=='landing';
+ if(v==='app'){render();scrollTo({top:0})}
+ if(v==='login'){if(h==='#app')history.replaceState(null,'','#login');loginStep(null);scrollTo({top:0})}
+ if(v==='landing'){if(h==='#top'||!h)scrollTo({top:0});spy()}}
+addEventListener('hashchange',route);
+
+buildSky();parallax();drawLv();age();drawPalmL();observe();route();
+}
+</script>
+</body>
+</html>

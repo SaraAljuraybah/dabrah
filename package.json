@@ -1,0 +1,19 @@
+{
+  "name": "dabrah",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "دبره · منصة الترقية بالمهارة (مهاراثون 2026)",
+  "scripts": {
+    "build:site": "python3 scripts/build-site.py",
+    "build:seed": "python3 scripts/make-seed.py",
+    "db:setup": "node scripts/db-setup.mjs",
+    "test:api": "node tests/api.test.mjs",
+    "dev": "vercel dev",
+    "dev:netlify": "netlify dev"
+  },
+  "dependencies": {
+    "pg": "^8.11.0"
+  },
+  "engines": { "node": "22.x" }
+}

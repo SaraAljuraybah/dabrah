@@ -1,0 +1,22 @@
+const {chromium}=require('playwright');
+(async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:1280,height:820}});
+const errs=[];p.on('pageerror',e=>errs.push(e.message));
+await p.goto('file:///home/claude/proto/dabrah.html');await p.waitForTimeout(800);
+const S=async n=>p.screenshot({path:'/home/claude/proto/v3-'+n+'.png'});
+await S('hero');
+for(const id of ['story','name','how','try','palm','faq','impact','final']){await p.evaluate(i=>document.getElementById(i).scrollIntoView(),id);await p.waitForTimeout(1700);await S(id)}
+await p.evaluate(()=>document.getElementById('name').scrollIntoView());await p.click('#word button[data-i="1"]');await p.waitForTimeout(500);await S('name2');
+await p.evaluate(()=>document.getElementById('try').scrollIntoView());await p.click('#lvUp');await p.click('#lvUp');await p.waitForTimeout(700);await S('try5');
+await p.evaluate(()=>document.getElementById('palm').scrollIntoView());for(let i=0;i<6;i++){await p.click('#growBtn');}await p.waitForTimeout(300);await S('palmmax');
+await p.evaluate(()=>document.getElementById('faq').scrollIntoView());await p.click('#faq summary');await p.waitForTimeout(600);await S('faq2');
+await p.hover('#rail a[data-s="how"]');await p.waitForTimeout(500);await S('railhover');
+await p.click('.nav a[href="#login"]');await p.waitForTimeout(700);await S('login1');
+await p.click('[data-pick=emp]');await p.waitForTimeout(400);await p.fill('#i-name','عبدالله');await p.fill('#i-eid','12');await p.click('button[type=submit]');await p.waitForTimeout(300);await S('login-err');
+await p.fill('#i-name','سعود الحربي');await p.fill('#i-eid','10482');await p.click('button[type=submit]');await p.waitForTimeout(1600);await S('app-emp');
+await p.click('[data-act=openCase]');await p.waitForTimeout(500);await p.click('[data-act=nextStep]');await p.click('[data-act=nextStep]');await p.click('[data-act=submit]');await p.waitForTimeout(500);
+await p.click('[data-role=mgr]');await p.waitForTimeout(1200);await S('app-mgr');await p.click('[data-act=approve]');await p.waitForTimeout(300);
+await p.click('[data-role=emp]');await p.waitForTimeout(1500);await S('app-cele');await p.click('[data-act=closeModal]');
+await p.click('[data-act=logout]');await p.waitForTimeout(500);await p.click('[data-pick=mgr]');await p.click('button[type=submit]');await p.waitForTimeout(1200);await S('app-mgr2');
+await p.setViewportSize({width:390,height:844});await p.evaluate(()=>location.hash='#top');await p.waitForTimeout(900);await S('m-hero');
+await p.evaluate(()=>document.getElementById('how').scrollIntoView());await p.waitForTimeout(1500);await S('m-how');
+console.log('errors',errs);await b.close()})();

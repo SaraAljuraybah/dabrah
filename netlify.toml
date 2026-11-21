@@ -1,0 +1,41 @@
+# دبره · إعداد Netlify
+# site/ = الواجهة (ملف واحد)، netlify/functions/ = الـ API، والبيانات في PostgreSQL عبر DATABASE_URL
+[build]
+  publish   = "site"
+  functions = "netlify/functions"
+  command   = "node scripts/write-env.mjs"
+
+[functions]
+  node_bundler = "esbuild"
+
+# الـ API: كل /api/* يروح لدالة api
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+  force = true
+
+# أي مسار غير موجود يرجع للصفحة الرئيسية (التنقل داخل الصفحة بالـ hash)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/env.js"
+  [headers.values]
+    Cache-Control = "no-store"

@@ -1,0 +1,1492 @@
+{
+ "_about": "بيانات دبره التجريبية كما بُنيت عليها المنصة (مستودعات الشرق: اسم تجريبي). الأرقام والأسماء كلها تجريبية.",
+ "levels": [
+  {
+   "level": 1,
+   "name": "مبتدئ"
+  },
+  {
+   "level": 2,
+   "name": "شاطر"
+  },
+  {
+   "level": 3,
+   "name": "ذيب"
+  },
+  {
+   "level": 4,
+   "name": "سنع"
+  },
+  {
+   "level": 5,
+   "name": "دبره"
+  }
+ ],
+ "palm_stages": [
+  {
+   "stage": 0,
+   "name": "فسيلة",
+   "min_fronds": 0
+  },
+  {
+   "stage": 1,
+   "name": "نبتة",
+   "min_fronds": 6
+  },
+  {
+   "stage": 2,
+   "name": "نخلة",
+   "min_fronds": 14
+  },
+  {
+   "stage": 3,
+   "name": "باسقة",
+   "min_fronds": 24
+  }
+ ],
+ "readiness_groups": [
+  {
+   "name": "جاهز الآن",
+   "min_readiness": 80,
+   "color": "#2F6B60"
+  },
+  {
+   "name": "قريب",
+   "min_readiness": 60,
+   "color": "#C9A24A"
+  },
+  {
+   "name": "يحتاج تطوير",
+   "min_readiness": 40,
+   "color": "#C3743F"
+  },
+  {
+   "name": "بداية الطريق",
+   "min_readiness": 0,
+   "color": "#9A8F80"
+  }
+ ],
+ "departments": [
+  {
+   "id": 1,
+   "name": "المستودع المركزي"
+  },
+  {
+   "id": 2,
+   "name": "التوزيع"
+  },
+  {
+   "id": 3,
+   "name": "خدمة العملاء"
+  }
+ ],
+ "skill_types": [
+  {
+   "code": "technical",
+   "name": "فنية",
+   "evidence": "تُثبت بالتحديات والشهادات المطبّقة في شغل المستودع"
+  },
+  {
+   "code": "digital",
+   "name": "تقنية",
+   "evidence": "تُثبت بتحديات على الأدوات الرقمية والذكاء الاصطناعي"
+  },
+  {
+   "code": "behavioral",
+   "name": "سلوكية",
+   "evidence": "تُقاس بتقييم 360 من زملاء يختارهم النظام، ومؤشرات الالتزام"
+  },
+  {
+   "code": "leadership",
+   "name": "قيادية",
+   "evidence": "تُقاس بتقييم 360 ومواقف قيادية فعلية"
+  }
+ ],
+ "skills": [
+  {
+   "code": "cap",
+   "name": "تخطيط الطاقة الاستيعابية",
+   "type": "technical",
+   "required_level": 3
+  },
+  {
+   "code": "inv",
+   "name": "إدارة المخزون",
+   "type": "technical",
+   "required_level": 4
+  },
+  {
+   "code": "fc",
+   "name": "التنبؤ بالطلب",
+   "type": "technical",
+   "required_level": 3
+  },
+  {
+   "code": "ai",
+   "name": "تقارير الأداء بالذكاء الاصطناعي",
+   "type": "digital",
+   "required_level": 3
+  },
+  {
+   "code": "xl",
+   "name": "Excel",
+   "type": "digital",
+   "required_level": 3
+  },
+  {
+   "code": "wms",
+   "name": "نظام إدارة المستودع (WMS)",
+   "type": "digital",
+   "required_level": 3
+  },
+  {
+   "code": "data",
+   "name": "تحليل البيانات ولوحات المؤشرات",
+   "type": "digital",
+   "required_level": 3
+  },
+  {
+   "code": "com",
+   "name": "التواصل الفعّال",
+   "type": "behavioral",
+   "required_level": 3
+  },
+  {
+   "code": "team",
+   "name": "العمل الجماعي",
+   "type": "behavioral",
+   "required_level": 3
+  },
+  {
+   "code": "prob",
+   "name": "حل المشكلات",
+   "type": "behavioral",
+   "required_level": 3
+  },
+  {
+   "code": "safe",
+   "name": "السلامة والجودة",
+   "type": "behavioral",
+   "required_level": 3
+  },
+  {
+   "code": "cust",
+   "name": "التوجه بالعميل",
+   "type": "behavioral",
+   "required_level": 3
+  },
+  {
+   "code": "integ",
+   "name": "النزاهة وحماية البيانات",
+   "type": "behavioral",
+   "required_level": 3
+  },
+  {
+   "code": "lead",
+   "name": "قيادة فريق المستودع",
+   "type": "leadership",
+   "required_level": 3
+  },
+  {
+   "code": "dec",
+   "name": "اتخاذ القرار بالبيانات",
+   "type": "leadership",
+   "required_level": 3
+  },
+  {
+   "code": "dev",
+   "name": "تطوير الآخرين ونقل المعرفة",
+   "type": "leadership",
+   "required_level": 3
+  }
+ ],
+ "job_profiles": [
+  {
+   "code": "ops-planner",
+   "title": "مخطط عمليات",
+   "weights": {
+    "cap": 15,
+    "inv": 12,
+    "fc": 8,
+    "ai": 10,
+    "xl": 5,
+    "wms": 5,
+    "data": 5,
+    "com": 4,
+    "team": 4,
+    "prob": 4,
+    "safe": 3,
+    "cust": 3,
+    "integ": 2,
+    "lead": 8,
+    "dec": 7,
+    "dev": 5
+   }
+  }
+ ],
+ "employees": [
+  {
+   "id": 1,
+   "full_name": "عبدالله الشمري",
+   "gender": "m",
+   "nationality": "سعودي",
+   "is_saudi": true,
+   "department_id": 1,
+   "fronds": 9,
+   "levels": {
+    "cap": 1,
+    "ai": 2,
+    "inv": 3,
+    "lead": 4
+   },
+   "excel_health": "yellow",
+   "score_360": 4.2,
+   "performance": 2,
+   "potential": 3,
+   "weekly_hours": 46
+  },
+  {
+   "id": 2,
+   "full_name": "ماجد القحطاني",
+   "gender": "m",
+   "nationality": "سعودي",
+   "is_saudi": true,
+   "department_id": 1,
+   "fronds": 21,
+   "levels": {
+    "cap": 3,
+    "ai": 3,
+    "inv": 5,
+    "lead": 4
+   },
+   "excel_health": "green",
+   "score_360": 4.4,
+   "performance": 3,
+   "potential": 3,
+   "weekly_hours": 52
+  },
+  {
+   "id": 3,
+   "full_name": "فهد الدوسري",
+   "gender": "m",
+   "nationality": "سعودي",
+   "is_saudi": true,
+   "department_id": 1,
+   "fronds": 12,
+   "levels": {
+    "cap": 1,
+    "ai": 2,
+    "inv": 2,
+    "lead": 3
+   },
+   "excel_health": "green",
+   "score_360": 3.6,
+   "performance": 2,
+   "potential": 2,
+   "weekly_hours": 36
+  },
+  {
+   "id": 4,
+   "full_name": "سلطان العتيبي",
+   "gender": "m",
+   "nationality": "سعودي",
+   "is_saudi": true,
+   "department_id": 1,
+   "fronds": 6,
+   "levels": {
+    "cap": 1,
+    "ai": 1,
+    "inv": 3,
+    "lead": 2
+   },
+   "excel_health": "yellow",
+   "score_360": 4.9,
+   "performance": 1,
+   "potential": 2,
+   "weekly_hours": 31
+  },
+  {
+   "id": 5,
+   "full_name": "نورة السبيعي",
+   "gender": "f",
+   "nationality": "سعودي",
+   "is_saudi": true,
+   "department_id": 1,
+   "fronds": 16,
+   "levels": {
+    "cap": 2,
+    "ai": 3,
+    "inv": 3,
+    "lead": 3
+   },
+   "excel_health": "green",
+   "score_360": 4.1,
+   "performance": 3,
+   "potential": 2,
+   "weekly_hours": 41
+  },
+  {
+   "id": 6,
+   "full_name": "خالد المطيري",
+   "gender": "m",
+   "nationality": "سعودي",
+   "is_saudi": true,
+   "department_id": 1,
+   "fronds": 4,
+   "levels": {
+    "cap": 1,
+    "ai": 1,
+    "inv": 2,
+    "lead": 2
+   },
+   "excel_health": "yellow",
+   "score_360": 3.4,
+   "performance": 1,
+   "potential": 1,
+   "weekly_hours": 27
+  },
+  {
+   "id": 7,
+   "full_name": "عمر الحسيني",
+   "gender": "m",
+   "nationality": "الأردن",
+   "is_saudi": false,
+   "department_id": 1,
+   "fronds": 14,
+   "levels": {
+    "cap": 2,
+    "ai": 2,
+    "inv": 3,
+    "lead": 3
+   },
+   "excel_health": "green",
+   "score_360": 3.9,
+   "performance": 2,
+   "potential": 2,
+   "weekly_hours": 44
+  },
+  {
+   "id": 8,
+   "full_name": "ريم الحربي",
+   "gender": "f",
+   "nationality": "سعودي",
+   "is_saudi": true,
+   "department_id": 2,
+   "fronds": 14,
+   "levels": {
+    "cap": 2,
+    "ai": 2,
+    "inv": 4,
+    "lead": 3
+   },
+   "excel_health": "green",
+   "score_360": 4,
+   "performance": 2,
+   "potential": 3,
+   "weekly_hours": 40
+  },
+  {
+   "id": 9,
+   "full_name": "تركي الغامدي",
+   "gender": "m",
+   "nationality": "سعودي",
+   "is_saudi": true,
+   "department_id": 2,
+   "fronds": 8,
+   "levels": {
+    "cap": 1,
+    "ai": 2,
+    "inv": 3,
+    "lead": 2
+   },
+   "excel_health": "yellow",
+   "score_360": 3.5,
+   "performance": 2,
+   "potential": 1,
+   "weekly_hours": 35
+  },
+  {
+   "id": 10,
+   "full_name": "سارة الزهراني",
+   "gender": "f",
+   "nationality": "سعودي",
+   "is_saudi": true,
+   "department_id": 2,
+   "fronds": 19,
+   "levels": {
+    "cap": 3,
+    "ai": 2,
+    "inv": 3,
+    "lead": 4
+   },
+   "excel_health": "green",
+   "score_360": 4.6,
+   "performance": 3,
+   "potential": 3,
+   "weekly_hours": 47
+  },
+  {
+   "id": 11,
+   "full_name": "بندر الشهري",
+   "gender": "m",
+   "nationality": "سعودي",
+   "is_saudi": true,
+   "department_id": 2,
+   "fronds": 5,
+   "levels": {
+    "cap": 1,
+    "ai": 1,
+    "inv": 2,
+    "lead": 2
+   },
+   "excel_health": "green",
+   "score_360": 3.3,
+   "performance": 1,
+   "potential": 2,
+   "weekly_hours": 30
+  },
+  {
+   "id": 12,
+   "full_name": "لمى العمري",
+   "gender": "f",
+   "nationality": "سعودي",
+   "is_saudi": true,
+   "department_id": 2,
+   "fronds": 11,
+   "levels": {
+    "cap": 2,
+    "ai": 3,
+    "inv": 3,
+    "lead": 3
+   },
+   "excel_health": "yellow",
+   "score_360": 4,
+   "performance": 2,
+   "potential": 2,
+   "weekly_hours": 39
+  },
+  {
+   "id": 13,
+   "full_name": "ناصر البقمي",
+   "gender": "m",
+   "nationality": "سعودي",
+   "is_saudi": true,
+   "department_id": 2,
+   "fronds": 7,
+   "levels": {
+    "cap": 1,
+    "ai": 2,
+    "inv": 2,
+    "lead": 2
+   },
+   "excel_health": "green",
+   "score_360": 3.6,
+   "performance": 2,
+   "potential": 1,
+   "weekly_hours": 37
+  },
+  {
+   "id": 14,
+   "full_name": "أنيل كومار",
+   "gender": "m",
+   "nationality": "الهند",
+   "is_saudi": false,
+   "department_id": 2,
+   "fronds": 10,
+   "levels": {
+    "cap": 1,
+    "ai": 2,
+    "inv": 3,
+    "lead": 2
+   },
+   "excel_health": "green",
+   "score_360": 3.8,
+   "performance": 2,
+   "potential": 1,
+   "weekly_hours": 42
+  },
+  {
+   "id": 15,
+   "full_name": "منيرة العنزي",
+   "gender": "f",
+   "nationality": "سعودي",
+   "is_saudi": true,
+   "department_id": 3,
+   "fronds": 10,
+   "levels": {
+    "cap": 1,
+    "ai": 2,
+    "inv": 3,
+    "lead": 3
+   },
+   "excel_health": "green",
+   "score_360": 4.1,
+   "performance": 2,
+   "potential": 2,
+   "weekly_hours": 38
+  },
+  {
+   "id": 16,
+   "full_name": "عبدالرحمن السهلي",
+   "gender": "m",
+   "nationality": "سعودي",
+   "is_saudi": true,
+   "department_id": 3,
+   "fronds": 13,
+   "levels": {
+    "cap": 2,
+    "ai": 2,
+    "inv": 4,
+    "lead": 3
+   },
+   "excel_health": "yellow",
+   "score_360": 3.9,
+   "performance": 2,
+   "potential": 2,
+   "weekly_hours": 41
+  },
+  {
+   "id": 17,
+   "full_name": "أمل الرشيدي",
+   "gender": "f",
+   "nationality": "سعودي",
+   "is_saudi": true,
+   "department_id": 3,
+   "fronds": 3,
+   "levels": {
+    "cap": 1,
+    "ai": 1,
+    "inv": 2,
+    "lead": 2
+   },
+   "excel_health": "green",
+   "score_360": 3.7,
+   "performance": 1,
+   "potential": 2,
+   "weekly_hours": 33
+  },
+  {
+   "id": 18,
+   "full_name": "يوسف الجهني",
+   "gender": "m",
+   "nationality": "سعودي",
+   "is_saudi": true,
+   "department_id": 3,
+   "fronds": 9,
+   "levels": {
+    "cap": 1,
+    "ai": 3,
+    "inv": 3,
+    "lead": 2
+   },
+   "excel_health": "green",
+   "score_360": 3.8,
+   "performance": 2,
+   "potential": 2,
+   "weekly_hours": 36
+  },
+  {
+   "id": 19,
+   "full_name": "هند الشمراني",
+   "gender": "f",
+   "nationality": "سعودي",
+   "is_saudi": true,
+   "department_id": 3,
+   "fronds": 15,
+   "levels": {
+    "cap": 2,
+    "ai": 2,
+    "inv": 3,
+    "lead": 3
+   },
+   "excel_health": "yellow",
+   "score_360": 4.2,
+   "performance": 3,
+   "potential": 2,
+   "weekly_hours": 40
+  },
+  {
+   "id": 20,
+   "full_name": "دانة المالكي",
+   "gender": "f",
+   "nationality": "سعودي",
+   "is_saudi": true,
+   "department_id": 3,
+   "fronds": 6,
+   "levels": {
+    "cap": 1,
+    "ai": 1,
+    "inv": 3,
+    "lead": 2
+   },
+   "excel_health": "green",
+   "score_360": 3.5,
+   "performance": 1,
+   "potential": 2,
+   "weekly_hours": 34
+  },
+  {
+   "id": 21,
+   "full_name": "ماريا سانتوس",
+   "gender": "f",
+   "nationality": "الفلبين",
+   "is_saudi": false,
+   "department_id": 3,
+   "fronds": 8,
+   "levels": {
+    "cap": 1,
+    "ai": 2,
+    "inv": 2,
+    "lead": 2
+   },
+   "excel_health": "green",
+   "score_360": 3.6,
+   "performance": 2,
+   "potential": 1,
+   "weekly_hours": 39
+  }
+ ],
+ "programs": [
+  {
+   "skill_code": "cap",
+   "name": "تخطيط الطاقة الاستيعابية",
+   "description": "برنامج تخطيط الطاقة (أسبوعين) + تحديين",
+   "required_level": 3,
+   "cost_per_employee": 3200,
+   "hadaf_support": 0.7
+  },
+  {
+   "skill_code": "ai",
+   "name": "تقارير الأداء بالذكاء الاصطناعي",
+   "description": "ورشة داخلية يقدمها ماجد + تحدي عملي",
+   "required_level": 3,
+   "cost_per_employee": 0,
+   "hadaf_support": 0
+  },
+  {
+   "skill_code": "inv",
+   "name": "إدارة المخزون",
+   "description": "دورة دروب المجانية + تحدي جرد",
+   "required_level": 4,
+   "cost_per_employee": 150,
+   "hadaf_support": 0
+  },
+  {
+   "skill_code": "xl",
+   "name": "Excel (تجديد)",
+   "description": "تحدي تجديد 10 دقائق",
+   "required_level": 0,
+   "cost_per_employee": 0,
+   "hadaf_support": 0
+  }
+ ],
+ "budget": {
+  "year": 2026,
+  "total": 120000
+ },
+ "department_budgets": [
+  {
+   "department_id": 1,
+   "last_year_spend": 31000,
+   "impact": "عالي",
+   "skills_needed": 9
+  },
+  {
+   "department_id": 2,
+   "last_year_spend": 21500,
+   "impact": "متوسط",
+   "skills_needed": 11
+  },
+  {
+   "department_id": 3,
+   "last_year_spend": 15000,
+   "impact": "منخفض",
+   "skills_needed": 10
+  }
+ ],
+ "completed_programs": [
+  {
+   "name": "السلامة والجودة في المستودع",
+   "cost": 24000,
+   "department_id": 1,
+   "kpi": "أخطاء التجهيز",
+   "before": "3.9%",
+   "after": "2.8%"
+  },
+  {
+   "name": "ورشة الذكاء الاصطناعي · الدفعة الأولى",
+   "cost": 13500,
+   "department_id": 2,
+   "kpi": "الاستخدام الأسبوعي للذكاء الاصطناعي",
+   "before": "18%",
+   "after": "41%"
+  },
+  {
+   "name": "شهادات Excel المتقدم",
+   "cost": 9000,
+   "department_id": 3,
+   "kpi": "وقت إعداد التقارير",
+   "before": "70 د",
+   "after": "45 د"
+  }
+ ],
+ "kpi_definitions": [
+  {
+   "code": "err",
+   "name": "أخطاء التجهيز",
+   "formula": "الطلبات اللي طلع فيها خطأ (صنف غلط أو كمية ناقصة) ÷ كل الطلبات المجهّزة",
+   "source": "بلاغات المراجعة في نظام إدارة المستودع",
+   "unit": "%",
+   "lower_is_better": true
+  },
+  {
+   "code": "late",
+   "name": "متوسط التأخير",
+   "formula": "متوسط الدقائق بين وقت خروج الطلب المخطط ووقت خروجه الفعلي، مرجّح بعدد الطلبات",
+   "source": "أوقات المسح في نظام إدارة المستودع",
+   "unit": " د",
+   "lower_is_better": true
+  },
+  {
+   "code": "inv",
+   "name": "دقة الجرد",
+   "formula": "المواقع اللي عدّها الفعلي يطابق رصيد النظام ÷ كل المواقع المجرودة",
+   "source": "نتائج الجرد الدوري",
+   "unit": "%",
+   "lower_is_better": false
+  },
+  {
+   "code": "uph",
+   "name": "طلبات في الساعة",
+   "formula": "الطلبات المجهّزة ÷ ساعات التجهيز الفعلية للفريق",
+   "source": "نظام إدارة المستودع ونظام الحضور",
+   "unit": "",
+   "lower_is_better": false
+  },
+  {
+   "code": "keep",
+   "name": "المحافظة على المهارات",
+   "formula": "مهاراتك المحدّثة ÷ كل مهاراتك المعتمدة",
+   "source": "عمر المهارة في دبره",
+   "unit": "%",
+   "lower_is_better": false
+  },
+  {
+   "code": "load",
+   "name": "عبء العمل",
+   "formula": "ساعات الشغل الفعلية في الأسبوع ÷ 40 ساعة. فوق 110% مضغوط، وتحت 80% عنده مساحة",
+   "source": "نظام الحضور والمهام المسندة، ويتحدث مع كل تدوير",
+   "unit": "",
+   "lower_is_better": false
+  }
+ ],
+ "kpi_values": [
+  {
+   "kpi_code": "err",
+   "employee_id": 1,
+   "value": 2.1
+  },
+  {
+   "kpi_code": "err",
+   "employee_id": 2,
+   "value": 3.4
+  },
+  {
+   "kpi_code": "err",
+   "employee_id": 3,
+   "value": 2.6
+  },
+  {
+   "kpi_code": "err",
+   "employee_id": 4,
+   "value": 3.1
+  },
+  {
+   "kpi_code": "err",
+   "employee_id": 5,
+   "value": 2.4
+  },
+  {
+   "kpi_code": "err",
+   "employee_id": 6,
+   "value": 2.9
+  },
+  {
+   "kpi_code": "err",
+   "employee_id": 7,
+   "value": 2.2
+  },
+  {
+   "kpi_code": "late",
+   "employee_id": 1,
+   "value": 31
+  },
+  {
+   "kpi_code": "late",
+   "employee_id": 2,
+   "value": 44
+  },
+  {
+   "kpi_code": "late",
+   "employee_id": 3,
+   "value": 35
+  },
+  {
+   "kpi_code": "late",
+   "employee_id": 4,
+   "value": 40
+  },
+  {
+   "kpi_code": "late",
+   "employee_id": 5,
+   "value": 29
+  },
+  {
+   "kpi_code": "late",
+   "employee_id": 6,
+   "value": 38
+  },
+  {
+   "kpi_code": "late",
+   "employee_id": 7,
+   "value": 33
+  },
+  {
+   "kpi_code": "inv",
+   "employee_id": 1,
+   "value": 99.1
+  },
+  {
+   "kpi_code": "inv",
+   "employee_id": 2,
+   "value": 97.4
+  },
+  {
+   "kpi_code": "inv",
+   "employee_id": 3,
+   "value": 98.8
+  },
+  {
+   "kpi_code": "inv",
+   "employee_id": 4,
+   "value": 97.9
+  },
+  {
+   "kpi_code": "inv",
+   "employee_id": 5,
+   "value": 99.3
+  },
+  {
+   "kpi_code": "inv",
+   "employee_id": 6,
+   "value": 98.2
+  },
+  {
+   "kpi_code": "inv",
+   "employee_id": 7,
+   "value": 98.6
+  },
+  {
+   "kpi_code": "uph",
+   "employee_id": 1,
+   "value": 96
+  },
+  {
+   "kpi_code": "uph",
+   "employee_id": 2,
+   "value": 84
+  },
+  {
+   "kpi_code": "uph",
+   "employee_id": 3,
+   "value": 93
+  },
+  {
+   "kpi_code": "uph",
+   "employee_id": 4,
+   "value": 88
+  },
+  {
+   "kpi_code": "uph",
+   "employee_id": 5,
+   "value": 99
+  },
+  {
+   "kpi_code": "uph",
+   "employee_id": 6,
+   "value": 90
+  },
+  {
+   "kpi_code": "uph",
+   "employee_id": 7,
+   "value": 94
+  },
+  {
+   "kpi_code": "keep",
+   "employee_id": 1,
+   "value": 100
+  },
+  {
+   "kpi_code": "keep",
+   "employee_id": 2,
+   "value": 80
+  },
+  {
+   "kpi_code": "keep",
+   "employee_id": 3,
+   "value": 90
+  },
+  {
+   "kpi_code": "keep",
+   "employee_id": 4,
+   "value": 70
+  },
+  {
+   "kpi_code": "keep",
+   "employee_id": 5,
+   "value": 100
+  },
+  {
+   "kpi_code": "keep",
+   "employee_id": 6,
+   "value": 85
+  },
+  {
+   "kpi_code": "keep",
+   "employee_id": 7,
+   "value": 95
+  }
+ ],
+ "challenges": [
+  {
+   "code": "weekly-report",
+   "skill_code": "ai",
+   "title": "تقرير أداء المستودع الأسبوعي",
+   "max_score": 8,
+   "auto_approve_score": 7,
+   "week_data": [
+    {
+     "day": "السبت",
+     "orders": 520,
+     "error_rate": 2.4,
+     "delay_minutes": 30
+    },
+    {
+     "day": "الأحد",
+     "orders": 560,
+     "error_rate": 2.5,
+     "delay_minutes": 32
+    },
+    {
+     "day": "الإثنين",
+     "orders": 590,
+     "error_rate": 2.6,
+     "delay_minutes": 34
+    },
+    {
+     "day": "الثلاثاء",
+     "orders": 610,
+     "error_rate": 2.7,
+     "delay_minutes": 35
+    },
+    {
+     "day": "الأربعاء",
+     "orders": 640,
+     "error_rate": 2.9,
+     "delay_minutes": 38
+    },
+    {
+     "day": "الخميس",
+     "orders": 780,
+     "error_rate": 3.6,
+     "delay_minutes": 52
+    },
+    {
+     "day": "الجمعة",
+     "orders": 420,
+     "error_rate": 2.3,
+     "delay_minutes": 28
+    }
+   ],
+   "criteria": [
+    {
+     "title": "يغطي المؤشرات الثلاثة",
+     "detail": "الطلبات، وأخطاء التجهيز، والتأخير"
+    },
+    {
+     "title": "ثلاث ملاحظات مرقّمة",
+     "detail": "كل ملاحظة في سطر لحالها"
+    },
+    {
+     "title": "المجاميع صحيحة",
+     "detail": "4,120 طلب، 2.8% أخطاء، 37 دقيقة، وبدون خطأ الأداة"
+    },
+    {
+     "title": "يحدد يوم الذروة صح",
+     "detail": "من الجدول اليومي"
+    },
+    {
+     "title": "يقارن بالأسبوع الماضي",
+     "detail": "نسبة التغيّر في الطلبات (3,887 طلب الأسبوع الماضي)"
+    },
+    {
+     "title": "توصية قابلة للقياس",
+     "detail": "فيها رقم أو هدف تقدر تتابعه"
+    },
+    {
+     "title": "البيانات محمية",
+     "detail": "ما فيه أسماء ولا هويات ولا جوالات"
+    },
+    {
+     "title": "تحقق من مخرجات الأداة",
+     "detail": "يذكر وش راجع وبأي رقم"
+    }
+   ]
+  }
+ ],
+ "certificate_questions": [
+  {
+   "skill_code": "inv",
+   "position": 1,
+   "question": "صنف يطلع منه 40 حبة يوميًا، ومدة التوريد 5 أيام، ومخزون الأمان 60. عند كم حبة تطلب؟",
+   "options": [
+    "200",
+    "260",
+    "300"
+   ],
+   "correct_index": 1
+  },
+  {
+   "skill_code": "inv",
+   "position": 2,
+   "question": "طلع فرق جرد 3% في صنف عالي القيمة. وش أول خطوة؟",
+   "options": [
+    "تعدّل الرصيد مباشرة",
+    "تراجع حركات الصنف الأخيرة وتعيد العد",
+    "تتجاهله لأنه أقل من 5%"
+   ],
+   "correct_index": 1
+  },
+  {
+   "skill_code": "inv",
+   "position": 3,
+   "question": "أي فئة في تصنيف ABC تحتاج جرد دوري أكثر؟",
+   "options": [
+    "A",
+    "B",
+    "C"
+   ],
+   "correct_index": 0
+  },
+  {
+   "skill_code": "inv",
+   "position": 4,
+   "question": "مخزون بطيء الحركة من 3 شهور، وش القرار الأنسب؟",
+   "options": [
+    "تطلب كمية أكبر عشان الخصم",
+    "تحلل الطلب وتقترح تخفيض أو نقل",
+    "تتركه لين يطلع"
+   ],
+   "correct_index": 1
+  },
+  {
+   "skill_code": "cap",
+   "position": 1,
+   "question": "المستودع يجهّز 90 طلب في الساعة بـ6 مجهزين. الخميس متوقع 780 طلب خلال 7 ساعات. كم مجهز تحتاج تقريبًا؟",
+   "options": [
+    "6",
+    "8",
+    "10"
+   ],
+   "correct_index": 1
+  },
+  {
+   "skill_code": "cap",
+   "position": 2,
+   "question": "نسبة الاستغلال 95% طول الأسبوع. وش الخطر؟",
+   "options": [
+    "ما فيه مرونة للذروة",
+    "هذا أفضل وضع",
+    "المستودع فاضي"
+   ],
+   "correct_index": 0
+  },
+  {
+   "skill_code": "cap",
+   "position": 3,
+   "question": "أي مؤشر يقيس كفاءة استخدام المساحة؟",
+   "options": [
+    "نسبة إشغال المواقع",
+    "عدد الموظفين",
+    "ساعات الدوام"
+   ],
+   "correct_index": 0
+  },
+  {
+   "skill_code": "cap",
+   "position": 4,
+   "question": "توقعت 600 طلب وجاء 780. وش تسوي في توقع الأسبوع الجاي؟",
+   "options": [
+    "تثبّت 600",
+    "تعيد التوقع بإضافة اتجاه آخر 4 أسابيع",
+    "تزيد 50% احتياط"
+   ],
+   "correct_index": 1
+  }
+ ],
+ "renewal_questions": [
+  {
+   "skill_code": "xl",
+   "position": 1,
+   "question": "أي دالة تجمع مبيعات مستودع واحد بس؟",
+   "options": [
+    "SUMIF",
+    "VLOOKUP",
+    "COUNT"
+   ],
+   "correct_index": 0
+  },
+  {
+   "skill_code": "xl",
+   "position": 2,
+   "question": "وش يسوي الـPivot Table؟",
+   "options": [
+    "يرسم خريطة",
+    "يلخّص البيانات ويجمعها حسب فئات",
+    "يحذف التكرار بس"
+   ],
+   "correct_index": 1
+  },
+  {
+   "skill_code": "xl",
+   "position": 3,
+   "question": "تبي تجيب اسم المنتج من رقمه في جدول ثاني، وش تستخدم؟",
+   "options": [
+    "SUM",
+    "ROUND",
+    "XLOOKUP"
+   ],
+   "correct_index": 2
+  }
+ ],
+ "mentors": [
+  {
+   "employee_id": 2,
+   "name": "ماجد القحطاني",
+   "slot": "الأحد 2 م · 30 دقيقة"
+  }
+ ],
+ "workshops": [
+  {
+   "code": "wms",
+   "title": "نظام إدارة المستودع المتقدم",
+   "details": "يقدمها ماجد القحطاني · الأحد 10 ص"
+  },
+  {
+   "code": "cold",
+   "title": "تحميل التبريد بأمان",
+   "details": "يقدمها عمر الحسيني · الثلاثاء 1 م"
+  },
+  {
+   "code": "ai",
+   "title": "تقارير الأداء بالذكاء الاصطناعي",
+   "details": "تقدمها نورة السبيعي · الخميس 11 ص"
+  }
+ ],
+ "courses": [
+  {
+   "code": "k1",
+   "title": "أساسيات تحليل البيانات للمشرفين",
+   "schedule": "الإثنين 7 ديسمبر · 9 ص إلى 12 م · قاعة التدريب",
+   "seats_note": "12 مقعد متبقي"
+  },
+  {
+   "code": "k2",
+   "title": "السلامة في المستودعات (تجديد سنوي)",
+   "schedule": "الأربعاء 9 ديسمبر · أونلاين",
+   "seats_note": "مفتوحة"
+  },
+  {
+   "code": "k3",
+   "title": "قيادة الفرق الميدانية",
+   "schedule": "14 و15 ديسمبر · قاعة التدريب",
+   "seats_note": "8 مقاعد متبقية"
+  }
+ ],
+ "content_items": [
+  {
+   "code": "c1",
+   "title": "دليل إجراءات الجرد الدوري",
+   "meta": "PDF · 12 صفحة · رفعته الشركة"
+  },
+  {
+   "code": "c2",
+   "title": "فيديو: ترتيب الرفوف حسب ABC",
+   "meta": "8 دقائق · رفعه ماجد"
+  },
+  {
+   "code": "c3",
+   "title": "قوالب تقرير الأداء الأسبوعي",
+   "meta": "ملف Excel · رفعته هيا"
+  }
+ ],
+ "internal_jobs": [
+  {
+   "code": "p1",
+   "title": "منسّق تخطيط عمليات",
+   "meta": "العمليات · مهمة مؤقتة 3 شهور",
+   "skills": "تخطيط الطاقة، تقارير البيانات"
+  },
+  {
+   "code": "p2",
+   "title": "مدرّب Excel داخلي",
+   "meta": "الموارد البشرية · 4 ساعات أسبوعيًا",
+   "skills": "Excel، التواصل"
+  },
+  {
+   "code": "p3",
+   "title": "مصوّر محتوى",
+   "meta": "التسويق · مهمة مؤقتة",
+   "skills": "التصوير، المونتاج"
+  }
+ ],
+ "positions": [
+  {
+   "code": "p1",
+   "title": "مخطط عمليات ثاني",
+   "department_id": 1,
+   "reason": "العبء عالي على ماجد، والطلبات زادت 6%",
+   "recommendation": "داخلي",
+   "note": "2 داخليين جاهزين (ماجد، سارة)"
+  },
+  {
+   "code": "p2",
+   "title": "فني تبريد",
+   "department_id": 1,
+   "reason": "مهارة حرجة يحتكرها شخص واحد",
+   "recommendation": "داخلي مع ظل",
+   "note": "سلطان بعد ظل 6 أسابيع"
+  },
+  {
+   "code": "p3",
+   "title": "مدخل بيانات",
+   "department_id": 3,
+   "reason": "الأتمتة خففت العمل 40%",
+   "recommendation": "إغلاق",
+   "note": "حوّل الموظفين لمهام أعلى قيمة"
+  },
+  {
+   "code": "p4",
+   "title": "محلل بيانات",
+   "department_id": 2,
+   "reason": "ما فيه أحد عنده المهارة داخليًا",
+   "recommendation": "خارجي",
+   "note": "بعد ما تجرّبين سوق المواهب الداخلي"
+  }
+ ],
+ "rotations": [
+  {
+   "code": "r1",
+   "to_employee_id": 6,
+   "from_employee_id": 2,
+   "hours": 10,
+   "description": "خالد المطيري يتدوّر 3 شهور مع ماجد في نظام إدارة المستودع",
+   "impact": "يخفف ضغط ماجد، ويكسر احتكار المعرفة"
+  },
+  {
+   "code": "r2",
+   "to_employee_id": 4,
+   "from_employee_id": 7,
+   "hours": 6,
+   "description": "سلطان العتيبي ينتقل شهرين لمنطقة التبريد مع عمر",
+   "impact": "يتعلم مهارة حرجة، ويرفع أدلته الفنية"
+  },
+  {
+   "code": "r3",
+   "to_employee_id": 3,
+   "from_employee_id": 1,
+   "hours": 5,
+   "description": "عبدالله الشمري يسلّم تقرير الخميس لفهد",
+   "impact": "يوازن العبء ويطوّر فهد في التقارير"
+  }
+ ],
+ "talent_boxes": [
+  {
+   "code": "3-3",
+   "name": "نجوم المستقبل",
+   "meaning": "أداء عالي وإمكانات عالية",
+   "action": "حطيهم في التعاقب الوظيفي",
+   "done_message": "أضفناهم لخطط التعاقب"
+  },
+  {
+   "code": "2-3",
+   "name": "إمكانات عالية",
+   "meaning": "أداؤه جيد ويقدر يكبر",
+   "action": "عيّني له مرشد",
+   "done_message": "عيّنا لهم مرشدين"
+  },
+  {
+   "code": "1-3",
+   "name": "جوهرة مخفية",
+   "meaning": "أداؤه ضعيف لكن إمكاناته عالية، ممكن مكانه غلط",
+   "action": "اقترحي تدوير",
+   "done_message": "أُرسلت اقتراحات تدوير لمديريهم"
+  },
+  {
+   "code": "3-2",
+   "name": "أداء عالي",
+   "meaning": "ممتاز في شغله، وإمكاناته متوسطة",
+   "action": "كافئيه",
+   "done_message": "أُرسلت توصية مكافأة"
+  },
+  {
+   "code": "2-2",
+   "name": "الأساس المتين",
+   "meaning": "ثابت ويعتمد عليه",
+   "action": "طوّريه بخطة",
+   "done_message": "أُضيفوا لقائمة الخطط"
+  },
+  {
+   "code": "1-2",
+   "name": "يحتاج دعم",
+   "meaning": "أداؤه ضعيف وإمكاناته متوسطة",
+   "action": "خطة تحسين",
+   "done_message": "أُرسلت خطط تحسين"
+  },
+  {
+   "code": "3-1",
+   "name": "محترف ثابت",
+   "meaning": "ممتاز في مكانه، ما يحتاج ترقية",
+   "action": "حافظي عليه",
+   "done_message": "أُرسلت توصية استبقاء"
+  },
+  {
+   "code": "2-1",
+   "name": "أداء مقبول",
+   "meaning": "مستقر بدون نمو واضح",
+   "action": "راجعيه مع مديره",
+   "done_message": "أُرسل طلب مراجعة"
+  },
+  {
+   "code": "1-1",
+   "name": "يحتاج مراجعة",
+   "meaning": "أداء وإمكانات ضعيفة",
+   "action": "خطة تحسين 90 يوم",
+   "done_message": "أُرسلت خطط تحسين"
+  }
+ ],
+ "promotion_files": [
+  {
+   "id": 1,
+   "employee_id": 2,
+   "from_title": "مشرف مستودع",
+   "to_title": "مخطط عمليات",
+   "readiness": 100,
+   "status": "open"
+  }
+ ],
+ "exceptional_promotions": [
+  {
+   "id": 1,
+   "employee_id": 10,
+   "from_title": "مشرفة توزيع",
+   "to_title": "مديرة توزيع (تجربة 3 شهور)",
+   "rationale": "وفّرت 340 ألف ريال بالسنة، وأثبتت 4 من 5 جدارات للمنصب الأعلى",
+   "votes_needed": 3,
+   "status": "pending"
+  }
+ ],
+ "audit_log": [
+  {
+   "actor": "هيا",
+   "action": "اعتماد ملف جدارات «مخطط عمليات»",
+   "when_text": "قبل شهرين"
+  },
+  {
+   "actor": "لجنة الموارد البشرية",
+   "action": "إضافة جدارة «تقارير الأداء بالذكاء الاصطناعي» بوزن 10%",
+   "when_text": "قبل 3 شهور"
+  }
+ ],
+ "approvals_log": [
+  {
+   "employee_name": "ماجد القحطاني",
+   "item": "تحدي جرد ذكي · إدارة المخزون",
+   "decision": "اعتماد تلقائي «دبره» (8 من 8)",
+   "approved": true,
+   "when_text": "قبل 5 أيام"
+  },
+  {
+   "employee_name": "نورة السبيعي",
+   "item": "تقرير الأداء بالذكاء الاصطناعي",
+   "decision": "اعتماد تلقائي «ذيب» (7 من 8)",
+   "approved": true,
+   "when_text": "قبل أسبوعين"
+  },
+  {
+   "employee_name": "فهد الدوسري",
+   "item": "شهادة خارجية · تخطيط الطاقة",
+   "decision": "سُجّلت نظرية تلقائيًا (2 من 4)",
+   "approved": false,
+   "when_text": "قبل 3 أسابيع"
+  },
+  {
+   "employee_name": "سلطان العتيبي",
+   "item": "تحدي تجديد Excel",
+   "decision": "تجديد تلقائي (3 من 3)",
+   "approved": true,
+   "when_text": "قبل شهر"
+  }
+ ],
+ "team": [
+  {
+   "name": "جنا السعيد",
+   "lead": true,
+   "roles": [
+    "التصميم",
+    "العرض",
+    "البناء"
+   ],
+   "linkedin": "https://www.linkedin.com/in/%D8%AC%D9%86%D8%A7-%D8%A7%D9%84%D8%B3%D8%B9%D9%8A%D9%80%D8%AF-jana-alsaeed-b26583340"
+  },
+  {
+   "name": "لارا الفريح",
+   "lead": false,
+   "roles": [
+    "البحث",
+    "نموذج العمل",
+    "التصميم"
+   ],
+   "linkedin": "https://www.linkedin.com/in/laraalfurayh"
+  },
+  {
+   "name": "عبير السدحان",
+   "lead": false,
+   "roles": [
+    "البحث",
+    "العرض التقديمي",
+    "البناء"
+   ],
+   "linkedin": "https://www.linkedin.com/in/alsadhan"
+  },
+  {
+   "name": "ساره الجريبه",
+   "lead": false,
+   "roles": [
+    "قواعد البيانات والاستضافة",
+    "البناء"
+   ],
+   "linkedin": "https://www.linkedin.com/in/sara-aljuraybah-aa746227a"
+  },
+  {
+   "name": "ميس السويكت",
+   "lead": false,
+   "roles": [
+    "البحث",
+    "نموذج العمل",
+    "البناء"
+   ],
+   "linkedin": "https://www.linkedin.com/in/mays-al-suwaiket-67a695411"
+  }
+ ]
+}

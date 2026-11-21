@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>دبره · بروتوتايب</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap">
+<style>
+/* VOICE: نجدي دافي، واثق، قصير
+   IDEA: بيت طين نجدي؛ الشُّرفة = المستوى، الباب = الفرصة، الكوّة = الخطوة الجاية
+   PICTURE: درجات شُرف متدرجة تمثل مستويات كل مهارة
+   COLOUR and TYPE: ليل نجد أخضر داكن، طين، رملي، جص؛ IBM Plex Sans Arabic
+   LAYOUT: شريط علوي + تنقل جانبي (يصير أفقي في الجوال) + لوحة عمل */
+:root{color-scheme:light;--night:#0E1A17;--night2:#17281F;--teen:#A4643C;--teenD:#8A4F2C;--sand:#D8B98A;--jes:#EFE4D2;--paper:#F7F1E6;--card:#FFFDF8;--door:#2F6B60;--ink:#16130F;--mut:#5E554A;--line:#E3D7C3;--ok:#2F6B60;--warn:#B7791F}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.65 'IBM Plex Sans Arabic','DejaVu Sans',system-ui,sans-serif;overflow-x:clip}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--sand);outline-offset:2px}
+header{background:var(--night);color:var(--jes);display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px;padding:12px max(3vw,14px)}
+header .logo{height:38px}
+.roles{display:flex;gap:6px;flex-wrap:wrap;margin-inline-start:auto}
+.roles button,.xbtn{min-height:44px;border-radius:22px;border:1.5px solid rgba(239,228,210,.35);background:transparent;color:var(--jes);padding:0 16px;font-size:14px}
+.roles button[aria-pressed=true]{background:var(--jes);color:var(--night);border-color:var(--jes);font-weight:700}
+.xbtn[aria-pressed=true]{background:var(--teen);border-color:var(--teen);color:#fff;font-weight:700}
+.wrap{display:grid;grid-template-columns:230px minmax(0,1fr);min-height:calc(100vh - 68px)}
+nav{background:#EFE6D6;padding:20px 12px;display:flex;flex-direction:column;gap:4px;border-left:1px solid var(--line)}
+nav .who{font-size:13px;color:var(--mut);padding:0 12px 10px}
+nav button{display:flex;align-items:center;gap:10px;min-height:46px;border:0;background:transparent;text-align:start;padding:0 12px;border-radius:12px;color:var(--ink);font-size:15px}
+nav button[aria-current=page]{background:var(--night);color:var(--jes);font-weight:700}
+nav svg{flex:none}
+main{padding:clamp(18px,3vw,40px);max-width:1180px;width:100%}
+h1{font-size:clamp(26px,3.4vw,38px);line-height:1.15;margin:0 0 6px;text-wrap:balance}
+h2{font-size:21px;margin:0 0 12px;line-height:1.3}
+h3{font-size:17px;margin:0 0 6px}
+p{margin:0 0 10px}
+.sub{color:var(--mut);margin-bottom:22px}
+.grid{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px 22px}
+.dark{background:var(--night);color:var(--jes);border-color:var(--night)}
+.dark .mut{color:#BFB5A3}
+.teen{background:var(--teen);color:#fff;border-color:var(--teen)}
+.mut{color:var(--mut);font-size:14px}
+.btn{min-height:46px;border-radius:24px;border:0;background:var(--night);color:var(--jes);padding:0 22px;font-weight:700;font-size:15px}
+.btn.sand{background:var(--sand);color:var(--night)}
+.btn.ghost{background:transparent;border:1.5px solid currentColor;color:inherit}
+.row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.between{justify-content:space-between}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:13px;border-radius:14px;padding:3px 10px;background:#EFE6D6;color:var(--ink);white-space:nowrap}
+.pill.g{background:#DCEBE6;color:#1F4D45}.pill.y{background:#F7E7C6;color:#7A4E0F}.pill.r{background:#F3DACC;color:#7A3417}
+.bar{height:10px;border-radius:5px;background:#E8DCC7;overflow:hidden}.bar i{display:block;height:100%;background:var(--teen);border-radius:5px;transition:width .8s}
+.dark .bar{background:rgba(239,228,210,.15)}.dark .bar i{background:var(--sand)}
+.big{font-size:clamp(34px,5vw,52px);font-weight:700;line-height:1}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{font-size:13px;color:var(--mut);font-weight:500;text-align:start;padding:8px 6px;border-bottom:1px solid var(--line)}
+td{padding:12px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+.num{text-align:end;white-space:nowrap;font-variant-numeric:tabular-nums}
+.note{display:none;margin:0 0 20px;background:#FBF3E4;border:1.5px dashed var(--teen);border-radius:18px;padding:14px 18px;font-size:15px}
+.explain .note{display:block}
+.note b.t{color:var(--teenD)}
+.note .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.note .chips span{font-size:12.5px;background:var(--night);color:var(--jes);border-radius:12px;padding:3px 10px}
+.steps{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.steps span{flex:1 1 120px;text-align:center;font-size:13px;padding:8px;border-radius:12px;background:#EFE6D6;color:var(--mut)}
+.steps span.on{background:var(--night);color:var(--jes);font-weight:700}
+.policy{background:#F3DACC;border-radius:14px;padding:12px 16px;color:#5A2410;font-size:14.5px}
+.prompt{background:var(--night);color:var(--jes);border-radius:14px;padding:14px 16px;font-size:14.5px;white-space:pre-line}
+textarea{width:100%;min-height:96px;border:1.5px solid var(--line);border-radius:14px;padding:12px;font-size:16px;background:#fff;color:var(--ink)}
+label{font-weight:700;font-size:15px;display:block;margin-bottom:6px}
+.ladder{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap}
+.ladder div{flex:1 1 140px;border-radius:14px;padding:12px 14px;background:#EFE6D6;font-size:14px}
+.ladder div.now{background:var(--teen);color:#fff}.ladder div.goal{background:var(--night);color:var(--jes)}
+.toast{position:fixed;inset:0;background:rgba(14,26,23,.82);display:none;align-items:center;justify-content:center;z-index:9;padding:20px}
+.toast.on{display:flex}
+.toast .card{max-width:420px;text-align:center;background:var(--night);color:var(--jes);border:0}
+.door{animation:open 1s ease-out}
+@keyframes open{from{transform:perspective(500px) rotateY(70deg);opacity:0}to{transform:none;opacity:1}}
+@media(prefers-reduced-motion:reduce){.door{animation:none}.bar i{transition:none}}
+.badge{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;font-size:13px;flex:1 1 90px}
+.loop{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;counter-reset:s}
+.loop div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;font-size:14px}
+.loop div b{display:block;color:var(--teenD)}
+@media(max-width:860px){.wrap{grid-template-columns:1fr}nav{flex-direction:row;overflow-x:auto;padding:8px;border-left:0;border-bottom:1px solid var(--line)}nav .who{display:none}nav button{flex:none;white-space:nowrap}header .roles{margin-inline-start:0}}
+@media(max-width:600px){table{font-size:13.5px}.stack thead{display:none}.stack tr{display:grid;padding-block:10px;border-bottom:1px solid var(--line)}.stack td{display:flow-root;border:0;padding:3px 0;padding-inline-start:8em;text-align:start}.stack td::before{content:attr(data-l);float:inline-start;width:7.5em;margin-inline-start:-8em;color:var(--mut)}.stack td:empty{display:none}}
+</style>
+</head>
+<body class="explain">
+<header>
+  <img class="logo" src="data:image/png;base64,__LOGO_J__" alt="دبره">
+  <div class="roles" role="group" aria-label="اختر المستخدم">
+    <button data-role="emp" aria-pressed="true">عبدالله · الموظف</button>
+    <button data-role="mgr" aria-pressed="false">أبو فهد · المدير</button>
+    <button data-role="haya" aria-pressed="false">هيا · التدريب والتطوير</button>
+  </div>
+  <button class="xbtn" id="xp" aria-pressed="true">وضع الشرح للحكام</button>
+</header>
+<div class="wrap">
+  <nav id="nav" aria-label="التنقل"></nav>
+  <main id="main"></main>
+</div>
+<div class="toast" id="toast" role="dialog" aria-modal="true" aria-labelledby="tt"><div class="card door" id="tcard"></div></div>
+<script>
+{
+const $=s=>document.querySelector(s);
+const S={role:'emp',scr:{emp:'home',mgr:'appr',haya:'team'},step:0,sent:false,ok:false,celebrated:false,lb:true};
+const LV=['مبتدي','شاطر','سنع','دبره','ذيب'];
+const tri=(n,max=5,sz=18,c='#A4643C',e='#E3D7C3')=>{let o='';for(let i=0;i<max;i++){const h=sz*(0.5+i*0.18);o+=`<svg width="${sz}" height="${h.toFixed(0)}" viewBox="0 0 6 ${(h/sz*6).toFixed(2)}" aria-hidden="true" style="align-self:flex-end"><path d="M0 ${(h/sz*6).toFixed(2)}V${(h/sz*4).toFixed(2)}H1V${(h/sz*2).toFixed(2)}H2V0H4V${(h/sz*2).toFixed(2)}H5V${(h/sz*4).toFixed(2)}H6V${(h/sz*6).toFixed(2)}Z" fill="${i<n?c:e}"/></svg>`}return `<span style="display:inline-flex;gap:3px;align-items:flex-end" role="img" aria-label="${LV[n-1]||'—'}">${o}</span>`};
+const note=(t,body,chips)=>`<div class="note"><b class="t">${t}</b><div>${body}</div><div class="chips">${chips.map(c=>`<span>${c}</span>`).join('')}</div></div>`;
+const ic={home:'M3 11l9-8 9 8v10h-6v-6H9v6H3z',path:'M4 20l5-7 4 4 7-11',case:'M5 3h14v18H5zM9 8h6M9 12h6M9 16h4',skills:'M12 3l9 6v12H3V9z',ai:'M12 2v4M12 18v4M2 12h4M18 12h4M6 6l2 2M16 16l2 2M6 18l2-2M16 8l2-2',about:'M12 3a9 9 0 100 18 9 9 0 000-18zM12 8v.5M12 11v6',appr:'M4 12l5 5L20 6',team:'M3 20V10M9 20V4M15 20v-7M21 20V8',};
+const svg=k=>`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${ic[k]}"/></svg>`;
+const NAV={
+ emp:{who:'عبدالله، مشرف وردية',items:[['home','الرئيسية'],['path','خطوتي الجاية'],['case','التحديات'],['skills','مهاراتي'],['ai','أدواتي الذكية'],['about','الفكرة']]},
+ mgr:{who:'أبو فهد، مدير العمليات',items:[['appr','طلبات الاعتماد'],['about','الفكرة']]},
+ haya:{who:'هيا، مديرة التدريب والتطوير',items:[['team','لوحة التطوير'],['about','الفكرة']]}};
+const skills=()=>[
+ {n:'إدارة الورديات بالذكاء الاصطناعي',c:S.ok?3:2,r:3,h:'g',d:S.ok?'اليوم':'قبل 4 شهور',ai:1},
+ {n:'قيادة فريق الوردية',c:4,r:3,h:'g',d:'قبل شهرين'},
+ {n:'تقارير المستودع',c:3,r:4,h:'g',d:'قبل 3 أسابيع'},
+ {n:'تخطيط الطاقة الاستيعابية',c:1,r:3,h:'g',d:'قبل 6 شهور'},
+ {n:'Excel',c:3,r:3,h:'y',d:'قبل 11 شهر'}];
+const match=()=>S.ok?71:62;
+
+const V={};
+V.home=()=>`
+<h1>هلا عبدالله</h1><p class="sub">مشرف وردية في مستودعات الشرق، وهدفك: مخطط عمليات</p>
+${note('ليش هذي الشاشة؟','عبدالله يشوف من أول نظرة: وين هو، ووش خطوته الجاية، ووش من مهاراته يحتاج تجديد. يعني ما يحتاج أحد يقول له من وين يبدأ.',['نقطة ألم: متطلبات الترقي غير واضحة','محور: المسار الوظيفي','عمر المهارة'])}
+<div class="grid">
+ <div class="card dark">
+  <div class="row between"><span class="mut">جاهزيتك لوظيفة مخطط عمليات</span><span class="pill">${S.ok?'+9 هالأسبوع':'آخر تحديث قبل أسبوع'}</span></div>
+  <div class="big" style="margin:10px 0">${match()}%</div>
+  <div class="bar"><i style="width:${match()}%"></i></div>
+  <p class="mut" style="margin-top:10px">${S.ok?'باقي لك مهارتين وتصير جاهز للترقية':'باقي لك ثلاث مهارات وتصير جاهز للترقية'}</p>
+ </div>
+ <div class="card">
+  <span class="pill">${S.ok?'خطوتك الجاية':'خطوتك الجاية · 25 دقيقة'}</span>
+  <h2 style="margin-top:10px">${S.ok?'تخطيط الطاقة الاستيعابية: ابدأ بالمستوى الأول':'تحدي: جدولة ورديات الأسبوع الجاي بالذكاء الاصطناعي'}</h2>
+  <p class="mut">${S.ok?'تعلّم قصير من دروب (ساعتين)، بعده تحدي عملي من شغلك.':'مهمة من شغلك الحقيقي، تحلها بالأداة المعتمدة في شركتك، ويعتمدها مديرك.'}</p>
+  <button class="btn" data-go="${S.ok?'path':'case'}">${S.ok?'شوف المسار':'ابدأ التحدي'}</button>
+ </div>
+ <div class="card">
+  <h3>صحة مهاراتك</h3>
+  <div class="row between" style="margin-top:10px"><span>Excel</span><span class="pill y">بتصدّي خلال 12 يوم</span></div>
+  <p class="mut" style="margin:6px 0 10px">ما استخدمتها في تحدي من 11 شهر. تحدي تجديد سريع (10 دقائق) يرجعها خضراء.</p>
+  <button class="btn ghost" data-renew>جدّدها</button>
+ </div>
+ <div class="card">
+  <h3>المطلوب في شركتك هالربع</h3>
+  ${[['تخطيط الطاقة الاستيعابية',8],['الذكاء الاصطناعي في الجدولة',6],['تحليل أسباب التأخير',4]].map(([n,v])=>`<div class="row between" style="margin-top:8px"><span>${n}</span><span class="pill">${v} فرص داخلية</span></div>`).join('')}
+  <p class="mut" style="margin-top:10px">رادار مصغّر من الوظائف الداخلية · بيانات تجريبية</p>
+ </div>
+</div>`;
+
+V.path=()=>`
+<h1>خطوتي الجاية</h1><p class="sub">خريطة الفجوة بين وظيفتك الحين والوظيفة اللي تبيها</p>
+${note('خريطة الفجوة','الشركة تدخل سلّمها الوظيفي، ودبره تقارن مهارات عبدالله بمتطلبات الدرجة الجاية. كل مهارة ناقصة لها تعلّم قصير مربوط بمهامه، وبعده تحدي يثبتها. كذا التدريب يصير مرتبط بالوظيفة وبقرار الترقية.',['نقطة ألم: تدريب عام لا يرتبط بالترقية','سؤال الحزمة 3: وش يخلي المدير يحتسب المهارة؟','محور: مهارات المستقبل'])}
+<div class="card" style="margin-bottom:18px">
+ <h3>سلّمك في مستودعات الشرق</h3>
+ <div class="ladder" style="margin-top:10px"><div class="now">مشرف وردية<br><small>أنت هنا</small></div><div class="goal">مخطط عمليات<br><small>هدفك · ${match()}% جاهز</small></div><div>مدير عمليات<br><small>بعدها</small></div></div>
+</div>
+<div class="card">
+ <table class="stack"><thead><tr><th>المهارة</th><th>مستواك</th><th>المطلوب</th><th>الخطوة</th></tr></thead><tbody>
+ ${skills().map(s=>`<tr><td><b>${s.n}</b>${s.ai?' <span class="pill g">ذكاء اصطناعي</span>':''}</td><td>${tri(s.c)} <span class="mut">${LV[s.c-1]}</span></td><td>${LV[s.r-1]}</td><td>${s.c>=s.r?'<span class="pill g">جاهزة</span>':s.ai?'<button class="btn" style="min-height:40px" data-go="case">تحدي 25 دقيقة</button>':`<span class="pill">${s.r-s.c===1?'درجة':'درجتين'} · تعلّم + تحدي</span>`}</td></tr>`).join('')}
+ </tbody></table>
+ <p class="mut" style="margin-top:12px">المدة المتوقعة للجاهزية: ${S.ok?'5 أسابيع':'6 أسابيع'} · التعلّم من دروب وبرامج هدف، والإثبات بتحديات من شغلك</p>
+</div>`;
+
+const caseSteps=['الموقف','استخدم الأداة','سلّم وتحقق','النتيجة'];
+V.case=()=>{const st=S.sent?3:S.step;return `
+<h1>تحدي: جدولة ورديات الأسبوع الجاي</h1><p class="sub">مهارة: إدارة الورديات بالذكاء الاصطناعي · من شاطر إلى سنع</p>
+${note('التحدي العملي (الكيس)','الذكاء الاصطناعي يولّد التحدي من مهام وظيفة عبدالله الحقيقية، والمدير يراجعه ويعدّل عليه. ما نسأله «وش تعرف عن الذكاء الاصطناعي؟»، نخليه يستخدمه في شغله ونقيس النتيجة. وتنبيه البيانات داخل التحدي نفسه.',['سؤال الحزمة 1: المهمة اللي توفر أكبر وقت','سؤال الحزمة 2: تعلّم فعلًا مو حضر دورة','سؤال الحزمة 5: وش ما يدخل في الأداة','مؤشر: الوقت الموفر'])}
+<div class="steps">${caseSteps.map((t,i)=>`<span class="${i===st?'on':''}">${i+1}. ${t}</span>`).join('')}</div>
+<div class="card">${[
+`<h2>الموقف</h2><p>عندك 18 موظف على 3 ورديات، واثنين في إجازة الأسبوع الجاي، والذروة يوم الخميس بسبب شحنات نهاية الشهر. المطلوب جدول يغطي الذروة، ويوزع الورديات الليلية بعدل، ويلتزم بساعات العمل النظامية.</p><p class="mut">كنت تسويه يدوي بحوالي 65 دقيقة.</p><button class="btn" data-step="1">فهمت، كمّل</button>`,
+`<h2>استخدم الأداة المعتمدة في شركتك</h2><div class="policy"><b>قبل لا تبدأ:</b> لا تدخل أسماء الموظفين ولا أرقام هوياتهم ولا بيانات العملاء. استخدم رموز مثل م1، م2. هذي سياسة شركتك المعتمدة.</div><p style="margin-top:14px">مثال على طلب صحيح:</p><div class="prompt">عندي 18 موظف (م1 إلى م18) و3 ورديات.
+م4 وم11 في إجازة. الخميس يحتاج 40% زيادة.
+سوّ جدول أسبوعي يوزع الليلي بالتساوي
+وما يتجاوز 48 ساعة للموظف.</div><div class="row" style="margin-top:14px"><button class="btn" data-step="2">سويت الجدول، كمّل</button><button class="btn ghost" data-step="0">رجوع</button></div>`,
+`<h2>سلّم جدولك</h2><label for="f">ارفع الجدول</label><input id="f" type="file" style="margin-bottom:14px;font-size:16px"><label for="v">كيف تحققت من مخرجات الأداة؟</label><textarea id="v">راجعت إن م7 ما عنده ليلتين ورا بعض، وصححت تغطية الخميس لأن الأداة حطت 5 بدل 7.</textarea><div class="row" style="margin-top:14px"><button class="btn" data-send>سلّم التحدي</button><button class="btn ghost" data-step="1">رجوع</button></div>`,
+`<div class="row between"><h2>تقييم مبدئي من الذكاء الاصطناعي</h2><span class="pill ${S.ok?'g':'y'}">${S.ok?'اعتمده مديرك':'بانتظار اعتماد مديرك'}</span></div>
+<table class="stack"><thead><tr><th>المعيار</th><th>النتيجة</th></tr></thead><tbody>
+<tr><td>تغطية الذروة</td><td><span class="pill g">محقق</span></td></tr><tr><td>عدالة توزيع الليلي</td><td><span class="pill g">محقق</span></td></tr><tr><td>الالتزام بساعات العمل</td><td><span class="pill g">محقق</span></td></tr><tr><td>التحقق من مخرجات الأداة</td><td><span class="pill g">محقق · لقط خطأ الخميس</span></td></tr><tr><td>حماية البيانات</td><td><span class="pill g">استخدم رموز</span></td></tr></tbody></table>
+<div class="grid" style="margin-top:16px"><div class="card dark"><span class="mut">الوقت</span><div class="big">25 د</div><span class="mut">بدل 65 دقيقة يدوي، يعني وفّرت 40 دقيقة</span></div><div class="card"><span class="mut">المستوى المقترح</span><div style="margin:8px 0">${tri(3,5,26)}</div><b>سنع</b><p class="mut">الذكاء الاصطناعي يقترح، ومديرك يعتمد</p></div></div>`][st]}</div>`};
+
+V.skills=()=>`
+<h1>مهاراتي</h1><p class="sub">كل مهارة لها مستواها الخاص، وصحتها، وتاريخ آخر إثبات</p>
+${note('بطاقة المهارات و الـXP','المستوى ما يرتفع إلا بالإثبات. والـXP يقيس النشاط والالتزام، ويفتح مزايا مثل التحديات المميزة، لكنه ما يرفع المستوى، عشان ما أحد يتلاعب بالنظام. ومهارات الشغل اللي ما كانت موثّقة، صار لها سجل يشوفه المدير.',['نقطة ألم: مهارات مكتسبة لا توثّق','Gamification','عمر المهارة'])}
+<div class="card" style="margin-bottom:18px"><table class="stack"><thead><tr><th>المهارة</th><th>المستوى</th><th>الصحة</th><th>آخر إثبات</th></tr></thead><tbody>
+${skills().map(s=>`<tr><td><b>${s.n}</b></td><td>${tri(s.c)} ${LV[s.c-1]}</td><td><span class="pill ${s.h}">${s.h==='g'?'محدّثة':'بتصدّي'}</span></td><td class="mut">${s.d}</td></tr>`).join('')}</tbody></table></div>
+<div class="grid">
+ <div class="card dark"><div class="row between"><h3>نقاط الـXP</h3><span class="pill">سلسلة 5 أسابيع</span></div><div class="big" style="margin:8px 0">${S.sent?1480:1240}</div><p class="mut">مهاراتك كلها خضراء من 5 أسابيع. كمّل لـ8 وتاخذ شارة «ما يصدّي».</p></div>
+ <div class="card"><h3>شاراتك</h3><div class="row" style="margin-top:10px;align-items:flex-start">
+  ${[['كفو','أول تحدي معتمد',S.ok],['السبّاق','تعلّم مهارة قبل ما يرتفع طلبها',true],['ما يصدّي','8 أسابيع كل المهارات خضراء',false]].map(([n,d,on])=>`<div class="badge" style="opacity:${on?1:.4}">${tri(on?3:1,3,22,on?'#A4643C':'#BBB')}<b>${n}</b><span class="mut">${d}</span></div>`).join('')}</div></div>
+ <div class="card"><div class="row between"><h3>صدارة الأسبوع · الجدولة</h3><button class="btn ghost" style="min-height:36px;font-size:13px" data-lb aria-pressed="${S.lb}">${S.lb?'أظهرني':'مخفي'}</button></div>
+  ${[['م. القحطاني',320],[S.lb?'أنت':'مشارك مخفي',S.sent?240:0],['ف. الدوسري',190]].sort((a,b)=>b[1]-a[1]).map((r,i)=>`<div class="row between" style="margin-top:8px"><span>${i+1}. ${r[0]}</span><span class="num">${r[1]} XP</span></div>`).join('')}
+  <p class="mut" style="margin-top:8px">داخل شركتك، لكل مهارة، تتصفّر أسبوعيًا، والظهور اختياري</p></div>
+</div>`;
+
+V.ai=()=>`
+<h1>أدواتي الذكية</h1><p class="sub">وش يقدر الذكاء الاصطناعي يسوي لك في شغلك، وبأمان</p>
+${note('تبني الذكاء الاصطناعي في العمل اليومي','مكتبة حالات استخدام لكل وظيفة، مع الوقت اللي توفره، وسياسة الشركة واضحة قدامه. وكل حالة يقدر يحولها لتحدي يثبت فيه المهارة. وهذا يحل التردد والخوف بدل ما يتجاهلها.',['نقطة ألم: فجوة بين الوعي والاستخدام','نقطة ألم: غياب سياسة واضحة','سؤال الحزمة 4: الخوف من الاستبدال','مؤشر: الاستخدام الأسبوعي'])}
+<div class="card teen" style="margin-bottom:18px"><h2 style="margin:0">الذكاء الاصطناعي ما ياخذ مكانك، ياخذ عنك الشغل الممل.</h2><p style="margin:6px 0 0">والموظف اللي يتقن أدواته هو اللي يترقى.</p></div>
+<div class="grid">
+ ${[['جدولة الورديات','40 دقيقة أسبوعيًا',1],['تلخيص تقرير الحوادث اليومي','15 دقيقة يوميًا',0],['تحليل أسباب تأخر الشحنات','ساعة شهريًا',0],['صياغة رسائل التسليم للفريق','10 دقائق يوميًا',0]].map(([n,t,done])=>`<div class="card"><div class="row between"><h3>${n}</h3>${done?'<span class="pill g">أثبتها</span>':''}</div><p class="mut">يوفر تقريبًا ${t}</p><button class="btn ${done?'ghost':''}" ${done?'':'data-go="case"'}>${done?'شوف التحدي':'جرّبها كتحدي'}</button></div>`).join('')}
+ <div class="card dark"><h3>سياسة مستودعات الشرق</h3><p><b>الأدوات المعتمدة:</b> المساعد الداخلي للشركة</p><p><b>ممنوع تدخله:</b> أسماء الموظفين وهوياتهم، وبيانات العملاء، والعقود، والأسعار</p><p class="mut">مبنية على مبادئ سدايا للاستخدام المسؤول</p></div>
+</div>`;
+
+V.appr=()=>`
+<h1>طلبات الاعتماد</h1><p class="sub">مهارات أثبتها فريقك وتنتظر رأيك</p>
+${note('المدير يعتمد، مو الآلة','الذكاء الاصطناعي يقترح المستوى ويعرض الأدلة، والمدير يعتمد أو يطلب تعديل. والمهارة المعتمدة تنحسب مباشرة في ملف ترقية الموظف. كذا التقييم عادل وشفاف، وما فيه تقييم آلي من دون علم الموظف.',['سؤال الحزمة 3: احتساب المهارة في الترقية','أخلاقيات الذكاء الاصطناعي','الشخصية: المدير المباشر'])}
+<div class="card">
+ <div class="row between"><div><h2 style="margin:0">عبدالله · إدارة الورديات بالذكاء الاصطناعي</h2><p class="mut">تحدي جدولة الأسبوع الجاي · ${S.sent?'سلّمه اليوم':'لم يسلّم بعد'}</p></div>${S.ok?'<span class="pill g">معتمد</span>':''}</div>
+ ${S.sent?`<div class="grid" style="margin:14px 0"><div><span class="mut">اقتراح الذكاء الاصطناعي</span><div style="margin:6px 0">${tri(3,5,24)}</div><b>سنع</b> <span class="mut">(من شاطر)</span></div><div><span class="mut">الأدلة</span><p style="margin:4px 0">حقق 5 من 5 معايير، ولقط خطأ في مخرجات الأداة وصححه، واستخدم رموز بدل الأسماء.</p></div><div><span class="mut">الوقت</span><p class="big" style="font-size:32px;margin:4px 0">25 د</p><span class="mut">المعدل اليدوي 65 د</span></div></div>
+ ${S.ok?'<p><b>انحسبت في ملف ترقيته.</b> جاهزيته لمخطط عمليات صارت 71%.</p>':'<div class="row"><button class="btn" data-ok>اعتمد المستوى</button><button class="btn ghost" data-nope>اطلب تعديل</button></div>'}`:'<p class="mut" style="margin-top:12px">بدّل لعبدالله وخلّه يسلّم التحدي أول.</p><button class="btn" data-as="emp" data-go="case">روح لعبدالله</button>'}
+</div>
+<div class="card" style="margin-top:18px"><h3>جاهزية فريقك للترقية</h3>
+ ${[['عبدالله',match()],['م. القحطاني',78],['ف. الدوسري',54]].map(([n,v])=>`<div style="margin-top:10px"><div class="row between"><span>${n}</span><span class="num">${v}%</span></div><div class="bar"><i style="width:${v}%"></i></div></div>`).join('')}</div>`;
+
+V.team=()=>{const k=[['يستخدمون الذكاء الاصطناعي أسبوعيًا','18%',S.ok?'43%':'41%'],['الوقت الموفّر في جدولة الورديات','0',S.ok?'40 د/أسبوع':'38 د/أسبوع'],['إكمال خطط التطوير','22%',S.ok?'66%':'64%'],['جاهزون للترقية','3 من 52',S.ok?'8 من 52':'7 من 52']];return `
+<h1>لوحة التطوير</h1><p class="sub">مستودعات الشرق · 52 موظف ميداني · بيانات تجريبية مبنية على أرقام هيئة الإحصاء</p>
+${note('لوحة هيا','هيا تشوف مهارات فريقها، ومين جاهز للترقية، وأثر التدريب بالأرقام، ووين توجّه ميزانيتها المحدودة، مع ربط ببرامج هدف. والمؤشرات هي نفسها اللي في حزمة التحدي.',['الشخصية: هيا','محور: قياس الأثر','مؤشرات الحزمة الأربعة','الاستبقاء بعد 12 شهر'])}
+<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr))">${k.map(([n,a,b],i)=>`<div class="card ${i===0?'dark':''}"><span class="mut">${n}</span><div class="big" style="font-size:34px;margin:8px 0">${b}</div><span class="mut">قبل دبره: ${a}</span></div>`).join('')}</div>
+<div class="grid" style="margin-top:18px">
+ <div class="card"><h3>أكثر المهارات الناقصة في الفريق</h3>
+  ${[['تخطيط الطاقة الاستيعابية',23],['الذكاء الاصطناعي في الجدولة',S.ok?16:17],['تحليل أسباب التأخير',12],['Excel (بتصدّي)',9]].map(([n,v])=>`<div style="margin-top:10px"><div class="row between"><span>${n}</span><span class="num">${v} موظف</span></div><div class="bar"><i style="width:${v/23*100}%"></i></div></div>`).join('')}
+ </div>
+ <div class="card dark"><h3>وين توجّهين الميزانية</h3><p>23 موظف ناقصهم تخطيط الطاقة. برنامج مدعوم من هدف يغطي 70% من التكلفة.</p><p class="mut">مقترح · راجعي دليل برامج هدف 2026</p><button class="btn sand">أنشئ خطة للفريق</button></div>
+ <div class="card"><h3>آخر الاعتمادات</h3>
+  ${S.ok?'<div class="row between" style="margin-top:8px"><span>عبدالله · الجدولة بالذكاء الاصطناعي</span><span class="pill g">سنع</span></div>':''}
+  <div class="row between" style="margin-top:8px"><span>م. القحطاني · تقارير المستودع</span><span class="pill g">دبره</span></div>
+  <div class="row between" style="margin-top:8px"><span>ف. الدوسري · Excel</span><span class="pill g">شاطر</span></div></div>
+</div>`};
+
+V.about=()=>`
+<div class="card dark" style="padding:clamp(22px,4vw,44px);margin-bottom:20px">
+ <img src="data:image/png;base64,__LOGO_J__" alt="دبره" style="height:clamp(60px,9vw,96px)">
+ <h1 style="margin-top:18px;color:var(--jes)">لا تسأل عن الخبرة... اسأل عن الدبره</h1>
+ <p style="max-width:720px">في نجد يقولون «دبره» عن الشخص السنع اللي يُعتمد عليه، ويقولونها يوم يشوفونه يشتغل، مو على عمره ولا شهاداته. ودبره منصة تخلي الموظف السعودي في وظائف الخدمات والوظائف الميدانية يثبت مهاراته، ومنها مهارات الذكاء الاصطناعي، وتنحسب له في الترقية.</p>
+ <p class="mut">مهاراثون · المسار الأول · السؤال 1.2 مسيرة للمستقبل</p>
+</div>
+<h2>المشكلة</h2>
+<div class="grid" style="margin-bottom:22px">
+ <div class="card"><b>عبدالله، 27 سنة</b><p>مشرف وردية من سنتين، يبي يصير مخطط عمليات. يتعلم في شغله ويجرب الذكاء الاصطناعي، لكن ما شي يتوثّق ولا ينحسب، ولا يعرف وش ناقصه.</p></div>
+ <div class="card"><b>هيا، 35 سنة</b><p>مديرة تدريب لـ1,200 موظف بميزانية محدودة. مطلوب منها تبني الذكاء الاصطناعي بين الموظفين الميدانيين، وما تعرف من وين تبدأ ولا كيف تقيس النتيجة.</p></div>
+ <div class="card"><b>بالأرقام</b><p>33.1% من المنشآت استخدمت الذكاء الاصطناعي في 2025، و2026 عام الذكاء الاصطناعي، ونظام العمل يلزم صاحب العمل بتدريب السعوديين وتأهيلهم.</p><span class="mut">هيئة الإحصاء، سدايا، وزارة الموارد البشرية</span></div>
+</div>
+<h2>كيف تشتغل دبره</h2>
+<div class="loop" style="margin-bottom:22px">${[['اعرف خطوتك','خريطة الفجوة من سلّم شركتك'],['تعلّم','قصير ومربوط بمهامك'],['أثبت','تحدي من شغلك الحقيقي'],['يعتمد مديرك','الذكاء الاصطناعي يقترح والمدير يقرر'],['تترقى','المهارة تنحسب في ملفك'],['حافظ عليها','عمر المهارة يذكّرك تجددها']].map(([a,b])=>`<div><b>${a}</b>${b}</div>`).join('')}</div>
+<h2>أسئلة الحزمة وإجاباتنا</h2>
+<div class="card" style="margin-bottom:22px"><table class="stack"><thead><tr><th>السؤال</th><th>إجابة دبره</th></tr></thead><tbody>
+${[['المهمة اللي يوفّر فيها الذكاء الاصطناعي أكبر وقت','جدولة الورديات: 65 دقيقة صارت 25'],['كيف تعرفون إنه تعلّم فعلًا؟','تحدي عملي من شغله، مو شهادة حضور'],['وش يخلي المدير يحتسب المهارة؟','المهارة مربوطة بسلّم الشركة، والمدير يعتمدها بضغطة'],['الخوف من إن التقنية تحل محله','الذكاء الاصطناعي من أدوات الدبره، وإتقانه طريق الترقية'],['وش ما يدخل في أداة عامة؟','السياسة داخل كل تحدي، ونقيس حماية البيانات كمعيار']].map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td></tr>`).join('')}</tbody></table></div>
+<div class="grid">
+ <div class="card"><h3>كيف نقيس الأثر</h3><p>نسبة الاستخدام الأسبوعي للذكاء الاصطناعي، والوقت الموفّر في المهمة، ونسبة إكمال خطط التطوير، والترقي والاستبقاء بعد 12 شهر.</p></div>
+ <div class="card"><h3>العدالة والبيانات</h3><p>الملف ملك الموظف. الذكاء الاصطناعي يقترح، والمدير يعتمد، والموظف يشوف السبب. والبيانات في النموذج تجريبية. ملتزمين بمبادئ أخلاقيات الذكاء الاصطناعي من سدايا.</p></div>
+ <div class="card"><h3>الخطوة الجاية</h3><p>رادار سوق أوسع، وربط مباشر مع دروب وهدف، وإن الموظف ياخذ ملفه المعتمد معه لو انتقل لشركة ثانية.</p></div>
+</div>`;
+
+function render(){
+ document.querySelectorAll('[data-role]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.role===S.role));
+ const n=NAV[S.role],cur=S.scr[S.role];
+ $('#nav').innerHTML=`<div class="who">${n.who}</div>`+n.items.map(([k,t])=>`<button data-go="${k}" ${k===cur?'aria-current="page"':''}>${svg(k)}${t}</button>`).join('');
+ $('#main').innerHTML=V[cur]();
+ if(S.role==='emp'&&S.ok&&!S.celebrated){S.celebrated=true;pop(`${tri(3,5,34,'#D8B98A','rgba(239,228,210,.2)')}<h2 id="tt" style="margin:16px 0 6px;font-size:30px">كفو!</h2><p>مديرك اعتمدك «سنع» في إدارة الورديات بالذكاء الاصطناعي.<br>جاهزيتك لمخطط عمليات صارت 71%.</p><button class="btn sand" data-close>أبشر</button>`)}
+}
+function pop(h){$('#tcard').innerHTML=h;$('#toast').classList.add('on');$('#tcard').classList.remove('door');void $('#tcard').offsetWidth;$('#tcard').classList.add('door');$('[data-close]')?.focus()}
+document.addEventListener('click',e=>{
+ const t=e.target.closest('button');if(!t)return;
+ if(t.dataset.role){S.role=t.dataset.role;render();window.scrollTo(0,0);return}
+ if(t.id==='xp'){const on=document.body.classList.toggle('explain');t.setAttribute('aria-pressed',on);return}
+ if(t.dataset.as){S.role=t.dataset.as}
+ if(t.dataset.go){const g=t.dataset.go;if(NAV[S.role].items.some(i=>i[0]===g)){S.scr[S.role]=g}render();window.scrollTo(0,0);return}
+ if(t.dataset.step){S.step=+t.dataset.step;render();return}
+ if('send' in t.dataset){S.sent=true;render();return}
+ if('ok' in t.dataset){S.ok=true;render();return}
+ if('nope' in t.dataset){pop(`<h2 id="tt">طلب تعديل</h2><p>يوصل عبدالله ملاحظتك، ويقدر يعيد التحدي. في هالعرض بنعتمده عشان تشوفون المسار كامل.</p><button class="btn sand" data-close>تمام</button>`);return}
+ if('renew' in t.dataset){pop(`<h2 id="tt">تحدي تجديد سريع · 10 دقائق</h2><p>ثلاث مهام Excel من تقارير مستودعك. إذا خلصتها ترجع المهارة خضراء.</p><button class="btn sand" data-close>تمام</button>`);return}
+ if('lb' in t.dataset){S.lb=!S.lb;render();return}
+ if('close' in t.dataset){$('#toast').classList.remove('on');return}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')$('#toast').classList.remove('on')});
+render();
+}
+</script>
+</body>
+</html>
