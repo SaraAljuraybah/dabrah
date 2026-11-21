@@ -3,7 +3,7 @@
   "framework": null,
   "buildCommand": "node scripts/write-env.mjs",
   "outputDirectory": "site",
-  "regions": ["fra1"],
+  "regions": ["bom1"],
   "rewrites": [
     { "source": "/api", "destination": "/api/index?__path=" },
     { "source": "/api/:path*", "destination": "/api/index?__path=:path*" },

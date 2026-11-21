@@ -38,7 +38,7 @@
 ## النشر على Vercel (الحالي)
 
 - `api/index.mjs` دالة Vercel وحدة تخدم كل `/api/*` (تستخدم نفس `netlify/functions/lib/routes.mjs`).
-- `vercel.json` فيه أمر البناء، ومجلد `site`، والتحويلات، ورؤوس الحماية، والمنطقة `fra1`.
+- `vercel.json` فيه أمر البناء، ومجلد `site`، والتحويلات، ورؤوس الحماية، والمنطقة `bom1` (مومباي، نفس منطقة قاعدة Supabase).
 - متغيرات البيئة في Vercel (Settings ← Environment Variables):
   - `DATABASE_URL` = رابط Supabase من نوع Transaction pooler (المنفذ 6543).
   - `DABRAH_API_BASE` = `/api`
