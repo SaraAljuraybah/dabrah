@@ -82,6 +82,8 @@ const fake = http.createServer(async (req, res) => {
   const send = (st, o) => { res.writeHead(st, { 'content-type': 'application/json' }); res.end(JSON.stringify(o)); };
   if (mode === '404first' && req.url.includes('gemini-flash-latest')) return send(404, { error: { message: 'not found' } });
   if (mode === '429') return send(429, { error: { message: 'quota' } });
+  if (mode === '503first' && req.url.includes('gemini-flash-latest')) return send(503, { error: { code: 503, message: 'This model is currently experiencing high demand.', status: 'UNAVAILABLE' } });
+  if (mode === '503all') return send(503, { error: { code: 503, status: 'UNAVAILABLE' } });
   if (mode === 'badkey') return send(400, { error: { message: 'API key not valid' } });
   send(200, { candidates: [{ content: { parts: [{ text: 'هلا والله! أول خطوة: ابدأ تحدي التقرير الأسبوعي.' }] } }] });
 }).listen(0);
@@ -107,6 +109,8 @@ r = await raw('POST', '/chat', { messages: [{ role: 'user', text: 'x'.repeat(500
 r = await raw('POST', '/chat', { messages: [] }, SARA); assert.equal(r.status, 400);
 r = await raw('POST', '/chat', { messages: [{ role: 'user', text: 'a' }, { role: 'model', text: 'b' }] }, SARA); assert.equal(r.status, 400); ok('empty / malformed conversation refused');
 mode = '404first'; r = await ask(SARA); assert.equal(r.status, 200); assert.ok(seen.at(-1).url.includes('gemini-2.5-flash')); ok('falls back to next model if one is retired');
+mode = '503first'; r = await ask(SARA); assert.equal(r.status, 200); assert.ok(seen.at(-1).url.includes('gemini-2.5-flash')); ok('model overloaded (503, what happened live) → next model answers');
+mode = '503all'; r = await ask(SARA); assert.equal(r.status, 503); assert.equal(r.body.code, 'busy'); ok('all models overloaded → clear "busy, try in a minute"');
 mode = '429'; r = await ask(SARA); assert.equal(r.status, 429); assert.equal(r.body.code, 'rate'); ok('Gemini busy → friendly retry message');
 mode = 'badkey'; r = await ask(SARA); assert.equal(r.status, 502); assert.equal(r.body.code, 'key'); assert.ok(!JSON.stringify(r.body).includes('test-key')); ok('bad key → generic message, key never echoed');
 mode = 'ok';

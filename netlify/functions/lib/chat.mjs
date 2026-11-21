@@ -102,6 +102,8 @@ export async function askGemini(system, msgs) {
     }
     console.error('Gemini', model, r.status, JSON.stringify(d).slice(0, 300));
     if (r.status === 404) { last = { error: 'المساعد مو متاح الحين', status: 502, code: 'model' }; continue; } // جرّب النموذج اللي بعده
+    // النموذج مزدحم عند Google (503) أو خطأ مؤقت عندهم: ننتقل للنموذج اللي بعده بدل ما نوقف
+    if ([500, 502, 503, 504].includes(r.status)) { last = { error: 'المساعد عليه ضغط الحين، جرّب بعد دقيقة', status: 503, code: 'busy' }; await new Promise((ok) => setTimeout(ok, 400)); continue; }
     if (r.status === 429) return { error: 'المساعد عليه ضغط الحين، جرّب بعد دقيقة', status: 429, code: 'rate' };
     if (r.status === 400 || r.status === 401 || r.status === 403) return { error: 'المساعد مو متاح الحين، تواصل مع فريق دبره', status: 502, code: 'key' };
     return { error: 'المساعد مو متاح الحين، جرّب بعد شوي', status: 502, code: 'upstream' };
