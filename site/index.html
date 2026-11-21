@@ -914,8 +914,10 @@ const cl=v=>Math.max(1,Math.min(5,Math.round(v)));
 const DER={fc:i=>cl(lvOf(i,'cap')+1),wms:i=>cl(lvOf(i,'inv')),data:i=>cl(lvOf(i,'ai')+(xlOk(i)?1:0)),com:i=>cl(EMP[i].b360-1),team:i=>cl(EMP[i].b360+.2-1),prob:i=>cl(EMP[i].b360-.3-1),dec:i=>cl((lvOf(i,'ai')+lvOf(i,'cap'))/2),dev:i=>cl(lvOf(i,'lead')-1),safe:i=>cl(EMP[i].perf+1),cust:i=>cl(EMP[i].perf+(EMP[i].b360>=4?1:0)),integ:i=>3+(EMP[i].perf===3?1:0)};
 for(const k of ['com','team','prob','safe','cust','integ']){const f=DER[k];DER[k]=i=>EMP[i].fresh?1:f(i)}
 const xlOk=i=>(i===0?S.excel:EMP[i].xl)==='g';
-const compLv=(i,k)=>k==='xl'?(xlOk(i)?3:2):DER[k]?DER[k](i):lvOf(i,k);
-const dispLv=(i,k)=>k==='xl'?3:compLv(i,k);
+const isFresh=()=>!!EMP[0]?.fresh;
+const compLv=(i,k)=>k==='xl'?(EMP[i].fresh?1:xlOk(i)?3:2):DER[k]?DER[k](i):lvOf(i,k);
+const dispLv=(i,k)=>k==='xl'&&!EMP[i].fresh?3:compLv(i,k);
+const gapTxt=n=>n<=1?'درجة':n===2?'درجتين':n+' درجات';
 const readyOf=i=>{let t=0,w=0;for(const k in S.W){t+=S.W[k]*Math.min(1,compLv(i,k)/SK[k].req);w+=S.W[k]}return w?Math.round(t/w*100):0};
 const typeStat=(i,ty)=>{const ks=Object.keys(SK).filter(k=>SK[k].t===ty);return {n:ks.length,met:ks.filter(k=>compLv(i,k)>=SK[k].req).length,w:ks.reduce((a,k)=>a+(S.W[k]||0),0)}};
 const ready=()=>readyOf(0);
@@ -966,12 +968,12 @@ const certResult=(k,sc)=>{const cur=S.lv[k];if(sc<=2)return {lv:cur,label:'مع�
 /* ================= EMPLOYEE ================= */
 const V={};
 const skList=()=>{const inPlan=S.plans.some(p=>p.k==='cap'&&p.st!=='rej'&&p.sel.includes(0));return [
- {id:'ai',c:S.lv.ai,h:'g',d:S.rep.status==='ok'?'اليوم':'قبل 4 شهور',plan:S.lv.ai>=3?'وصلت المطلوب.':'تثبتها بتحدي التقرير الأسبوعي من المسار 1.'},
- {id:'cap',c:S.lv.cap,h:'g',d:S.cert.status==='ok'&&S.cert.k==='cap'?'اليوم':'قبل 6 شهور',plan:S.lv.cap>=3?'وصلت المطلوب.':inPlan?'هيا أضافتك لخطة تطوير هالمهارة، ويوصلك موعد البداية.':'ناقصك درجتين: برنامج مدعوم من هدف، أو أضف شهادتك وأثبتها.'},
- {id:'inv',c:S.lv.inv,h:'g',d:S.cert.status==='ok'&&S.cert.k==='inv'?'اليوم':'قبل 3 أسابيع',plan:S.lv.inv>=4?'وصلت المطلوب.':'ناقصك درجة. مرشدك ماجد «دبره» فيها، احجز جلسة من تبويب «التعلّم».'},
- {id:'lead',c:4,h:'g',d:'تقييم 360 قبل شهر',plan:'جدارة قيادية: تُقاس بتقييم 360 من زملائك، مو بتحدي.'},
- {id:'xl',c:3,h:S.excel,d:S.excel==='g'?'اليوم':'قبل 11 شهر',plan:S.excel==='g'?'تجددت. التذكير الجاي بعد سنة.':'ما استخدمتها من 11 شهر، ومستواها ينزل بعد 12 يوم.'},
- ...['fc','wms','data','com','team','prob','safe','cust','integ','dec','dev'].map(k=>{const c=compLv(0,k),ok=c>=SK[k].req;return {id:k,c,h:'g',d:{fc:'مشتقة من تخطيط الطاقة',wms:'من تحديات إدارة المخزون',data:'من تقاريرك واستخدامك لـExcel',dec:'مشتقة من تقاريرك وتخطيطك',dev:'من 360 وجلسات نقل المعرفة'}[k]||(SK[k].t==='سلوكية'?'تقييم 360 قبل شهر':'من مؤشرات أدائك'),plan:ok?'وصلت المطلوب.':{data:'ترتفع لما تعتمد تقارير الأداء وتجدّد Excel.',wms:'ورشة «نظام إدارة المستودع المتقدم» ثم تحدي.',fc:'ترتفع تلقائيًا لما ترتفع في تخطيط الطاقة الاستيعابية.',dec:'ترتفع لما تثبت تقارير الأداء وتخطيط الطاقة.'}[k]||'تتحسن من تقييم 360 الجاي ومؤشرات أدائك.'}})].map(s=>({...s,...SK[s.id],w:S.W[s.id]}))};
+ {id:'ai',c:S.lv.ai,h:'g',d:S.rep.status==='ok'?'اليوم':isFresh()?'ما أُثبتت بعد':'قبل 4 شهور',plan:S.lv.ai>=3?'وصلت المطلوب.':'تثبتها بتحدي التقرير الأسبوعي من المسار 1.'},
+ {id:'cap',c:S.lv.cap,h:'g',d:S.cert.status==='ok'&&S.cert.k==='cap'?'اليوم':isFresh()?'ما أُثبتت بعد':'قبل 6 شهور',plan:S.lv.cap>=3?'وصلت المطلوب.':inPlan?'هيا أضافتك لخطة تطوير هالمهارة، ويوصلك موعد البداية.':`ناقصك ${gapTxt(3-S.lv.cap)}: برنامج مدعوم من هدف، أو أضف شهادتك وأثبتها.`},
+ {id:'inv',c:S.lv.inv,h:'g',d:S.cert.status==='ok'&&S.cert.k==='inv'?'اليوم':isFresh()?'ما أُثبتت بعد':'قبل 3 أسابيع',plan:S.lv.inv>=4?'وصلت المطلوب.':`ناقصك ${gapTxt(4-S.lv.inv)}. مرشدك ماجد «دبره» فيها، احجز جلسة من تبويب «التعلّم».`},
+ {id:'lead',c:compLv(0,'lead'),h:'g',d:isFresh()?'يُقاس بأول تقييم 360':'تقييم 360 قبل شهر',plan:'جدارة قيادية: تُقاس بتقييم 360 من زملائك، مو بتحدي.'},
+ {id:'xl',c:dispLv(0,'xl'),h:S.excel,d:isFresh()?'ما أُثبتت بعد':S.excel==='g'?'اليوم':'قبل 11 شهر',plan:isFresh()?'تثبتها بتحدي أو شهادة معتمدة.':S.excel==='g'?'تجددت. التذكير الجاي بعد سنة.':'ما استخدمتها من 11 شهر، ومستواها ينزل بعد 12 يوم.'},
+ ...['fc','wms','data','com','team','prob','safe','cust','integ','dec','dev'].map(k=>{const c=compLv(0,k),ok=c>=SK[k].req;return {id:k,c,h:'g',d:{fc:'مشتقة من تخطيط الطاقة',wms:'من تحديات إدارة المخزون',data:'من تقاريرك واستخدامك لـExcel',dec:'مشتقة من تقاريرك وتخطيطك',dev:'من 360 وجلسات نقل المعرفة'}[k]||(SK[k].t==='سلوكية'?(isFresh()?'يُقاس بأول تقييم 360':'تقييم 360 قبل شهر'):'من مؤشرات أدائك'),plan:ok?'وصلت المطلوب.':{data:'ترتفع لما تعتمد تقارير الأداء وتجدّد Excel.',wms:'ورشة «نظام إدارة المستودع المتقدم» ثم تحدي.',fc:'ترتفع تلقائيًا لما ترتفع في تخطيط الطاقة الاستيعابية.',dec:'ترتفع لما تثبت تقارير الأداء وتخطيط الطاقة.'}[k]||'تتحسن من تقييم 360 الجاي ومؤشرات أدائك.'}})].map(s=>({...s,...SK[s.id],w:S.W[s.id]}))};
 const jd=n=>n===1?'جدارة وحدة':n===2?'جدارتين':n<=10?n+' جدارات':n+' جدارة';
 V.emp=()=>tabs('emp',[['path','مساري'],['perf','أدائي'],['learn','التعلّم'],['jobs','فرص داخلية']])+({path:empPath,perf:empPerf,learn:empLearn,jobs:empJobs})[S.tab.emp]();
 function empPath(){const rs=S.rep.status,cs=S.cert.status;const stg=stageOf(S.fr),nextAt=[6,14,24][stg];const rem=skList().filter(s=>s.c<s.req).length;
@@ -1000,9 +1002,9 @@ function empPath(){const rs=S.rep.status,cs=S.cert.status;const stg=stageOf(S.fr
   <div class="row between"><h2 style="font-size:24px">جداراتي وطريقي للترقية</h2><span class="mut">الوزن = أهمية الجدارة في الوظيفة الجاية</span></div>
   <div class="ladder"><div class="rung now"><b>${esc(myTitle())}</b>وظيفتك الحالية</div><span class="arrow" aria-hidden="true">←</span><div class="rung goal"><b>مخطط عمليات</b>رشّحتك لها هيا · ${ready()}% جاهز</div></div>
   <div class="hlegend mut"><span class="hm"><svg width="10" height="10"><circle cx="5" cy="5" r="4" fill="#E3C48F"/></svg></span> النقطة تحت البيت = المستوى المطلوب</div>
-  ${TYPES.map(([ty,how],ti)=>{const L=skList().filter(x=>x.t===ty);const st=typeStat(0,ty);return disc(`<b>${ty}</b> <span class="mut">· وزنها ${st.w}% · ${st.met} من ${st.n} توصل المطلوب</span>`,`<p class="mut small" style="margin:0 0 4px">${how}</p>`+L.map(s=>`<div class="skill ${S.openSk[s.id]?'open':''}"><button data-act="toggle" data-id="${s.id}" aria-expanded="${!!S.openSk[s.id]}"><span class="nm"><b>${s.n}</b><span class="mut">${s.t} · وزنها ${s.w}% · ${s.d}</span></span>${houses(s.c,s.req)}<span class="req mut">${LV[s.c-1]} · المطلوب ${LV[s.req-1]}</span><span class="row" style="gap:8px;justify-content:flex-end">${s.c>=s.req?(s.h==='y'?'<span class="chip y">قربت تذبل</span>':'<span class="chip g">جاهزة</span>'):`<span class="chip">ناقصك ${s.req-s.c===1?'درجة':'درجتين'}</span>`}<span class="chev">${ICN.chev}</span></span></button><div class="more"><div><div class="in"><span>${s.plan}</span>${s.id==='xl'&&S.excel==='y'?`<div class="auto"><b>تذكير تلقائي ${S.leave?'متوقف أثناء الإجازة':'مفعّل'}</b><span>نذكّرك قبل 30 يوم وقبل 7 أيام من نزول المستوى.</span></div><div><button class="btn sand" data-act="renew" style="min-height:44px">ابدأ تحدي التجديد (3 أسئلة)</button></div>`:''}</div></div></div></div>`).join(''),ti===0?'open':'')}).join('')}
+  ${TYPES.map(([ty,how],ti)=>{const L=skList().filter(x=>x.t===ty);const st=typeStat(0,ty);return disc(`<b>${ty}</b> <span class="mut">· وزنها ${st.w}% · ${st.met} من ${st.n} توصل المطلوب</span>`,`<p class="mut small" style="margin:0 0 4px">${how}</p>`+L.map(s=>`<div class="skill ${S.openSk[s.id]?'open':''}"><button data-act="toggle" data-id="${s.id}" aria-expanded="${!!S.openSk[s.id]}"><span class="nm"><b>${s.n}</b><span class="mut">${s.t} · وزنها ${s.w}% · ${s.d}</span></span>${houses(s.c,s.req)}<span class="req mut">${LV[s.c-1]} · المطلوب ${LV[s.req-1]}</span><span class="row" style="gap:8px;justify-content:flex-end">${s.c>=s.req?(s.h==='y'?'<span class="chip y">قربت تذبل</span>':'<span class="chip g">جاهزة</span>'):`<span class="chip">ناقصك ${gapTxt(s.req-s.c)}</span>`}<span class="chev">${ICN.chev}</span></span></button><div class="more"><div><div class="in"><span>${s.plan}</span>${s.id==='xl'&&S.excel==='y'?`<div class="auto"><b>تذكير تلقائي ${S.leave?'متوقف أثناء الإجازة':'مفعّل'}</b><span>نذكّرك قبل 30 يوم وقبل 7 أيام من نزول المستوى.</span></div><div><button class="btn sand" data-act="renew" style="min-height:44px">ابدأ تحدي التجديد (3 أسئلة)</button></div>`:''}</div></div></div></div>`).join(''),ti===0?'open':'')}).join('')}
  </div>`}
-function empPerf(){const k=[['أخطاء التجهيز في فريقك','2.6%','الهدف 2.5%',90,'k:err'],['متوسط التأخير','34 د','الهدف 30 د',82,'k:late'],['دقة الجرد','98.6%','الهدف 99%',96,'k:inv'],['المحافظة على المهارات',S.excel==='g'?'100%':'80%','تدخل في تقييمك السنوي',S.excel==='g'?100:80,'k:keep']];
+function empPerf(){if(isFresh())return freshPerf();const k=[['أخطاء التجهيز في فريقك','2.6%','الهدف 2.5%',90,'k:err'],['متوسط التأخير','34 د','الهدف 30 د',82,'k:late'],['دقة الجرد','98.6%','الهدف 99%',96,'k:inv'],['المحافظة على المهارات',S.excel==='g'?'100%':'80%','تدخل في تقييمك السنوي',S.excel==='g'?100:80,'k:keep']];
  return `<div class="g4">${k.map(([n,v,t,p,d])=>kpi(n,v,t,{p,col:p>=95?'var(--ok)':'',drill:d})).join('')}</div>
  ${honorBoard()}
  ${eomCard(false)}
@@ -1069,7 +1071,8 @@ function mgrBudget(){const used=usedBudget();return `
 /* ================= ANALYTICS · 30-60-90 · الشرف والأبطال ================= */
 /* التطور: كم نقطة ارتفعت الجاهزية خلال آخر 90 يوم */
 let R0=null;const G90=[0,6,11,3,9,14,5,8,2,12,4,7,10,1,13,6,9,3,15,5,8];
-const growthOf=i=>{if(i===0){if(R0===null)R0=readyOf(0)-9;return readyOf(0)-R0}return G90[i]};
+const freshBase=()=>{const lv=S.lv,xl=S.excel;S.lv={ai:1,inv:1,cap:1};const r=readyOf(0);S.lv=lv;S.excel=xl;return r};
+const growthOf=i=>{if(i===0){if(isFresh())return Math.max(0,readyOf(0)-freshBase());if(R0===null)R0=readyOf(0)-9;return readyOf(0)-R0}return G90[(EMP[i].id||i+1)-1]??0};
 const byGrowth=ids=>[...ids].sort((a,b)=>(growthOf(b)-growthOf(a))||(readyOf(b)-readyOf(a)));
 const rankOf=(ids,i)=>byGrowth(ids).indexOf(i)+1;
 /* موظف الشهر: 50% التطور (15 نقطة = 100) + 50% الجاهزية */
@@ -1086,6 +1089,11 @@ function champBoard(){return `<div class="card night reveal champs"><div class="
  <div class="crowns">${DEPTS.map((d,di)=>{const c=champOfDept(di);return `<button class="crown" data-act="pal" data-i="${c.i}">${CROWN}<b>${enm(c.i)}</b><span>بطل ${d}</span><span class="cr2">${c.full?'كل الجدارات مكتملة':'الأقرب للاكتمال'} · ${readyOf(c.i)}%</span></button>`}).join('')}</div>
  <h3 class="subh" style="color:var(--sand)">أبطال المهارات</h3><div class="skchamps">${skillChamps().map(([k,i])=>{return `<button class="skc" data-act="pal" data-i="${i}"><span class="mut">${SK[k].n}</span><b>${enm(i)}</b><span class="mut">«${LV[compLv(i,k)-1]}»</span></button>`}).join('')}</div></div>`}
 function eomCard(dark){const w=eom();return `<div class="card reveal eom ${dark?'night':''}"><div class="row between" style="align-items:center"><div style="display:flex;gap:14px;align-items:center">${CROWN}<div><span class="mut">موظف الشهر</span><h3 style="font-size:22px;margin:2px 0 0">${enm(w)}</h3><span class="mut">${DEPTS[EMP[w].d]} · تطور +${growthOf(w)} نقطة · جاهزية ${readyOf(w)}%</span></div></div><button class="linkbtn" data-act="drill" data-k="eom">كيف انحسب؟</button></div></div>`}
+function freshPerf(){const g=growthOf(0),k=[['أخطاء التجهيز في فريقك','—','تظهر بعد أول أسبوع شغل مع فريقك'],['متوسط التأخير','—','تظهر بعد أول أسبوع شغل مع فريقك'],['دقة الجرد','—','تظهر بعد أول جرد دوري تشارك فيه'],['المحافظة على المهارات','—','تبدأ بعد أول مهارة معتمدة']];
+ return `<div class="g4">${k.map(([n,v,t])=>kpi(n,v,t)).join('')}</div>
+ ${g>0?honorBoard():`<div class="card reveal"><div class="row between"><h3 style="font-size:20px">لوحة الشرف</h3><span class="chip">حساب جديد</span></div><p class="mut" style="margin:10px 0 0">ترتيبك يطلع بعد أول إنجاز معتمد. الترتيب على التطور مو على الأقدمية، فتقدر تتصدر من أول شهر.</p></div>`}
+ ${eomCard(false)}
+ <div class="card reveal"><div class="row between"><h3 style="font-size:20px">تقييم 360 · الجدارات السلوكية</h3><span class="chip">قادم</span></div><p class="mut" style="margin:10px 0 0">ما عندك تقييم 360 للحين. يطلع بعد أول دورة تقييم، ويختار النظام زملاء اشتغلوا معك أكثر من غيرهم، والنتيجة متوسط تقييماتهم بدون أسماء.</p></div>`}
 function honorBoard(){const me=0,dIds=EMP.map((e,i)=>i).filter(i=>EMP[i].d===EMP[0].d),all=EMP.map((e,i)=>i);const rd=rankOf(dIds,me),ra=rankOf(all,me);const top=byGrowth(dIds).slice(0,3);
  return `<div class="card reveal"><div class="row between"><h3 style="font-size:20px">لوحة الشرف</h3><span class="mut">الترتيب حسب تطورك في آخر 90 يوم</span></div>
  <div class="g2 ranks"><button class="rk" data-act="drill" data-k="rankd"><span class="mut">ترتيبك في قسمك</span><b class="kufi">${rd} <small>من ${dIds.length}</small></b></button><button class="rk" data-act="drill" data-k="ranka"><span class="mut">ترتيبك في الشركة</span><b class="kufi">${ra} <small>من ${all.length}</small></b></button></div>
