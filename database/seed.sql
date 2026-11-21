@@ -294,7 +294,7 @@ INSERT INTO team_members (name, lead, roles, linkedin) VALUES
   ('جنا السعيد', true, '["التصميم", "العرض", "البناء"]'::jsonb, 'https://www.linkedin.com/in/%D8%AC%D9%86%D8%A7-%D8%A7%D9%84%D8%B3%D8%B9%D9%8A%D9%80%D8%AF-jana-alsaeed-b26583340'),
   ('لارا الفريح', false, '["البحث", "نموذج العمل", "التصميم"]'::jsonb, 'https://www.linkedin.com/in/laraalfurayh'),
   ('عبير السدحان', false, '["البحث", "العرض التقديمي", "البناء"]'::jsonb, 'https://www.linkedin.com/in/alsadhan'),
-  ('ساره الجريبه', false, '["قواعد البيانات والاستضافة", "البناء"]'::jsonb, 'https://www.linkedin.com/in/sara-aljuraybah-aa746227a'),
+  ('ساره الجريبه', false, '["قواعد البيانات", "الاستضافة", "البناء"]'::jsonb, 'https://www.linkedin.com/in/sara-aljuraybah-aa746227a'),
   ('ميس السويكت', false, '["البحث", "نموذج العمل", "البناء"]'::jsonb, 'https://www.linkedin.com/in/mays-al-suwaiket-67a695411');
 SELECT setval(pg_get_serial_sequence('departments','id'), (SELECT max(id) FROM departments));
 SELECT setval(pg_get_serial_sequence('employees','id'), (SELECT max(id) FROM employees));
