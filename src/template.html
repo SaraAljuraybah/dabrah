@@ -600,6 +600,15 @@ textarea.bad{border-color:#C0502A}
 .cform button:disabled{opacity:.45;cursor:not-allowed}
 .cnote{font-size:12px;color:var(--mut);padding:0 14px 10px;background:var(--card);margin:0}
 @media(max-width:560px){.cpanel{inset-inline-end:0;bottom:0;width:100vw;height:min(88vh,640px);border-radius:24px 24px 0 0}.cfab{bottom:14px;inset-inline-end:14px}.cfab .lbl{display:none}.cfab{padding:8px}}
+.demosw{display:inline-flex;align-items:center;gap:8px;border:1.5px solid rgba(227,196,143,.55);background:rgba(241,231,214,.06);color:var(--jes);border-radius:999px;padding:6px 12px 6px 8px;font:700 14px 'IBM Plex Sans Arabic',sans-serif;min-height:40px;cursor:pointer;white-space:nowrap}
+.demosw[hidden]{display:none}
+.demosw .sw{position:relative;width:36px;height:20px;border-radius:999px;background:rgba(241,231,214,.22);transition:background .25s;flex:none}
+.demosw .sw i{position:absolute;top:3px;inset-inline-start:3px;width:14px;height:14px;border-radius:50%;background:var(--jes);transition:inset-inline-start .25s}
+.demosw[aria-checked=true]{border-color:var(--sand);background:rgba(227,196,143,.14)}
+.demosw[aria-checked=true] .sw{background:var(--sand)}.demosw[aria-checked=true] .sw i{inset-inline-start:19px;background:var(--night)}
+.demosw:focus-visible{outline:3px solid var(--sand);outline-offset:2px}
+.demo-on [data-act=logout]{display:none}
+@media (prefers-reduced-motion:reduce){.demosw .sw,.demosw .sw i{transition:none}}
 </style>
 </head>
 <body>
@@ -610,6 +619,7 @@ textarea.bad{border-color:#C0502A}
   <img src="data:image/png;base64,__LOGO3__" alt="دبره">
   <div class="links">
     <a href="#story">المشكلة</a><a href="#how">كيف تشتغل</a><a href="#palm">نخلتك</a><a href="#impact">الأثر</a>
+    <button type="button" class="demosw" data-demosw role="switch" aria-checked="false" hidden title="العرض: كل الشاشات بضغطة، بدون حساب"><span class="sw" aria-hidden="true"><i></i></span><span>نظام العرض</span></button>
     <a class="btn" href="#login" style="min-height:44px;padding:0 20px">تسجيل الدخول</a>
   </div>
 </nav>
@@ -777,7 +787,7 @@ textarea.bad{border-color:#C0502A}
 <div id="login" class="view" hidden>
   <div class="top" style="background:transparent;box-shadow:none;position:relative">
     <img src="data:image/png;base64,__LOGO3__" alt="دبره">
-    <a class="back" href="#top" style="margin-inline-start:auto">الرجوع للتعريف</a>
+    <span style="margin-inline-start:auto;display:flex;align-items:center;gap:10px"><button type="button" class="demosw" data-demosw role="switch" aria-checked="false" hidden title="العرض: كل الشاشات بضغطة، بدون حساب"><span class="sw" aria-hidden="true"><i></i></span><span>نظام العرض</span></button><a class="back" href="#top">الرجوع للتعريف</a></span>
   </div>
   <div class="lwrap" id="lbox"></div>
   <section class="teamf" data-team aria-label="فريق دبره"></section>
@@ -787,7 +797,7 @@ textarea.bad{border-color:#C0502A}
 <div id="app" class="view" hidden>
   <div class="top">
     <img src="data:image/png;base64,__LOGO3__" alt="دبره">
-    <a class="back" href="#top">عن دبره</a><a class="back" href="#login" data-act="logout">تسجيل الخروج</a><span class="bellw"><button class="bell" id="bell" aria-label="التنبيهات" aria-expanded="false"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 16V11a6 6 0 1112 0v5l2 2H4z"/><path d="M10 20a2 2 0 004 0"/></svg><span id="bellN" class="bn"></span></button><div class="npanel" id="npanel" hidden></div></span>
+    <button type="button" class="demosw" data-demosw role="switch" aria-checked="false" hidden title="العرض: كل الشاشات بضغطة، بدون حساب"><span class="sw" aria-hidden="true"><i></i></span><span>نظام العرض</span></button><a class="back" href="#top">عن دبره</a><a class="back" href="#login" data-act="logout">تسجيل الخروج</a><span class="bellw"><button class="bell" id="bell" aria-label="التنبيهات" aria-expanded="false"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 16V11a6 6 0 1112 0v5l2 2H4z"/><path d="M10 20a2 2 0 004 0"/></svg><span id="bellN" class="bn"></span></button><div class="npanel" id="npanel" hidden></div></span>
     <div class="roles" role="group" aria-label="تبديل سريع بين الأدوار للعرض">
       <button data-role="emp" aria-pressed="true">موظف</button>
       <button data-role="mgr" aria-pressed="false">مدير مباشر</button>
@@ -905,7 +915,10 @@ $('#growBtn').onclick=()=>{frL=stageOf(frL)===3?5:frL+3;drawPalmL()};
    AuditLog   {actor, action, at}
    ===================================================================== */
 /* CONFIG · على Netlify: عرّف API_BASE في متغيرات البيئة وحقنه في window.__ENV (Snippet injection). بدونه تشتغل المنصة على البيانات التجريبية */
-const CONFIG={API_BASE:(window.__ENV&&window.__ENV.API_BASE)||'',USE_MOCK:!(window.__ENV&&window.__ENV.API_BASE)};
+/* v17 · نظام العرض: لو انفعّل، المنصة ترجع للنسخة الأصلية (بدون حسابات، كل الأدوار فوق، ولا شي ينحفظ في القاعدة) */
+const HAS_API=!!(window.__ENV&&window.__ENV.API_BASE);
+const DEMO=HAS_API&&(()=>{try{return localStorage.getItem('dabrah_demo')==='1'}catch(e){return false}})();
+const CONFIG={API_BASE:(window.__ENV&&window.__ENV.API_BASE)||'',USE_MOCK:!HAS_API||DEMO};
 const DEPTS=['المستودع المركزي','التوزيع','خدمة العملاء'];
 const E=(n,g,nat,d,fr,cap,ai,inv,lead,xl,b360,perf,pot,hrs)=>({n,g,nat,d,fr,cap,ai,inv,lead,xl,b360,perf,pot,hrs});
 const EMP=[
@@ -1513,7 +1526,7 @@ function spy(){if($('#landing').hidden)return;let cur='top';for(const id of SECS
 addEventListener('scroll',spy,{passive:true});
 
 /* router */
-function route(){const h=location.hash;const v=h==='#app'?(S.logged?'app':'login'):h==='#login'?'login':'landing';
+function route(){const h=location.hash;if(DEMO&&h==='#login')history.replaceState(null,'','#app');const v=location.hash==='#app'?(S.logged?'app':'login'):h==='#login'?'login':'landing';
  $('#app').hidden=v!=='app';$('#login').hidden=v!=='login';$('#landing').hidden=v!=='landing';
  if(v==='app'){render();scrollTo({top:0})}
  if(v==='login'){if(h==='#app')history.replaceState(null,'','#login');loginStep(null);scrollTo({top:0})}
@@ -1775,6 +1788,14 @@ const TEAM=[
   afterAuth(u,false,startHash==='#app'||startHash==='#login'||location.hash==='#login')}).catch(e=>console.warn('auth/me',e));
 })();
 window.DABRAH={S,API,ACT,readyOf,loadOf,CONFIG};/* مقبض للفحص الآلي */
+/* v17 · زر نظام العرض */
+(function(){
+ $$('[data-demosw]').forEach(b=>{b.hidden=!HAS_API;b.setAttribute('aria-checked',String(DEMO));b.setAttribute('aria-label',DEMO?'نظام العرض شغّال: اضغط للرجوع لتسجيل الدخول بالحسابات':'شغّل نظام العرض: كل الشاشات بدون حساب')});
+ if(DEMO){document.documentElement.classList.add('demo-on');API.login('emp',{name:'عبدالله الشمري',eid:'10482',email:'abdullah.alshammari@sharq.sa',title:'مشرف مستودع',dept:'0'})}
+ document.addEventListener('click',e=>{const b=e.target.closest('[data-demosw]');if(!b)return;const on=!DEMO;
+  try{on?localStorage.setItem('dabrah_demo','1'):localStorage.removeItem('dabrah_demo')}catch(err){toast('المتصفح مانع الحفظ، ما قدرنا نبدّل النظام');return}
+  history.replaceState(null,'',on?'#app':(location.hash==='#app'?'#login':location.hash||'#top'));location.reload()});
+})();
 buildSky();parallax();drawLv();age();drawPalmL();observe();route();
 }
 </script>
