@@ -72,4 +72,47 @@ r = await raw('POST', '/submissions', { type: 'report', score: 8 }, MGR_T); asse
 r = await raw('POST', '/auth/signup', { role: 'haya', name: 'نوف السالم', eid: '7788', email: 'nouf@test.sa', org: 'منشأة تجربة', count: '30', password: 'Nouf2026x', confirm: 'Nouf2026x' }); assert.equal(r.status, 201); assert.equal(r.body.user.employeeId, null); ok('non-employee roles sign up without an employee record');
 r = await raw('POST', '/auth/logout', {}, NEW_T); assert.match(r.cookie, /Max-Age=0/);
 r = await raw('GET', '/auth/me', null, NEW_T); assert.equal(r.body.user, null); r = await raw('GET', '/bootstrap', null, NEW_T); assert.equal(r.status, 401); ok('logout ends the session');
+
+// ---------- مساعد دبره (Gemini وهمي محلي يسجّل الطلبات) ----------
+import http from 'node:http';
+const seen = []; let mode = 'ok';
+const fake = http.createServer(async (req, res) => {
+  let b = ''; for await (const c of req) b += c; const j = JSON.parse(b || '{}');
+  seen.push({ url: req.url, key: req.headers['x-goog-api-key'], body: j });
+  const send = (st, o) => { res.writeHead(st, { 'content-type': 'application/json' }); res.end(JSON.stringify(o)); };
+  if (mode === '404first' && req.url.includes('gemini-flash-latest')) return send(404, { error: { message: 'not found' } });
+  if (mode === '429') return send(429, { error: { message: 'quota' } });
+  if (mode === 'badkey') return send(400, { error: { message: 'API key not valid' } });
+  send(200, { candidates: [{ content: { parts: [{ text: 'هلا والله! أول خطوة: ابدأ تحدي التقرير الأسبوعي.' }] } }] });
+}).listen(0);
+await new Promise((r) => fake.once('listening', r));
+process.env.GEMINI_BASE_URL = 'http://127.0.0.1:' + fake.address().port;
+const SARA = tok(await raw('POST', '/auth/signup', { role: 'emp', name: 'ساره الجريبه', eid: '12345678', email: 'sara@x.sa', gender: 'f', nat: 'sa', title: 'مشرفة', dept: '0', password: 'Sara2026x', confirm: 'Sara2026x' }));
+const ask = (t, extra = {}) => raw('POST', '/chat', { messages: [{ role: 'user', text: 'وش أسوي عشان أترقى؟' }], snapshot: { ready: 0, fronds: 0, newAccount: true, skills: [{ n: 'إدارة المخزون', t: 'فنية', lv: 'مبتدئ', req: 'سنع', w: 12, proven: false }] }, ...extra }, t);
+r = await raw('POST', '/chat', { messages: [{ role: 'user', text: 'هلا' }] }); assert.equal(r.status, 401); ok('chat needs a session');
+delete process.env.GEMINI_API_KEY; r = await ask(SARA); assert.equal(r.status, 503); assert.equal(r.body.code, 'no_key'); ok('no API key → clear "not enabled" message');
+process.env.GEMINI_API_KEY = 'test-key-123';
+r = await ask(SARA); assert.equal(r.status, 200); assert.match(r.body.reply, /هلا والله/); assert.equal(r.body.left, 39); ok('reply returned, daily counter shown');
+const sent = seen.at(-1); const sys = sent.body.systemInstruction.parts[0].text;
+assert.equal(sent.key, 'test-key-123'); assert.ok(sent.url.includes('gemini-flash-latest:generateContent')); ok('key sent only server-side in header, default model');
+assert.ok(sys.includes('ساره الجريبه') && sys.includes('لهجة سعودية') && sys.includes('المؤنث')); ok('Saudi persona, her name, feminine address');
+assert.ok(sys.includes('إدارة المخزون') && sys.includes('"حساب_جديد": true')); ok('her own skills and new-account status in context');
+// أسماء مقدّمي الورش والمرشد معلومات عامة يشوفها كل موظف في «التعلّم»؛ الممنوع بيانات أداء أي موظف ثاني
+assert.ok(!sys.includes('فهد الدوسري') && !sys.includes('عبدالله الشمري') && !sys.includes('سارة الزهراني') && !/score_360|performance|b360|"perf"|4\.4|3\.6/.test(sys)); ok("no other employee's personal or performance data sent to Gemini");
+assert.deepEqual(sent.body.contents, [{ role: 'user', parts: [{ text: 'وش أسوي عشان أترقى؟' }] }]); ok('message passed as-is');
+r = await raw('POST', '/chat', { messages: [{ role: 'user', text: 'س' }], snapshot: { ready: 75 } }, EMP_T); const sysA = seen.at(-1).body.systemInstruction.parts[0].text;
+assert.ok(sysA.includes('عبدالله الشمري') && sysA.includes('المذكر') && sysA.includes('ورش')); ok("Abdullah's chat gets his own context, masculine address");
+r = await raw('POST', '/chat', { messages: [{ role: 'user', text: 'كيف أوزّع العبء؟' }] }, MGR_T); assert.equal(r.status, 200); assert.ok(!seen.at(-1).body.systemInstruction.parts[0].text.includes('تسجيلاتي')); ok('manager chat works without personal employee data');
+r = await raw('POST', '/chat', { messages: [{ role: 'user', text: 'x'.repeat(5000) }] }, SARA); assert.equal(seen.at(-1).body.contents[0].parts[0].text.length, 600); ok('long messages clipped to 600 chars');
+r = await raw('POST', '/chat', { messages: [] }, SARA); assert.equal(r.status, 400);
+r = await raw('POST', '/chat', { messages: [{ role: 'user', text: 'a' }, { role: 'model', text: 'b' }] }, SARA); assert.equal(r.status, 400); ok('empty / malformed conversation refused');
+mode = '404first'; r = await ask(SARA); assert.equal(r.status, 200); assert.ok(seen.at(-1).url.includes('gemini-2.5-flash')); ok('falls back to next model if one is retired');
+mode = '429'; r = await ask(SARA); assert.equal(r.status, 429); assert.equal(r.body.code, 'rate'); ok('Gemini busy → friendly retry message');
+mode = 'badkey'; r = await ask(SARA); assert.equal(r.status, 502); assert.equal(r.body.code, 'key'); assert.ok(!JSON.stringify(r.body).includes('test-key')); ok('bad key → generic message, key never echoed');
+mode = 'ok';
+const sid = (await raw('GET', '/auth/me', null, SARA)).body.user.id;
+await db.query('UPDATE chat_usage SET n=40 WHERE user_id=$1', [sid]);
+r = await ask(SARA); assert.equal(r.status, 429); assert.equal(r.body.code, 'daily'); ok('daily limit of 40 messages per account');
+r = await raw('GET', '/chat/status', null, SARA); assert.deepEqual([r.body.enabled, r.body.limit], [true, 40]); ok('status endpoint');
+fake.close();
 console.log(`\n${n} اختبار نجحت`);

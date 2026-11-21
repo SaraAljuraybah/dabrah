@@ -563,6 +563,42 @@ textarea.bad{border-color:#C0502A}
 @media(max-width:380px){.teamf .tf-grid{grid-template-columns:1fr}}
 #landing .teamf .tf-foot{display:none}
 @media(prefers-reduced-motion:reduce){.teamf .tf-m,.teamf .tf-li{transition:none}.teamf .tf-m:hover{transform:none}}
+
+/* v16 · مساعد دبره (شات بوت) — ثيم سعودي: ليل أخضر، رملي، طين، وشريط سدو */
+.sadu{height:12px;background:
+ linear-gradient(135deg,var(--teen) 25%,transparent 25%) -6px 0/12px 12px,
+ linear-gradient(225deg,var(--teen) 25%,transparent 25%) -6px 0/12px 12px,
+ linear-gradient(315deg,var(--sand) 25%,transparent 25%) 0 0/12px 12px,
+ linear-gradient(45deg,var(--sand) 25%,transparent 25%) 0 0/12px 12px,var(--night2)}
+.cfab{position:fixed;bottom:22px;inset-inline-end:22px;z-index:60;display:flex;align-items:center;gap:10px;border:0;border-radius:999px;padding:8px 18px 8px 8px;background:var(--night);color:var(--jes);font:700 15px 'IBM Plex Sans Arabic',sans-serif;box-shadow:0 14px 34px -10px rgba(14,26,23,.7),0 0 0 3px rgba(227,196,143,.35);cursor:pointer;transition:transform .3s var(--ease)}
+.cfab:hover,.cfab:focus-visible{transform:translateY(-3px)}
+.cfab .cpi{width:40px;height:40px;border-radius:50%;background:var(--sand);display:grid;place-items:center}
+.cfab[hidden],.cpanel[hidden]{display:none}
+.cpanel{position:fixed;bottom:22px;inset-inline-end:22px;z-index:61;width:min(400px,calc(100vw - 24px));height:min(600px,calc(100vh - 44px));display:flex;flex-direction:column;background:var(--paper);border-radius:26px;overflow:hidden;box-shadow:0 30px 70px -20px rgba(14,26,23,.65);border:1.5px solid rgba(164,100,60,.25)}
+.chead{background:radial-gradient(130% 120% at 100% 0%,var(--night3),var(--night) 70%);color:var(--jes);padding:16px 18px 14px;display:flex;align-items:center;gap:12px}
+.chead .cpi{width:46px;height:46px;border-radius:16px;background:var(--sand);display:grid;place-items:center;flex:none}
+.chead b{font:800 19px 'Kufam';display:block}.chead span{color:#CFC4B2;font-size:13px}
+.chead .cx{margin-inline-start:auto;width:40px;height:40px;border-radius:50%;border:0;background:rgba(241,231,214,.1);color:var(--jes);font-size:22px;cursor:pointer}
+.cbody{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:radial-gradient(90% 60% at 50% 0%,#FBF5EA,var(--paper))}
+.cmsg{max-width:86%;padding:11px 14px;border-radius:18px;line-height:1.75;font-size:15px;white-space:pre-wrap;word-wrap:break-word}
+.cmsg.bot{align-self:flex-start;background:var(--card);color:var(--ink);border:1px solid #EADFCB;border-start-start-radius:6px;box-shadow:0 4px 14px -8px rgba(14,26,23,.25)}
+.cmsg.me{align-self:flex-end;background:var(--night);color:var(--jes);border-start-end-radius:6px}
+.cmsg.err{align-self:center;background:#FBEAE3;color:#8A2E12;border:1px solid #E6B9A4;font-size:14px;text-align:center}
+.cmsg b{color:var(--teenD)}.cmsg.me b{color:var(--sand)}
+.cchips{display:flex;flex-wrap:wrap;gap:8px}
+.cchips button{border:1.5px solid #E3CFAE;background:#FFF8EC;color:var(--teenD);border-radius:999px;padding:8px 13px;font:600 13.5px 'IBM Plex Sans Arabic',sans-serif;cursor:pointer;min-height:38px;text-align:start}
+.cchips button:hover,.cchips button:focus-visible{background:var(--sand);color:var(--night);border-color:var(--sand)}
+.ctyping{align-self:flex-start;display:flex;gap:5px;padding:14px 16px;background:var(--card);border-radius:18px;border:1px solid #EADFCB}
+.ctyping i{width:7px;height:7px;border-radius:50%;background:var(--teen);animation:cdot 1.2s infinite ease-in-out}.ctyping i:nth-child(2){animation-delay:.15s}.ctyping i:nth-child(3){animation-delay:.3s}
+@keyframes cdot{0%,80%,100%{opacity:.3;transform:translateY(0)}40%{opacity:1;transform:translateY(-4px)}}
+@media (prefers-reduced-motion:reduce){.ctyping i{animation:none}.cfab{transition:none}}
+.cform{display:flex;gap:8px;padding:12px;background:var(--card);border-top:1px solid #EADFCB;align-items:flex-end}
+.cform textarea{flex:1;resize:none;border:1.5px solid var(--line);border-radius:16px;padding:10px 12px;font:15px/1.5 'IBM Plex Sans Arabic',sans-serif;min-height:46px;max-height:120px;background:#fff;color:var(--ink)}
+.cform textarea:focus{outline:none;border-color:var(--teen);box-shadow:0 0 0 4px rgba(164,100,60,.15)}
+.cform button{width:46px;height:46px;border-radius:14px;border:0;background:var(--teen);color:#fff;display:grid;place-items:center;cursor:pointer;flex:none}
+.cform button:disabled{opacity:.45;cursor:not-allowed}
+.cnote{font-size:12px;color:var(--mut);padding:0 14px 10px;background:var(--card);margin:0}
+@media(max-width:560px){.cpanel{inset-inline-end:0;bottom:0;width:100vw;height:min(88vh,640px);border-radius:24px 24px 0 0}.cfab{bottom:14px;inset-inline-end:14px}.cfab .lbl{display:none}.cfab{padding:8px}}
 </style>
 </head>
 <body>
@@ -771,6 +807,15 @@ textarea.bad{border-color:#C0502A}
   <div class="df" id="dfoot"></div>
 </aside>
 <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mt"><div class="box" id="mbox"></div></div>
+<!-- ================= مساعد دبره ================= -->
+<button class="cfab" id="cfab" type="button" hidden aria-haspopup="dialog" aria-controls="cpanel"><span class="cpi"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 10v12" stroke="#7E4626" stroke-width="2" stroke-linecap="round"/><path fill="#2F6B60" d="M12 10C9.5 5 5 5 2 6.5c4.5-.3 7.5 1.2 10 3.5zm0 0c2.5-5 7-5 10-3.5-4.5-.3-7.5 1.2-10 3.5zM12 10c-1.5-3.5-.5-7.5 0-9 .5 1.5 1.5 5.5 0 9zM12 10c-3 .5-6 3-7 6.5 2-2.5 4.5-4.5 7-6.5zm0 0c3 .5 6 3 7 6.5-2-2.5-4.5-4.5-7-6.5z"/></svg></span><span class="lbl">اسأل مساعد دبره</span></button>
+<section class="cpanel" id="cpanel" role="dialog" aria-modal="false" aria-labelledby="ctitle" hidden>
+  <div class="chead"><span class="cpi"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 10v12" stroke="#7E4626" stroke-width="2" stroke-linecap="round"/><path fill="#2F6B60" d="M12 10C9.5 5 5 5 2 6.5c4.5-.3 7.5 1.2 10 3.5zm0 0c2.5-5 7-5 10-3.5-4.5-.3-7.5 1.2-10 3.5zM12 10c-1.5-3.5-.5-7.5 0-9 .5 1.5 1.5 5.5 0 9zM12 10c-3 .5-6 3-7 6.5 2-2.5 4.5-4.5 7-6.5zm0 0c3 .5 6 3 7 6.5-2-2.5-4.5-4.5-7-6.5z"/></svg></span><div><b id="ctitle">مساعد دبره</b><span>يسولف معك بلهجتنا عن مسارك وترقيتك</span></div><button class="cx" type="button" id="cclose" aria-label="إغلاق المساعد">×</button></div>
+  <div class="sadu" aria-hidden="true"></div>
+  <div class="cbody" id="cbody" aria-live="polite"></div>
+  <form class="cform" id="cform" novalidate><label for="cin" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">اكتب سؤالك</label><textarea id="cin" rows="1" maxlength="600" placeholder="اكتب سؤالك…"></textarea><button type="submit" id="csend" aria-label="إرسال" disabled><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12H5M11 6l-6 6 6 6"/></svg></button></form>
+  <p class="cnote" id="cnote">ردوده من ذكاء اصطناعي (Gemini)، فراجع أي معلومة مهمة قبل ما تعتمد عليها.</p>
+</section>
 <div class="toast" id="toast" role="status" aria-live="polite"><span id="tmsg"></span><button id="tbtn" hidden>تراجع</button></div>
 
 <script>
@@ -1595,6 +1640,48 @@ const TEAM=[
   dismiss:key=>['PATCH','/notifications/'+encodeURIComponent(key)]
  };
  for(const [name,mk] of Object.entries(R)){const orig=API[name];if(!orig)continue;API[name]=function(...a){const out=orig.apply(this,a);try{const [m,p,b]=mk(...a);send(m,p,b)}catch(e){console.warn('API map',name,e)}return out}}
+
+
+ /* ---------- مساعد دبره ---------- */
+ const CHIPS={emp:['وش أسوي عشان أترقى؟','وش أسهل جدارة أثبتها هالشهر؟','كيف أكسب السعف وتكبر نخلتي؟','وش الفرق بين التحدي والشهادة؟'],
+  mgr:['كيف أجهّز مقابلة ترقية عادلة؟','كيف أخفف العبء عن فريقي؟','وش أسوي لو مهارة يحتكرها شخص واحد؟'],
+  haya:['كيف أختار برامج التطوير بالميزانية؟','كيف أستفيد من دعم هدف؟','كيف أقرأ مصفوفة المواهب؟'],
+  top:['كيف أراجع ترقية محوّلة لي؟','وش أهم مؤشرات أثر التدريب؟','متى أعتمد ترقية استثنائية؟']};
+ const C={log:[],busy:false,left:null,opened:false};
+ const fem=()=>S.profile?.gender==='f';
+ const fmt=t=>esc(t).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/^\s*[-*•]\s+/gm,'• ');
+ const cbody=()=>$('#cbody');
+ const addMsg=(cls,html)=>{const d=document.createElement('div');d.className='cmsg '+cls;d.innerHTML=html;cbody().appendChild(d);cbody().scrollTop=cbody().scrollHeight;return d};
+ const chips=()=>{const w=document.createElement('div');w.className='cchips';w.innerHTML=(CHIPS[S.lock]||CHIPS.emp).map(q=>`<button type="button" data-cq="${esc(q)}">${esc(q)}</button>`).join('');cbody().appendChild(w)};
+ const snapshot=()=>{if(S.lock!=='emp')return {};try{const f=isFresh();return {ready:ready(),fronds:S.fr,stage:STN[stageOf(S.fr)],cycleDay:S.cycleDay||null,dept:DEPTS[myDept()],next:'مخطط عمليات',newAccount:f,
+  skills:skList().map(k=>({n:k.n,t:k.t,lv:LV[Math.max(1,Math.min(5,k.c))-1],req:LV[Math.max(1,k.req)-1],w:k.w||0,proven:f?k.c>1:true}))}}catch(e){console.warn('snapshot',e);return {}}};
+ const noteLeft=()=>{$('#cnote').textContent=`ردوده من ذكاء اصطناعي (Gemini)، فراجع أي معلومة مهمة قبل ما ${fem()?'تعتمدين':'تعتمد'} عليها.`+(C.left!=null?` · باقي لك ${C.left} رسالة اليوم`:'')};
+ const syncSend=()=>{$('#csend').disabled=C.busy||!$('#cin').value.trim()};
+ async function openChat(){$('#cpanel').hidden=false;$('#cfab').hidden=true;
+  if(!C.opened){C.opened=true;const n=S.names[S.lock]||'';
+   addMsg('bot',`هلا والله ${esc(n)}! أنا <b>مساعد دبره</b>.\n${S.lock==='emp'?`${fem()?'أسولف معكِ':'أسولف معك'} عن جداراتك وجاهزيتك، وكيف ${fem()?'تترقين':'تترقى'} خطوة بخطوة.`:'أساعدك في شغلك على المنصة: الترقيات، التطوير، والتدريب.'}\nوش ${fem()?'ودّك تعرفين':'ودّك تعرف'}؟`);chips();
+   const st=await call('GET','/chat/status').catch(()=>null);
+   if(st&&st.ok){C.left=st.d.left;if(!st.d.enabled)addMsg('err','المساعد مو مفعّل على هالنسخة للحين.')}noteLeft()}
+  setTimeout(()=>$('#cin').focus(),50)}
+ function closeChat(){$('#cpanel').hidden=true;$('#cfab').hidden=false;$('#cfab').focus()}
+ async function sendQ(q){q=String(q||'').trim();if(!q||C.busy)return;
+  $$('#cbody .cchips').forEach(x=>x.remove());C.log.push({role:'user',text:q});addMsg('me',fmt(q));$('#cin').value='';$('#cin').style.height='';
+  C.busy=true;syncSend();const ty=document.createElement('div');ty.className='ctyping';ty.setAttribute('aria-label','المساعد يكتب');ty.innerHTML='<i></i><i></i><i></i>';cbody().appendChild(ty);cbody().scrollTop=cbody().scrollHeight;
+  const r=await call('POST','/chat',{messages:C.log.slice(-12),snapshot:snapshot()}).catch(()=>null);
+  ty.remove();C.busy=false;syncSend();
+  if(r&&r.status===401)return expired();
+  if(r&&r.ok&&r.d.reply){C.log.push({role:'model',text:r.d.reply});addMsg('bot',fmt(r.d.reply));if(r.d.left!=null)C.left=r.d.left}
+  else{C.log.pop();addMsg('err',esc(r?.d?.error||'ما قدرنا نوصل للمساعد، جرّب مرة ثانية'));if(r?.d?.left!=null)C.left=r.d.left}
+  noteLeft();$('#cin').focus()}
+ $('#cfab').addEventListener('click',openChat);$('#cclose').addEventListener('click',closeChat);
+ $('#cpanel').addEventListener('keydown',e=>{if(e.key==='Escape'){e.stopPropagation();closeChat()}});
+ $('#cbody').addEventListener('click',e=>{const b=e.target.closest('[data-cq]');if(b)sendQ(b.dataset.cq)});
+ $('#cform').addEventListener('submit',e=>{e.preventDefault();sendQ($('#cin').value)});
+ $('#cin').addEventListener('input',e=>{const t=e.target;t.style.height='';t.style.height=Math.min(120,t.scrollHeight)+'px';syncSend()});
+ $('#cin').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();sendQ(e.target.value)}});
+ const showFab=()=>{const on=S.logged&&location.hash==='#app';if(!on){$('#cfab').hidden=true;$('#cpanel').hidden=true}else if($('#cpanel').hidden)$('#cfab').hidden=false};
+ addEventListener('hashchange',showFab);
+ {const r0=render;render=function(){r0();showFab()}}
 
  /* رجوع الجلسة بعد تحديث الصفحة */
  call('GET','/auth/me').then(r=>{const u=r&&r.ok&&r.d.user;if(!u)return;

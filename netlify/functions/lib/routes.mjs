@@ -2,6 +2,7 @@
 // يستقبل db فيه query(text, params) → {rows}، عشان نقدر نختبره محليًا.
 // كل نقطة هنا تقابل دالة في طبقة الـ API داخل المنصة (site/index.html).
 
+import { DAILY_LIMIT, buildContext, systemPrompt, cleanMessages, askGemini } from './chat.mjs';
 import { hashPassword, verifyPassword, newToken, tokenHash, sessionCookie, clearCookie, validateSignup, SESSION_DAYS } from './auth.mjs';
 
 const LV = ['مبتدئ', 'شاطر', 'ذيب', 'سنع', 'دبره'];
@@ -131,6 +132,24 @@ export async function handle(db, method, path, body = {}, ctx = {}) {
   const actor = (user.full_name || '').split(' ')[0] || 'مستخدم';
 
   if ((m = R('GET', '/bootstrap'))) return bootstrap(db, user);
+
+  // ---------- مساعد دبره ----------
+  if ((m = R('GET', '/chat/status'))) {
+    const u = await one(db, 'SELECT n FROM chat_usage WHERE user_id=$1 AND day=current_date', [user.id]);
+    return json(200, { enabled: !!process.env.GEMINI_API_KEY, left: Math.max(0, DAILY_LIMIT - (u?.n || 0)), limit: DAILY_LIMIT });
+  }
+  if ((m = R('POST', '/chat'))) {
+    const c = cleanMessages(body.messages);
+    if (c.error) return bad(c.error);
+    if (!process.env.GEMINI_API_KEY) return json(503, { error: 'المساعد مو مفعّل بعد', code: 'no_key' });
+    const used = await one(db, `INSERT INTO chat_usage (user_id, day, n) VALUES ($1, current_date, 1)
+      ON CONFLICT (user_id, day) DO UPDATE SET n = chat_usage.n + 1 RETURNING n`, [user.id]);
+    if (used.n > DAILY_LIMIT) return json(429, { error: `وصلت حد اليوم (${DAILY_LIMIT} رسالة). المساعد يرجع لك بكرة إن شاء الله`, code: 'daily', left: 0 });
+    const ctxData = await buildContext(db, user, body.snapshot);
+    const r = await askGemini(systemPrompt(ctxData), c.msgs);
+    if (r.error) return json(r.status === 200 ? 200 : r.status, { error: r.error, code: r.code, soft: r.status === 200 }); // الأخطاء ما تنحسب من الحد (الطلب يتراجع)
+    return json(200, { reply: r.text, left: Math.max(0, DAILY_LIMIT - used.n) });
+  }
 
   // POST /submissions — تقرير تحدي، أو شهادة خارجية تُصحّح على الخادم
   if ((m = R('POST', '/submissions'))) {
