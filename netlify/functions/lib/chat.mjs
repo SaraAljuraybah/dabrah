@@ -87,7 +87,7 @@ async function askGeminiOnly(system, msgs) {
   const body = {
     systemInstruction: { parts: [{ text: system }] },
     contents: msgs.map((m) => ({ role: m.role, parts: [{ text: m.text }] })),
-    generationConfig: { temperature: 0.6, maxOutputTokens: 1024 },
+    generationConfig: { temperature: 0.6, maxOutputTokens: 8192 }, // نماذج التفكير تصرف من نفس السقف قبل الرد
     safetySettings: ['HARASSMENT', 'HATE_SPEECH', 'SEXUALLY_EXPLICIT', 'DANGEROUS_CONTENT'].map((c) => ({ category: 'HARM_CATEGORY_' + c, threshold: 'BLOCK_MEDIUM_AND_ABOVE' })),
   };
   let last = null;
@@ -100,7 +100,10 @@ async function askGeminiOnly(system, msgs) {
     clearTimeout(timer);
     const d = await r.json().catch(() => ({}));
     if (r.ok) {
-      const text = (d.candidates?.[0]?.content?.parts || []).map((p) => p.text || '').join('').trim();
+      const cand = d.candidates?.[0] || {};
+      let text = (cand.content?.parts || []).filter((p) => !p.thought).map((p) => p.text || '').join('').trim();
+      console.log('chat ok', model, cand.finishReason || '', text.length);
+      if (text && cand.finishReason === 'MAX_TOKENS') { console.warn('chat cut by token limit', model); text = text.replace(/\s*\S*$/, '') + ' …'; }
       if (text) return { text, model };
       return { error: 'ما قدرت أجاوب على هالسؤال، جرّب تصيغه بطريقة ثانية', status: 200, code: 'empty', reason: d.candidates?.[0]?.finishReason || d.promptFeedback?.blockReason };
     }
@@ -126,7 +129,7 @@ async function askQwen(system, msgs) {
     r = await fetch(`${OR_BASE()}/api/v1/chat/completions`, {
       method: 'POST', signal: ac.signal,
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}`, 'HTTP-Referer': 'https://dabrah.vercel.app', 'X-Title': 'Dabrah' },
-      body: JSON.stringify({ model, models: [model, ...fallback], temperature: 0.6, max_tokens: 1024,
+      body: JSON.stringify({ model, models: [model, ...fallback], temperature: 0.6, max_tokens: 2048,
         messages: [{ role: 'system', content: system }, ...msgs.map((m) => ({ role: m.role === 'model' ? 'assistant' : 'user', content: m.text }))] }),
     });
   } catch { clearTimeout(timer); return { error: 'المساعد تأخر في الرد، جرّب مرة ثانية', status: 504, code: 'timeout' }; }

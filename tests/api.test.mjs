@@ -89,6 +89,7 @@ const fake = http.createServer(async (req, res) => {
   if (mode === '503first' && req.url.includes('gemini-flash-latest')) return send(503, { error: { code: 503, message: 'This model is currently experiencing high demand.', status: 'UNAVAILABLE' } });
   if (mode === '503all') return send(503, { error: { code: 503, status: 'UNAVAILABLE' } });
   if (mode === 'badkey') return send(400, { error: { message: 'API key not valid' } });
+  if (mode === 'cut') return send(200, { candidates: [{ finishReason: 'MAX_TOKENS', content: { parts: [{ text: 'تفكير داخلي', thought: true }, { text: 'هلا والله! 1. شوفي الجدار' }] } }] });
   send(200, { candidates: [{ content: { parts: [{ text: 'هلا والله! أول خطوة: ابدأ تحدي التقرير الأسبوعي.' }] } }] });
 }).listen(0);
 await new Promise((r) => fake.once('listening', r));
@@ -117,6 +118,8 @@ mode = '503first'; r = await ask(SARA); assert.equal(r.status, 200); assert.ok(s
 mode = '503all'; r = await ask(SARA); assert.equal(r.status, 503); assert.equal(r.body.code, 'busy'); ok('all models overloaded → clear "busy, try in a minute"');
 mode = '429'; r = await ask(SARA); assert.equal(r.status, 429); assert.equal(r.body.code, 'rate'); ok('Gemini busy → friendly retry message');
 mode = 'badkey'; r = await ask(SARA); assert.equal(r.status, 502); assert.equal(r.body.code, 'key'); assert.ok(!JSON.stringify(r.body).includes('test-key')); ok('bad key → generic message, key never echoed');
+mode = 'cut'; r = await ask(SARA); assert.equal(r.status, 200); assert.equal(r.body.reply, 'هلا والله! 1. شوفي …'); assert.ok(!r.body.reply.includes('تفكير')); ok('reply cut by token limit ends cleanly with … and hidden thinking is dropped');
+assert.equal(seen.at(-1).body.generationConfig.maxOutputTokens, 8192); ok('Gemini gets room for thinking + answer (8192 tokens)');
 mode = 'ok';
 const sid = (await raw('GET', '/auth/me', null, SARA)).body.user.id;
 await db.query('UPDATE chat_usage SET n=40 WHERE user_id=$1', [sid]);
