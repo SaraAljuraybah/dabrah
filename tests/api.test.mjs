@@ -75,10 +75,14 @@ r = await raw('GET', '/auth/me', null, NEW_T); assert.equal(r.body.user, null); 
 
 // ---------- مساعد دبره (Gemini وهمي محلي يسجّل الطلبات) ----------
 import http from 'node:http';
-const seen = []; let mode = 'ok';
+const seen = []; let mode = 'ok', orMode = 'ok';
 const fake = http.createServer(async (req, res) => {
   let b = ''; for await (const c of req) b += c; const j = JSON.parse(b || '{}');
-  seen.push({ url: req.url, key: req.headers['x-goog-api-key'], body: j });
+  seen.push({ url: req.url, key: req.headers['x-goog-api-key'], auth: req.headers.authorization, body: j });
+  if (req.url.startsWith('/api/v1/chat/completions')) {
+    if (orMode === 'credits') { res.writeHead(402, { 'content-type': 'application/json' }); return res.end(JSON.stringify({ error: { code: 402, message: 'Insufficient credits' } })); }
+    res.writeHead(200, { 'content-type': 'application/json' }); return res.end(JSON.stringify({ model: j.model, choices: [{ message: { role: 'assistant', content: '<think>x</think>أبشر، هذا رد Qwen.' } }] }));
+  }
   const send = (st, o) => { res.writeHead(st, { 'content-type': 'application/json' }); res.end(JSON.stringify(o)); };
   if (mode === '404first' && req.url.includes('gemini-flash-latest')) return send(404, { error: { message: 'not found' } });
   if (mode === '429') return send(429, { error: { message: 'quota' } });
@@ -108,8 +112,8 @@ r = await raw('POST', '/chat', { messages: [{ role: 'user', text: 'كيف أوز
 r = await raw('POST', '/chat', { messages: [{ role: 'user', text: 'x'.repeat(5000) }] }, SARA); assert.equal(seen.at(-1).body.contents[0].parts[0].text.length, 600); ok('long messages clipped to 600 chars');
 r = await raw('POST', '/chat', { messages: [] }, SARA); assert.equal(r.status, 400);
 r = await raw('POST', '/chat', { messages: [{ role: 'user', text: 'a' }, { role: 'model', text: 'b' }] }, SARA); assert.equal(r.status, 400); ok('empty / malformed conversation refused');
-mode = '404first'; r = await ask(SARA); assert.equal(r.status, 200); assert.ok(seen.at(-1).url.includes('gemini-2.5-flash')); ok('falls back to next model if one is retired');
-mode = '503first'; r = await ask(SARA); assert.equal(r.status, 200); assert.ok(seen.at(-1).url.includes('gemini-2.5-flash')); ok('model overloaded (503, what happened live) → next model answers');
+mode = '404first'; r = await ask(SARA); assert.equal(r.status, 200); assert.ok(seen.at(-1).url.includes('gemini-3.8-flash')); ok('retired model (404) → next Gemini model (3.8-flash)');
+mode = '503first'; r = await ask(SARA); assert.equal(r.status, 200); assert.ok(seen.at(-1).url.includes('gemini-3.8-flash')); ok('model overloaded (503, what happened live) → next model answers');
 mode = '503all'; r = await ask(SARA); assert.equal(r.status, 503); assert.equal(r.body.code, 'busy'); ok('all models overloaded → clear "busy, try in a minute"');
 mode = '429'; r = await ask(SARA); assert.equal(r.status, 429); assert.equal(r.body.code, 'rate'); ok('Gemini busy → friendly retry message');
 mode = 'badkey'; r = await ask(SARA); assert.equal(r.status, 502); assert.equal(r.body.code, 'key'); assert.ok(!JSON.stringify(r.body).includes('test-key')); ok('bad key → generic message, key never echoed');
@@ -118,6 +122,18 @@ const sid = (await raw('GET', '/auth/me', null, SARA)).body.user.id;
 await db.query('UPDATE chat_usage SET n=40 WHERE user_id=$1', [sid]);
 r = await ask(SARA); assert.equal(r.status, 429); assert.equal(r.body.code, 'daily'); ok('daily limit of 40 messages per account');
 r = await raw('GET', '/chat/status', null, SARA); assert.deepEqual([r.body.enabled, r.body.limit], [true, 40]); ok('status endpoint');
+
+// ---------- Qwen احتياط عبر OpenRouter ----------
+await db.query('DELETE FROM chat_usage WHERE user_id=$1', [sid]); // حد اليوم انستهلك في الاختبار اللي قبل
+process.env.OPENROUTER_API_KEY = 'sk-or-test'; process.env.OPENROUTER_BASE_URL = process.env.GEMINI_BASE_URL;
+mode = 'ok'; r = await ask(SARA); assert.equal(r.body.provider, 'gemini'); ok('Gemini answers first when available');
+mode = '503all'; r = await ask(SARA); const q = seen.at(-1);
+assert.equal(r.status, 200); assert.equal(r.body.provider, 'qwen'); assert.equal(r.body.reply, 'أبشر، هذا رد Qwen.'); ok('all Gemini models busy → Qwen answers (thinking tags stripped)');
+assert.equal(q.auth, 'Bearer sk-or-test'); assert.equal(q.body.model, 'qwen/qwen3-next-80b-a3b-instruct'); assert.equal(q.body.models.length, 3); ok('Qwen called with Bearer key and 3 Qwen fallbacks');
+assert.equal(q.body.messages[0].role, 'system'); assert.ok(q.body.messages[0].content.includes('ساره الجريبه') && q.body.messages[0].content.includes('لهجة سعودية')); ok('Qwen gets the same Saudi persona and her context');
+orMode = 'credits'; r = await ask(SARA); assert.equal(r.status, 503); assert.equal(r.body.code, 'busy'); ok('Gemini busy + Qwen out of credits → friendly busy message');
+orMode = 'ok'; delete process.env.GEMINI_API_KEY; mode = 'ok'; r = await ask(SARA); assert.equal(r.body.provider, 'qwen'); ok('works with Qwen alone if the Gemini key is removed');
+delete process.env.OPENROUTER_API_KEY; r = await ask(SARA); assert.equal(r.body.code, 'no_key'); ok('no keys at all → "not enabled"');
 fake.close();
 
 // ---------- عالمين: العرض والحقيقي ----------

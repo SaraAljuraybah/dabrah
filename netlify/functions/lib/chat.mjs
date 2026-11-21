@@ -3,7 +3,11 @@
 
 export const DAILY_LIMIT = 40;          // رسائل لكل حساب في اليوم
 const MAX_TURNS = 12, MAX_CHARS = 600;
-const MODELS = () => (process.env.GEMINI_MODEL ? [process.env.GEMINI_MODEL] : []).concat(['gemini-flash-latest', 'gemini-2.5-flash', 'gemini-2.0-flash']);
+// Gemini أول (gemini-2.0-flash انتهى عند Google)، وبعدها Qwen عبر OpenRouter كاحتياط من مزوّد ثاني
+const MODELS = () => (process.env.GEMINI_MODEL ? [process.env.GEMINI_MODEL] : []).concat(['gemini-flash-latest', 'gemini-3.8-flash', 'gemini-2.5-flash']);
+const QWEN = () => (process.env.QWEN_MODEL ? [process.env.QWEN_MODEL] : []).concat(['qwen/qwen3-next-80b-a3b-instruct', 'qwen/qwen3-235b-a22b-2507', 'qwen/qwen3-30b-a3b-instruct-2507']).slice(0, 3);
+const OR_BASE = () => (process.env.OPENROUTER_BASE_URL || 'https://openrouter.ai').replace(/\/$/, '');
+export const aiEnabled = () => !!(process.env.GEMINI_API_KEY || process.env.OPENROUTER_API_KEY);
 const BASE = () => (process.env.GEMINI_BASE_URL || 'https://generativelanguage.googleapis.com').replace(/\/$/, '');
 
 const ROLE_AR = { emp: 'موظف', mgr: 'مدير مباشر', haya: 'مسؤول تطوير المواهب', top: 'إدارة عليا' };
@@ -77,7 +81,7 @@ export function cleanMessages(list) {
   return { msgs };
 }
 
-export async function askGemini(system, msgs) {
+async function askGeminiOnly(system, msgs) {
   const key = process.env.GEMINI_API_KEY;
   if (!key) return { error: 'المساعد مو مفعّل بعد', status: 503, code: 'no_key' };
   const body = {
@@ -101,7 +105,7 @@ export async function askGemini(system, msgs) {
       return { error: 'ما قدرت أجاوب على هالسؤال، جرّب تصيغه بطريقة ثانية', status: 200, code: 'empty', reason: d.candidates?.[0]?.finishReason || d.promptFeedback?.blockReason };
     }
     console.error('Gemini', model, r.status, JSON.stringify(d).slice(0, 300));
-    if (r.status === 404) { last = { error: 'المساعد مو متاح الحين', status: 502, code: 'model' }; continue; } // جرّب النموذج اللي بعده
+    if (r.status === 404) { last = last?.code === 'busy' ? last : { error: 'المساعد مو متاح الحين', status: 502, code: 'model' }; continue; } // جرّب النموذج اللي بعده
     // النموذج مزدحم عند Google (503) أو خطأ مؤقت عندهم: ننتقل للنموذج اللي بعده بدل ما نوقف
     if ([500, 502, 503, 504].includes(r.status)) { last = { error: 'المساعد عليه ضغط الحين، جرّب بعد دقيقة', status: 503, code: 'busy' }; await new Promise((ok) => setTimeout(ok, 400)); continue; }
     if (r.status === 429) return { error: 'المساعد عليه ضغط الحين، جرّب بعد دقيقة', status: 429, code: 'rate' };
@@ -109,4 +113,40 @@ export async function askGemini(system, msgs) {
     return { error: 'المساعد مو متاح الحين، جرّب بعد شوي', status: 502, code: 'upstream' };
   }
   return last || { error: 'المساعد مو متاح الحين', status: 502, code: 'model' };
+}
+
+// Qwen عبر OpenRouter (واجهة متوافقة مع OpenAI). OpenRouter نفسه يجرّب نماذج Qwen الثانية لو الأول مزحوم.
+async function askQwen(system, msgs) {
+  const key = process.env.OPENROUTER_API_KEY;
+  if (!key) return { error: 'المساعد مو مفعّل بعد', status: 503, code: 'no_key' };
+  const [model, ...fallback] = QWEN();
+  const ac = new AbortController(); const timer = setTimeout(() => ac.abort(), 25000);
+  let r;
+  try {
+    r = await fetch(`${OR_BASE()}/api/v1/chat/completions`, {
+      method: 'POST', signal: ac.signal,
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}`, 'HTTP-Referer': 'https://dabrah.vercel.app', 'X-Title': 'Dabrah' },
+      body: JSON.stringify({ model, models: [model, ...fallback], temperature: 0.6, max_tokens: 1024,
+        messages: [{ role: 'system', content: system }, ...msgs.map((m) => ({ role: m.role === 'model' ? 'assistant' : 'user', content: m.text }))] }),
+    });
+  } catch { clearTimeout(timer); return { error: 'المساعد تأخر في الرد، جرّب مرة ثانية', status: 504, code: 'timeout' }; }
+  clearTimeout(timer);
+  const d = await r.json().catch(() => ({}));
+  if (r.ok) {
+    const text = String(d.choices?.[0]?.message?.content || '').replace(/<think>[\s\S]*?<\/think>/g, '').trim();
+    return text ? { text, model: d.model || model } : { error: 'ما قدرت أجاوب على هالسؤال، جرّب تصيغه بطريقة ثانية', status: 200, code: 'empty' };
+  }
+  console.error('Qwen', model, r.status, JSON.stringify(d).slice(0, 300));
+  if (r.status === 429) return { error: 'المساعد عليه ضغط الحين، جرّب بعد دقيقة', status: 429, code: 'rate' };
+  if ([401, 402, 403].includes(r.status)) return { error: 'المساعد مو متاح الحين، تواصل مع فريق دبره', status: 502, code: 'key' };
+  return { error: 'المساعد عليه ضغط الحين، جرّب بعد دقيقة', status: 503, code: 'busy' };
+}
+
+// Gemini أول، ولو ما ردّ (مزحوم، منتهي، مفتاح، مهلة) نجرّب Qwen. الردّ الفاضي بسبب المحتوى ما نحوّله.
+export async function askAI(system, msgs) {
+  const g = await askGeminiOnly(system, msgs);
+  if (!g.error || g.code === 'empty' || !process.env.OPENROUTER_API_KEY) return g.error ? g : { ...g, provider: 'gemini' };
+  const q = await askQwen(system, msgs);
+  if (!q.error) return { ...q, provider: 'qwen' };
+  return g.code === 'no_key' ? q : (q.code === 'busy' || q.code === 'rate' ? q : g);
 }

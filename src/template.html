@@ -815,7 +815,7 @@ textarea.bad{border-color:#C0502A}
   <div class="sadu" aria-hidden="true"></div>
   <div class="cbody" id="cbody" aria-live="polite"></div>
   <form class="cform" id="cform" novalidate><label for="cin" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">اكتب سؤالك</label><textarea id="cin" rows="1" maxlength="600" placeholder="اكتب سؤالك…"></textarea><button type="submit" id="csend" aria-label="إرسال" disabled><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12H5M11 6l-6 6 6 6"/></svg></button></form>
-  <p class="cnote" id="cnote">ردوده من ذكاء اصطناعي (Gemini)، فراجع أي معلومة مهمة قبل ما تعتمد عليها.</p>
+  <p class="cnote" id="cnote">ردوده من ذكاء اصطناعي (Gemini، واحتياطه Qwen)، فراجع أي معلومة مهمة قبل ما تعتمد عليها.</p>
 </section>
 <div class="toast" id="toast" role="status" aria-live="polite"><span id="tmsg"></span><button id="tbtn" hidden>تراجع</button></div>
 
@@ -1658,7 +1658,7 @@ const TEAM=[
  const chips=()=>{const w=document.createElement('div');w.className='cchips';w.innerHTML=(CHIPS[S.lock]||CHIPS.emp).map(q=>`<button type="button" data-cq="${esc(q)}">${esc(q)}</button>`).join('');cbody().appendChild(w)};
  const snapshot=()=>{if(S.lock!=='emp')return {};try{const f=isFresh();return {ready:ready(),fronds:S.fr,stage:STN[stageOf(S.fr)],cycleDay:S.cycleDay||null,dept:DEPTS[myDept()],next:'مخطط عمليات',newAccount:f,
   skills:skList().map(k=>({n:k.n,t:k.t,lv:LV[Math.max(1,Math.min(5,k.c))-1],req:LV[Math.max(1,k.req)-1],w:k.w||0,proven:f?k.c>1:true}))}}catch(e){console.warn('snapshot',e);return {}}};
- const noteLeft=()=>{$('#cnote').textContent=`ردوده من ذكاء اصطناعي (Gemini)، فراجع أي معلومة مهمة قبل ما ${fem()?'تعتمدين':'تعتمد'} عليها.`+(C.left!=null?` · باقي لك ${C.left} رسالة اليوم`:'')};
+ const noteLeft=()=>{$('#cnote').textContent=`ردوده من ذكاء اصطناعي (Gemini، واحتياطه Qwen)، فراجع أي معلومة مهمة قبل ما ${fem()?'تعتمدين':'تعتمد'} عليها.`+(C.left!=null?` · باقي لك ${C.left} رسالة اليوم`:'')};
  const syncSend=()=>{$('#csend').disabled=C.busy||!$('#cin').value.trim()};
  async function openChat(){$('#cpanel').hidden=false;$('#cfab').hidden=true;
   if(!C.opened){C.opened=true;const n=S.names[S.lock]||'';
