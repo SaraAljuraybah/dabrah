@@ -912,12 +912,13 @@ const cl=v=>Math.max(1,Math.min(5,Math.round(v)));
 /* الجدارات غير الفنية مشتقة من مصادرها: 360 والأداء والأدلة الفنية */
 const DER={fc:i=>cl(lvOf(i,'cap')+1),wms:i=>cl(lvOf(i,'inv')),data:i=>cl(lvOf(i,'ai')+(xlOk(i)?1:0)),com:i=>cl(EMP[i].b360-1),team:i=>cl(EMP[i].b360+.2-1),prob:i=>cl(EMP[i].b360-.3-1),dec:i=>cl((lvOf(i,'ai')+lvOf(i,'cap'))/2),dev:i=>cl(lvOf(i,'lead')-1),safe:i=>cl(EMP[i].perf+1),cust:i=>cl(EMP[i].perf+(EMP[i].b360>=4?1:0)),integ:i=>3+(EMP[i].perf===3?1:0)};
 for(const k of ['com','team','prob','safe','cust','integ']){const f=DER[k];DER[k]=i=>EMP[i].fresh?1:f(i)}
+{const fc=DER.fc,da=DER.data;DER.fc=i=>EMP[i].fresh&&lvOf(i,'cap')<=1?1:fc(i);DER.data=i=>EMP[i].fresh?cl(lvOf(i,'ai')):da(i)}
 const xlOk=i=>(i===0?S.excel:EMP[i].xl)==='g';
 const isFresh=()=>!!EMP[0]?.fresh;
 const compLv=(i,k)=>k==='xl'?(EMP[i].fresh?1:xlOk(i)?3:2):DER[k]?DER[k](i):lvOf(i,k);
 const dispLv=(i,k)=>k==='xl'&&!EMP[i].fresh?3:compLv(i,k);
 const gapTxt=n=>n<=1?'درجة':n===2?'درجتين':n+' درجات';
-const readyOf=i=>{let t=0,w=0;for(const k in S.W){t+=S.W[k]*Math.min(1,compLv(i,k)/SK[k].req);w+=S.W[k]}return w?Math.round(t/w*100):0};
+const readyOf=i=>{let t=0,w=0;for(const k in S.W){const c=compLv(i,k);t+=S.W[k]*(EMP[i].fresh&&c<=1?0:Math.min(1,c/SK[k].req));w+=S.W[k]}return w?Math.round(t/w*100):0};
 const typeStat=(i,ty)=>{const ks=Object.keys(SK).filter(k=>SK[k].t===ty);return {n:ks.length,met:ks.filter(k=>compLv(i,k)>=SK[k].req).length,w:ks.reduce((a,k)=>a+(S.W[k]||0),0)}};
 const ready=()=>readyOf(0);
 const myTitle=()=>S.profile?.title||'مشرف مستودع',myDept=()=>{const d=+(S.profile?.dept??0);return DEPTS[d]?d:0};
@@ -999,7 +1000,7 @@ function empPath(){const rs=S.rep.status,cs=S.cert.status;const stg=stageOf(S.fr
  ${cycleCard()}
  <div class="card reveal">
   <div class="row between"><h2 style="font-size:24px">جداراتي وطريقي للترقية</h2><span class="mut">الوزن = أهمية الجدارة في الوظيفة الجاية</span></div>
-  <div class="ladder"><div class="rung now"><b>${esc(myTitle())}</b>وظيفتك الحالية</div><span class="arrow" aria-hidden="true">←</span><div class="rung goal"><b>مخطط عمليات</b>رشّحتك لها هيا · ${ready()}% جاهز</div></div>
+  <div class="ladder"><div class="rung now"><b>${esc(myTitle())}</b>وظيفتك الحالية</div><span class="arrow" aria-hidden="true">←</span><div class="rung goal"><b>مخطط عمليات</b>${isFresh()?'الوظيفة الجاية في مسارك':'رشّحتك لها هيا'} · ${ready()}% جاهز</div></div>
   <div class="hlegend mut"><span class="hm"><svg width="10" height="10"><circle cx="5" cy="5" r="4" fill="#E3C48F"/></svg></span> النقطة تحت البيت = المستوى المطلوب</div>
   ${TYPES.map(([ty,how],ti)=>{const L=skList().filter(x=>x.t===ty);const st=typeStat(0,ty);return disc(`<b>${ty}</b> <span class="mut">· وزنها ${st.w}% · ${st.met} من ${st.n} توصل المطلوب</span>`,`<p class="mut small" style="margin:0 0 4px">${how}</p>`+L.map(s=>`<div class="skill ${S.openSk[s.id]?'open':''}"><button data-act="toggle" data-id="${s.id}" aria-expanded="${!!S.openSk[s.id]}"><span class="nm"><b>${s.n}</b><span class="mut">${s.t} · وزنها ${s.w}% · ${s.d}</span></span>${houses(s.c,s.req)}<span class="req mut">${LV[s.c-1]} · المطلوب ${LV[s.req-1]}</span><span class="row" style="gap:8px;justify-content:flex-end">${s.c>=s.req?(s.h==='y'?'<span class="chip y">قربت تذبل</span>':'<span class="chip g">جاهزة</span>'):`<span class="chip">ناقصك ${gapTxt(s.req-s.c)}</span>`}<span class="chev">${ICN.chev}</span></span></button><div class="more"><div><div class="in"><span>${s.plan}</span>${s.id==='xl'&&S.excel==='y'?`<div class="auto"><b>تذكير تلقائي ${S.leave?'متوقف أثناء الإجازة':'مفعّل'}</b><span>نذكّرك قبل 30 يوم وقبل 7 أيام من نزول المستوى.</span></div><div><button class="btn sand" data-act="renew" style="min-height:44px">ابدأ تحدي التجديد (3 أسئلة)</button></div>`:''}</div></div></div></div>`).join(''),ti===0?'open':'')}).join('')}
  </div>`}
