@@ -42,7 +42,7 @@ r = await call('POST', '/competency-profiles/ops-planner/change-requests', { wei
 r = await call('PATCH', '/competency-profiles/ops-planner/change-requests/latest', { decision: 'approve' }); assert.equal(r.status, 200); ok('weights change request → approved');
 r = await call('POST', '/development-plans', { skillId: 'cap', employeeIds: [1, 3, 4] }); assert.equal(r.status, 201); assert.equal(r.body.net, 3 * 3200 * 0.3); ok('plan cost computed on server (هدف 70%)');
 r = await call('PATCH', '/development-plans/by-skill/cap', { status: 'ok' }); assert.equal(r.status, 200); ok('plan approved');
-r = await call('GET', '/bootstrap'); assert.equal(r.body.plans.length, 1); assert.deepEqual(r.body.plans[0].sel, [0, 2, 3]); assert.equal(r.body.employees[0].ai, 3); assert.equal(r.body.employees[0].inv, 4); assert.equal(r.body.weights.cap, 20); ok('bootstrap reflects all writes');
+r = await call('GET', '/bootstrap'); assert.equal(r.body.plans.length, 1); assert.deepEqual(r.body.plans[0].sel, [1, 3, 4]); assert.equal(r.body.employees[0].ai, 3); assert.equal(r.body.employees[0].inv, 4); assert.equal(r.body.weights.cap, 20); ok('bootstrap reflects all writes');
 r = await call('GET', '/nope'); assert.equal(r.status, 404); ok('unknown route → 404');
 
 // ---------- الحسابات ----------
@@ -115,4 +115,27 @@ await db.query('UPDATE chat_usage SET n=40 WHERE user_id=$1', [sid]);
 r = await ask(SARA); assert.equal(r.status, 429); assert.equal(r.body.code, 'daily'); ok('daily limit of 40 messages per account');
 r = await raw('GET', '/chat/status', null, SARA); assert.deepEqual([r.body.enabled, r.body.limit], [true, 40]); ok('status endpoint');
 fake.close();
+
+// ---------- عالمين: العرض والحقيقي ----------
+const REAL_MGR = tok(await raw('POST', '/auth/signup', { role: 'mgr', name: 'ساره الجريبه', eid: '22222222', email: 'rm@x.sa', dept: '0', team: '5', password: 'Sara2026x', confirm: 'Sara2026x' }));
+const REAL_EMP = tok(await raw('POST', '/auth/signup', { role: 'emp', name: 'ريما العتيبي', eid: '33333333', email: 're@x.sa', gender: 'f', nat: 'sa', title: 'مشرفة', dept: '0', password: 'Rima2026x', confirm: 'Rima2026x' }));
+const REAL_HR = tok(await raw('POST', '/auth/signup', { role: 'haya', name: 'نوف السالم', eid: '44444444', email: 'rh@x.sa', org: 'منشأة', count: '30', password: 'Nouf2026x', confirm: 'Nouf2026x' }));
+const REAL_TOP = tok(await raw('POST', '/auth/signup', { role: 'top', name: 'فهد الحربي', eid: '55555555', email: 'rt@x.sa', title: 'مدير عام', password: 'Fahd2026x', confirm: 'Fahd2026x' }));
+r = await raw('GET', '/bootstrap', null, REAL_MGR); const names = r.body.employees.map((e) => e.n);
+assert.ok(names.includes('ريما العتيبي') && !names.includes('عبدالله الشمري') && !names.includes('ماجد القحطاني')); ok('real manager sees real employees only, no sample staff');
+assert.equal(r.body.me.demo, false); assert.ok(r.body.history.every((h) => !['ماجد القحطاني', 'نورة السبيعي'].includes(h.who))); assert.ok(r.body.audit.every((a) => a.who !== 'هيا')); ok('real world: no sample approvals or governance log');
+r = await raw('GET', '/bootstrap', null, MGR_T); assert.equal(r.body.employees.length, 21); assert.ok(!r.body.employees.some((e) => e.n === 'ريما العتيبي')); assert.equal(r.body.me.demo, true); ok('demo manager still sees exactly the 21 sample staff');
+await raw('POST', '/submissions', { type: 'report', score: 8 }, REAL_EMP);
+r = await raw('GET', '/bootstrap', null, REAL_MGR); assert.equal(r.body.history[0].who, 'ريما العتيبي');
+r = await raw('GET', '/bootstrap', null, MGR_T); assert.ok(!r.body.history.some((h) => h.who === 'ريما العتيبي')); ok("real employee's approval shows in the real world only");
+for (const [m, p, b] of [['PATCH', '/promotions/1', { interview: 'pass' }], ['POST', '/rotations/r1/approval'], ['PATCH', '/positions/p1', { decision: 'x' }], ['POST', '/shadowing', { skillId: 'wms' }], ['POST', '/competency-profiles/ops-planner/change-requests', { weights: {} }]]) {
+  r = await raw(m, p, b || {}, REAL_MGR); assert.equal(r.status, 403, p);
+} ok('real accounts cannot change demo-only items (Majed file, rotations, positions, weights)');
+const rimaId = (await raw('GET', '/auth/me', null, REAL_EMP)).body.user.employeeId;
+r = await raw('POST', '/development-plans', { skillId: 'cap', employeeIds: [rimaId, 1, 2] }, REAL_HR); assert.equal(r.status, 201); assert.equal(r.body.net, 1 * 3200 * 0.3); ok('real HR plan only includes real employees (sample ids dropped)');
+r = await raw('GET', '/bootstrap', null, REAL_TOP); assert.equal(r.body.plans.length, 1); assert.deepEqual(r.body.plans[0].sel, [rimaId]); assert.deepEqual(r.body.applicants, []);
+r = await raw('GET', '/bootstrap', null, MGR_T); assert.ok(!r.body.plans.some((p) => p.sel.includes(rimaId))); ok('plans are separated by world');
+r = await raw('PATCH', '/development-plans/by-skill/cap', { status: 'ok' }, REAL_TOP); assert.equal(r.status, 200);
+r = await raw('GET', '/bootstrap', null, REAL_HR); assert.equal(r.body.plans[0].st, 'ok'); r = await raw('GET', '/bootstrap', null, MGR_T); assert.equal(r.body.plans.find((p) => p.k === 'cap').st, 'ok'); ok('top approval affects the real plan only (demo plan untouched)');
+await raw('POST', '/internal-jobs/p1/applications', {}, REAL_EMP); r = await raw('GET', '/bootstrap', null, REAL_HR); assert.deepEqual(r.body.applicants.map((a) => [a.who, a.job]), [['ريما العتيبي', 'منسّق تخطيط عمليات']]); ok('real HR sees real internal-job applicants');
 console.log(`\n${n} اختبار نجحت`);

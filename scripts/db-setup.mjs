@@ -13,6 +13,7 @@ try {
   if (!process.argv.includes('--no-seed')) await run('seed.sql');
   await run('auth.sql');
   await run('chat.sql');
+  await run('world.sql');
   await run('security.sql');
 } catch (e) { console.error('✗', e.message); process.exitCode = 1; }
 finally { await client.end(); }

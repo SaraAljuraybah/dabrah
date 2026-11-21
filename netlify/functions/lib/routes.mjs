@@ -12,11 +12,11 @@ const bad = (msg) => json(400, { error: msg });
 const intParam = (v) => (/^\d+$/.test(String(v)) ? Number(v) : null);
 
 async function one(db, text, params) { const r = await db.query(text, params); return r.rows[0]; }
-async function log(db, who, item, decision, ok) {
-  await db.query('INSERT INTO approvals_log (employee_name, item, decision, approved, when_text) VALUES ($1,$2,$3,$4,$5)', [who, item, decision, ok, 'اليوم']);
+async function log(db, who, item, decision, ok, demo = false) {
+  await db.query('INSERT INTO approvals_log (employee_name, item, decision, approved, when_text, demo) VALUES ($1,$2,$3,$4,$5,$6)', [who, item, decision, ok, 'اليوم', demo]);
 }
-async function audit(db, actor, action) {
-  await db.query('INSERT INTO audit_log (actor, action, when_text) VALUES ($1,$2,$3)', [actor, action, 'اليوم']);
+async function audit(db, actor, action, demo = false) {
+  await db.query('INSERT INTO audit_log (actor, action, when_text, demo) VALUES ($1,$2,$3,$4)', [actor, action, 'اليوم', demo]);
 }
 async function empName(db, id) { return (await one(db, 'SELECT full_name FROM employees WHERE id=$1', [id]))?.full_name || ''; }
 async function getLevel(db, emp, skill) { return (await one(db, 'SELECT level FROM employee_skills WHERE employee_id=$1 AND skill_code=$2', [emp, skill]))?.level || 1; }
@@ -29,20 +29,21 @@ async function addFronds(db, emp, n) { await db.query('UPDATE employees SET fron
 // ---------- GET /bootstrap: كل اللي تحتاجه الواجهة عند الفتح ----------
 async function bootstrap(db, user) {
   const mine = user?.employee_id || null;
+  const demo = !!user?.is_demo;
   const emps = (await db.query(`
     SELECT e.id, e.full_name n, e.gender g, CASE WHEN e.is_saudi THEN 'sa' ELSE e.nationality END nat, e.department_id - 1 d,
            e.fronds fr, COALESCE(MAX(s.level) FILTER (WHERE s.skill_code='cap'),1) cap, COALESCE(MAX(s.level) FILTER (WHERE s.skill_code='ai'),1) ai,
            COALESCE(MAX(s.level) FILTER (WHERE s.skill_code='inv'),1) inv, COALESCE(MAX(s.level) FILTER (WHERE s.skill_code='lead'),1) lead,
            CASE WHEN e.excel_health='green' THEN 'g' ELSE 'y' END xl, e.score_360::float b360, e.performance perf, e.potential pot, e.weekly_hours hrs, e.on_leave
     FROM employees e LEFT JOIN employee_skills s ON s.employee_id=e.id
-    WHERE e.is_listed OR e.id = $1 GROUP BY e.id ORDER BY (e.id = $1) DESC, e.id`, [mine])).rows;
+    WHERE e.is_listed = $2 OR e.id = $1 GROUP BY e.id ORDER BY (e.id = $1) DESC, e.id`, [mine, demo])).rows;
   const weights = Object.fromEntries((await db.query(`SELECT skill_code, weight FROM job_profile_weights WHERE job_code='ops-planner'`)).rows.map(r => [r.skill_code, r.weight]));
   const plans = (await db.query(`
     SELECT p.id, p.skill_code k, p.net_cost::float net, p.hadaf_support::float hadaf, p.status st,
-           COALESCE(json_agg(m.employee_id - 1 ORDER BY m.employee_id) FILTER (WHERE m.employee_id IS NOT NULL), '[]') sel
-    FROM development_plans p LEFT JOIN plan_members m ON m.plan_id=p.id GROUP BY p.id ORDER BY p.id`)).rows.map(p => ({ ...p, open: false }));
-  const auditRows = (await db.query('SELECT actor who, action what, COALESCE(when_text, to_char(created_at, \'YYYY-MM-DD\')) "when" FROM audit_log ORDER BY created_at DESC, id DESC LIMIT 50')).rows;
-  const history = (await db.query('SELECT employee_name who, item what, decision dec, COALESCE(when_text, \'اليوم\') "when", CASE WHEN approved THEN 1 ELSE 0 END ok FROM approvals_log ORDER BY created_at DESC, id DESC LIMIT 20')).rows;
+           COALESCE(json_agg(m.employee_id ORDER BY m.employee_id) FILTER (WHERE m.employee_id IS NOT NULL), '[]') sel
+    FROM development_plans p LEFT JOIN plan_members m ON m.plan_id=p.id WHERE p.demo = $1 GROUP BY p.id ORDER BY p.id`, [demo])).rows.map(p => ({ ...p, open: false })); // sel = أرقام الموظفين
+  const auditRows = (await db.query('SELECT actor who, action what, COALESCE(when_text, to_char(created_at, \'YYYY-MM-DD\')) "when" FROM audit_log WHERE demo = $1 ORDER BY created_at DESC, id DESC LIMIT 50', [demo])).rows;
+  const history = (await db.query('SELECT employee_name who, item what, decision dec, COALESCE(when_text, \'اليوم\') "when", CASE WHEN approved THEN 1 ELSE 0 END ok FROM approvals_log WHERE demo = $1 ORDER BY created_at DESC, id DESC LIMIT 20', [demo])).rows;
   // الموظف الجديد ما عنده تقييم 360 ولا أداء بعد: نعلّمه «جديد» والواجهة تبدأ جداراته من «مبتدئ»
   const employees = emps.map(({ on_leave, ...e }) => e.b360 == null ? { ...e, fresh: true, b360: 1, perf: 1, pot: 1, hrs: e.hrs ?? 40 } : e);
   let me = null;
@@ -57,10 +58,12 @@ async function bootstrap(db, user) {
       me.leave = !!emps.find((e) => e.id === mine)?.on_leave;
     }
   }
-  return json(200, { me, employees, weights, plans, audit: auditRows, history });
+  const applicants = (user && !demo && ['haya', 'top'].includes(user.role)) ? (await db.query(`SELECT e.full_name who, j.title job, a.created_at::date "when"
+      FROM job_applications a JOIN employees e ON e.id=a.employee_id JOIN internal_jobs j ON j.code=a.job_code WHERE NOT e.is_listed ORDER BY a.created_at DESC LIMIT 50`)).rows : [];
+  return json(200, { me, employees, weights, plans, audit: auditRows, history, applicants });
 }
 
-const userOut = (u) => ({ id: u.id, role: u.role, name: u.full_name, email: u.email, employeeId: u.employee_id, profile: u.profile || {}, createdAt: u.created_at });
+const userOut = (u) => ({ id: u.id, role: u.role, name: u.full_name, email: u.email, employeeId: u.employee_id, profile: u.profile || {}, createdAt: u.created_at, demo: !!u.is_demo });
 async function startSession(db, userId) {
   const token = newToken();
   await db.query(`INSERT INTO sessions (token_hash, user_id, expires_at) VALUES ($1,$2, now() + interval '${SESSION_DAYS} days')`, [tokenHash(token), userId]);
@@ -130,6 +133,10 @@ export async function handle(db, method, path, body = {}, ctx = {}) {
   if (PERSONAL.test(clean) && !me) return json(403, { error: 'هذي الخدمة لحسابات الموظفين' });
   if (COMPANY.test(clean) && role === 'emp') return json(403, { error: 'ما عندك صلاحية لهذا الإجراء' });
   const actor = (user.full_name || '').split(' ')[0] || 'مستخدم';
+  const demo = !!user.is_demo;                                     // عالم العرض أو العالم الحقيقي
+  const L = (...a) => log(db, ...a, demo), A = (...a) => audit(db, ...a, demo);
+  // عناصر العرض (ملف ماجد، التدويرات، الوظائف، الترقية الاستثنائية، أوزان الجدارات) يعدّلها حساب عرض بس
+  if (!demo && /^\/(promotions|rotations|shadowing|positions|competency-profiles)(\/|$)/.test(clean)) return json(403, { error: 'هالإجراء متاح في بيئة العرض بس' });
 
   if ((m = R('GET', '/bootstrap'))) return bootstrap(db, user);
 
@@ -164,7 +171,7 @@ export async function handle(db, method, path, body = {}, ctx = {}) {
       await addFronds(db, me, fr);
       await db.query('INSERT INTO submissions (employee_id, skill_code, type, payload, score, level_awarded, status) VALUES ($1,$2,$3,$4,$5,$6,$7)',
         [me, 'ai', 'report', JSON.stringify({ text: body.text || '', verify: body.verify || '', fileName: body.fileName || '' }), score, lv, approved ? 'approved' : 'recorded']);
-      await log(db, await empName(db, me), 'تقرير الأداء الأسبوعي', approved ? `اعتماد تلقائي «ذيب» (${score} من 8)` : `سُجّل تلقائيًا «شاطر» (${score} من 8)`, approved);
+      await L(await empName(db, me), 'تقرير الأداء الأسبوعي', approved ? `اعتماد تلقائي «ذيب» (${score} من 8)` : `سُجّل تلقائيًا «شاطر» (${score} من 8)`, approved);
       return json(201, { level: lv, fronds: fr, approved });
     }
     if (body.type === 'certificate') {
@@ -186,7 +193,7 @@ export async function handle(db, method, path, body = {}, ctx = {}) {
       await db.query('INSERT INTO submissions (employee_id, skill_code, type, payload, score, level_awarded, status) VALUES ($1,$2,$3,$4,$5,$6,$7)',
         [me, k, 'certificate', JSON.stringify({ title: body.title, issuer: body.issuer, date: body.date, cal: body.cal, fileName: body.fileName, answers: ans }), score, lv, status]);
       const sk = (await one(db, 'SELECT name FROM skills WHERE code=$1', [k]))?.name || k;
-      await log(db, await empName(db, me), 'شهادة خارجية · ' + sk, score > 2 ? `اعتماد تلقائي «${LV[lv - 1]}» (${score} من 4)` : `سُجّلت نظرية تلقائيًا (${score} من 4)`, score > 2);
+      await L(await empName(db, me), 'شهادة خارجية · ' + sk, score > 2 ? `اعتماد تلقائي «${LV[lv - 1]}» (${score} من 4)` : `سُجّلت نظرية تلقائيًا (${score} من 4)`, score > 2);
       return json(201, { score, level: lv, fronds: fr, approved: score > 2 });
     }
     return bad('نوع غير معروف');
@@ -250,7 +257,7 @@ export async function handle(db, method, path, body = {}, ctx = {}) {
     if (!pass && reason.length < 10) return bad('الرفض يحتاج سبب (10 أحرف على الأقل)');
     const r = await one(db, `UPDATE promotion_files SET interview=$2, reason=$3, status=$4, updated_at=now() WHERE id=$1 RETURNING employee_id`, [id, pass ? 'pass' : 'fail', pass ? null : reason, pass ? 'sent' : 'esc']);
     if (!r) return json(404, { error: 'الملف غير موجود' });
-    await log(db, await empName(db, r.employee_id), pass ? 'ملف ترقية · مخطط عمليات' : 'مقابلة ترقية', pass ? 'اكتمل الملف وانتقل للجنة تلقائيًا' : 'رفض المدير بسبب، وتحوّل للإدارة العليا', pass);
+    await L(await empName(db, r.employee_id), pass ? 'ملف ترقية · مخطط عمليات' : 'مقابلة ترقية', pass ? 'اكتمل الملف وانتقل للجنة تلقائيًا' : 'رفض المدير بسبب، وتحوّل للإدارة العليا', pass);
     return json(200, { ok: true });
   }
   if ((m = R('PATCH', '/promotions/:id/escalation'))) {
@@ -258,7 +265,7 @@ export async function handle(db, method, path, body = {}, ctx = {}) {
     if (!['uphold', 'overturn'].includes(body.decision)) return bad('قرار غير صالح');
     const r = await one(db, `UPDATE promotion_files SET escalation_decision=$2, status=$3, updated_at=now() WHERE id=$1 AND status='esc' RETURNING employee_id`, [id, body.decision, uphold ? 'retry' : 'sent']);
     if (!r) return json(409, { error: 'الملف مو محوّل للإدارة العليا' });
-    await log(db, await empName(db, r.employee_id), 'مراجعة الإدارة العليا', uphold ? 'أيّدت الرفض: تحدي إضافي ثم مقابلة ثانية' : 'ألغت الرفض، وانتقل الملف للجنة', !uphold);
+    await L(await empName(db, r.employee_id), 'مراجعة الإدارة العليا', uphold ? 'أيّدت الرفض: تحدي إضافي ثم مقابلة ثانية' : 'ألغت الرفض، وانتقل الملف للجنة', !uphold);
     return json(200, { ok: true });
   }
 
@@ -281,7 +288,7 @@ export async function handle(db, method, path, body = {}, ctx = {}) {
     const c = await one(db, 'SELECT count(*)::int n, (SELECT votes_needed FROM exceptional_promotions WHERE id=$1) need FROM exceptional_votes WHERE promotion_id=$1', [id]);
     if (c.n >= c.need) {
       const r = await one(db, `UPDATE exceptional_promotions SET status='ok' WHERE id=$1 AND status<>'ok' RETURNING employee_id, to_title`, [id]);
-      if (r) await audit(db, 'اللجنة', `ترقية استثنائية: ${await empName(db, r.employee_id)} إلى ${r.to_title}`);
+      if (r) await A('اللجنة', `ترقية استثنائية: ${await empName(db, r.employee_id)} إلى ${r.to_title}`);
     }
     return json(201, { votes: c.n });
   }
@@ -295,7 +302,7 @@ export async function handle(db, method, path, body = {}, ctx = {}) {
     const w = body.weights || {}; const total = Object.values(w).reduce((a, b) => a + Number(b || 0), 0);
     if (total !== 100) return bad('مجموع الأوزان لازم يكون 100%');
     const r = await one(db, 'INSERT INTO weight_change_requests (job_code, weights, requested_by) VALUES ($1,$2,$3) RETURNING id', [m.job, JSON.stringify(w), actor]);
-    await audit(db, actor, 'طلب تعديل أوزان «مخطط عمليات»');
+    await A(actor, 'طلب تعديل أوزان «مخطط عمليات»');
     return json(201, r);
   }
   if ((m = R('PATCH', '/competency-profiles/:job/change-requests/latest'))) {
@@ -306,27 +313,28 @@ export async function handle(db, method, path, body = {}, ctx = {}) {
     if (ok) for (const [k, v] of Object.entries(req.weights)) {
       await db.query(`INSERT INTO job_profile_weights (job_code, skill_code, weight) VALUES ($1,$2,$3) ON CONFLICT (job_code, skill_code) DO UPDATE SET weight=EXCLUDED.weight`, [m.job, k, v]);
     }
-    await audit(db, 'لجنة الموارد البشرية', ok ? 'اعتمدت أوزان «مخطط عمليات» الجديدة' : 'رفضت تعديل الأوزان');
+    await A('لجنة الموارد البشرية', ok ? 'اعتمدت أوزان «مخطط عمليات» الجديدة' : 'رفضت تعديل الأوزان');
     return json(200, { ok: true });
   }
 
   // خطط التطوير: التكلفة تُحسب على الخادم من جدول البرامج
   if ((m = R('POST', '/development-plans'))) {
-    const k = String(body.skillId || ''); const ids = (Array.isArray(body.employeeIds) ? body.employeeIds : []).map(intParam).filter(Boolean);
+    const k = String(body.skillId || ''); let ids = (Array.isArray(body.employeeIds) ? body.employeeIds : []).map(intParam).filter(Boolean);
+    if (ids.length) ids = (await db.query('SELECT id FROM employees WHERE id = ANY($1::int[]) AND is_listed = $2', ['{' + ids.join(',') + '}', demo])).rows.map((r) => r.id); // موظفين من نفس العالم بس
     const prog = await one(db, 'SELECT cost_per_employee::float cost, hadaf_support::float hadaf FROM programs WHERE skill_code=$1', [k]);
     if (!prog) return bad('برنامج غير معروف');
     if (!ids.length) return bad('اختاري موظف واحد على الأقل');
-    await db.query(`DELETE FROM development_plans WHERE skill_code=$1 AND status='rej'`, [k]);
+    await db.query(`DELETE FROM development_plans WHERE skill_code=$1 AND status='rej' AND demo=$2`, [k, demo]);
     const money = (x) => Math.round(x * 100) / 100;
     const net = money(ids.length * prog.cost * (1 - prog.hadaf)), hadaf = money(ids.length * prog.cost * prog.hadaf);
-    const r = await one(db, 'INSERT INTO development_plans (skill_code, net_cost, hadaf_support, created_by) VALUES ($1,$2,$3,$4) RETURNING id', [k, net, hadaf, actor]);
+    const r = await one(db, 'INSERT INTO development_plans (skill_code, net_cost, hadaf_support, created_by, demo) VALUES ($1,$2,$3,$4,$5) RETURNING id', [k, net, hadaf, actor, demo]);
     for (const e of ids) await db.query('INSERT INTO plan_members (plan_id, employee_id) VALUES ($1,$2) ON CONFLICT DO NOTHING', [r.id, e]);
     return json(201, { id: r.id, net, hadaf });
   }
   if ((m = R('PATCH', '/development-plans/by-skill/:k'))) {
     if (!['ok', 'rej', 'wait'].includes(body.status)) return bad('حالة غير صالحة');
-    const r = await one(db, `UPDATE development_plans SET status=$2 WHERE id=(SELECT id FROM development_plans WHERE skill_code=$1 ORDER BY id DESC LIMIT 1) RETURNING id`, [m.k, body.status]);
-    if (r && body.status !== 'wait') await audit(db, actor, body.status === 'ok' ? 'اعتمد خطة تطوير' : 'رفض خطة تطوير');
+    const r = await one(db, `UPDATE development_plans SET status=$2 WHERE id=(SELECT id FROM development_plans WHERE skill_code=$1 AND demo=$3 ORDER BY id DESC LIMIT 1) RETURNING id`, [m.k, body.status, demo]);
+    if (r && body.status !== 'wait') await A(actor, body.status === 'ok' ? 'اعتمد خطة تطوير' : 'رفض خطة تطوير');
     return r ? json(200, { ok: true }) : json(404, { error: 'الخطة غير موجودة' });
   }
 

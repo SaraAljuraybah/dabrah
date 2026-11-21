@@ -969,11 +969,11 @@ const readyOf=i=>{let t=0,w=0;for(const k in S.W){const c=compLv(i,k);t+=S.W[k]*
 const typeStat=(i,ty)=>{const ks=Object.keys(SK).filter(k=>SK[k].t===ty);return {n:ks.length,met:ks.filter(k=>compLv(i,k)>=SK[k].req).length,w:ks.reduce((a,k)=>a+(S.W[k]||0),0)}};
 const ready=()=>readyOf(0);
 const myTitle=()=>S.profile?.title||'مشرف مستودع',myDept=()=>{const d=+(S.profile?.dept??0);return DEPTS[d]?d:0};
-const enm=i=>i===0?(S.meName||S.names.emp+' الشمري'):EMP[i].n;
+const enm=i=>i===0&&!(S.lock&&S.lock!=='emp')?(S.meName||S.names.emp+' الشمري'):EMP[i].n;
 const missing=k=>EMP.map((e,i)=>i).filter(i=>k==='xl'?(i===0?S.excel==='y':EMP[i].xl==='y'):lvOf(i,k)<PROG[k].req);
 const passF=(i,f,k)=>{const e=EMP[i];const rd=readyOf(i);return (!f.g||e.g===f.g)&&(!f.nat||(f.nat==='sa'?isSa(e):!isSa(e)))&&(f.d===''||e.d===+f.d)&&(!f.lv||k==='xl'||lvOf(i,k)===+f.lv)&&(!f.rd||(f.rd==='l'?rd<40:f.rd==='m'?rd>=40&&rd<60:rd>=60))};
 const prio=(a,b)=>(isSa(EMP[b])-isSa(EMP[a]))||(readyOf(a)-readyOf(b));
-const usedBudget=()=>spentDone+S.plans.filter(p=>p.st==='ok').reduce((a,p)=>a+p.net,0);
+const usedBudget=()=>(S.real?0:spentDone)+S.plans.filter(p=>p.st==='ok').reduce((a,p)=>a+p.net,0);
 const GRP=[['جاهز الآن',80,'#2F6B60'],['قريب',60,'#C9A24A'],['يحتاج تطوير',40,'#C3743F'],['بداية الطريق',0,'#9A8F80']];
 const grpOf=v=>GRP.findIndex(g=>v>=g[1]);
 /* التدوير: [المفتاح، المستلم، المعطي، الساعات الأسبوعية المنقولة، العنوان، الأثر] */
@@ -1121,7 +1121,7 @@ function mgrBudget(){const used=usedBudget();return `
 /* التطور: كم نقطة ارتفعت الجاهزية خلال آخر 90 يوم */
 let R0=null;const G90=[0,6,11,3,9,14,5,8,2,12,4,7,10,1,13,6,9,3,15,5,8];
 const freshBase=()=>{const lv=S.lv,xl=S.excel;S.lv={ai:1,inv:1,cap:1};const r=readyOf(0);S.lv=lv;S.excel=xl;return r};
-const growthOf=i=>{if(i===0){if(isFresh())return Math.max(0,readyOf(0)-freshBase());if(R0===null)R0=readyOf(0)-9;return readyOf(0)-R0}return G90[(EMP[i].id||i+1)-1]??0};
+const growthOf=i=>{if(i===0){if(isFresh())return Math.max(0,readyOf(0)-freshBase());if(R0===null)R0=readyOf(0)-9;return readyOf(0)-R0}return EMP[i].fresh?readyOf(i):G90[(EMP[i].id||i+1)-1]??0};
 const byGrowth=ids=>[...ids].sort((a,b)=>(growthOf(b)-growthOf(a))||(readyOf(b)-readyOf(a)));
 const rankOf=(ids,i)=>byGrowth(ids).indexOf(i)+1;
 /* موظف الشهر: 50% التطور (15 نقطة = 100) + 50% الجاهزية */
@@ -1137,7 +1137,7 @@ const CROWN='<svg viewBox="0 0 48 32" width="44" height="30" aria-hidden="true">
 function champBoard(){return `<div class="card night reveal champs"><div class="row between"><div><span class="mut">لوحة الأبطال</span><h2 style="font-size:26px;margin:2px 0 0">أبطال الأقسام والمهارات</h2></div><button class="linkbtn" data-act="drill" data-k="champrule" style="color:var(--sand)">كيف يُختار البطل؟</button></div>
  <div class="crowns">${DEPTS.map((d,di)=>{const c=champOfDept(di);return `<button class="crown" data-act="pal" data-i="${c.i}">${CROWN}<b>${enm(c.i)}</b><span>بطل ${d}</span><span class="cr2">${c.full?'كل الجدارات مكتملة':'الأقرب للاكتمال'} · ${readyOf(c.i)}%</span></button>`}).join('')}</div>
  <h3 class="subh" style="color:var(--sand)">أبطال المهارات</h3><div class="skchamps">${skillChamps().map(([k,i])=>{return `<button class="skc" data-act="pal" data-i="${i}"><span class="mut">${SK[k].n}</span><b>${enm(i)}</b><span class="mut">«${LV[compLv(i,k)-1]}»</span></button>`}).join('')}</div></div>`}
-function eomCard(dark){const w=eom();return `<div class="card reveal eom ${dark?'night':''}"><div class="row between" style="align-items:center"><div style="display:flex;gap:14px;align-items:center">${CROWN}<div><span class="mut">موظف الشهر</span><h3 style="font-size:22px;margin:2px 0 0">${enm(w)}</h3><span class="mut">${DEPTS[EMP[w].d]} · تطور +${growthOf(w)} نقطة · جاهزية ${readyOf(w)}%</span></div></div><button class="linkbtn" data-act="drill" data-k="eom">كيف انحسب؟</button></div></div>`}
+function eomCard(dark){const w=eom();if(S.real&&(w==null||growthOf(w)<=0))return `<div class="card reveal eom ${dark?'night':''}"><div style="display:flex;gap:14px;align-items:center">${CROWN}<div><span class="mut">موظف الشهر</span><h3 style="font-size:20px;margin:2px 0 0">يُعلن بعد أول إنجازات معتمدة</h3><span class="mut">يُحسب من التطور والجاهزية، فأي موظف يقدر يفوز من أول شهر.</span></div></div></div>`;return `<div class="card reveal eom ${dark?'night':''}"><div class="row between" style="align-items:center"><div style="display:flex;gap:14px;align-items:center">${CROWN}<div><span class="mut">موظف الشهر</span><h3 style="font-size:22px;margin:2px 0 0">${enm(w)}</h3><span class="mut">${DEPTS[EMP[w].d]} · تطور +${growthOf(w)} نقطة · جاهزية ${readyOf(w)}%</span></div></div><button class="linkbtn" data-act="drill" data-k="eom">كيف انحسب؟</button></div></div>`}
 function freshPerf(){const g=growthOf(0),k=[['أخطاء التجهيز في فريقك','—','تظهر بعد أول أسبوع شغل مع فريقك'],['متوسط التأخير','—','تظهر بعد أول أسبوع شغل مع فريقك'],['دقة الجرد','—','تظهر بعد أول جرد دوري تشارك فيه'],['المحافظة على المهارات','—','تبدأ بعد أول مهارة معتمدة']];
  return `<div class="g4">${k.map(([n,v,t])=>kpi(n,v,t)).join('')}</div>
  ${g>0?honorBoard():`<div class="card reveal"><div class="row between"><h3 style="font-size:20px">لوحة الشرف</h3><span class="chip">حساب جديد</span></div><p class="mut" style="margin:10px 0 0">ترتيبك يطلع بعد أول إنجاز معتمد. الترتيب على التطور مو على الأقدمية، فتقدر تتصدر من أول شهر.</p></div>`}
@@ -1557,16 +1557,16 @@ const TEAM=[
  const EXTRA={emp:[['gender','الجنس','gender','',''],['nat','الجنسية','nat','','']]};
  const PW=[['password','كلمة المرور','password','','8 أحرف أو أكثر، حروف وأرقام'],['confirm','تأكيد كلمة المرور','confirm','','اكتبها مرة ثانية']];
  const signupFields=role=>{const f=ROLES[role].f.map(x=>x.slice());const at=f.findIndex(x=>x[0]==='email')+1;f.splice(at,0,...(EXTRA[role]||[]));return [...f,...PW]};
- const tabs=sel=>`<div class="atabs" role="tablist"><button type="button" role="tab" aria-selected="${sel==='in'}" data-atab="in">تسجيل الدخول</button><button type="button" role="tab" aria-selected="${sel==='up'}" data-atab="up">حساب جديد</button></div>`;
+ const authTabs=sel=>`<div class="atabs" role="tablist"><button type="button" role="tab" aria-selected="${sel==='in'}" data-atab="in">تسجيل الدخول</button><button type="button" role="tab" aria-selected="${sel==='up'}" data-atab="up">حساب جديد</button></div>`;
  function signIn(){
-  $('#lbox').innerHTML=`<div class="eyebrow">دبره · حسابك</div><h1 style="font-size:clamp(32px,4.5vw,48px)">حياك في دبره</h1>${tabs('in')}
+  $('#lbox').innerHTML=`<div class="eyebrow">دبره · حسابك</div><h1 style="font-size:clamp(32px,4.5vw,48px)">حياك في دبره</h1>${authTabs('in')}
   <form class="lform" id="aform" novalidate data-amode="in"><p class="fnote" style="margin-top:0">الحقول المعلّمة بـ <span class="req">*</span> مطلوبة.</p><div class="fgrid">${[['email','البريد الإلكتروني للعمل','email','','name@company.sa'],['lpw','كلمة المرور','loginpw','','كلمة المرور']].map(fieldHTML).join('').replace('id="i-lpw"','id="i-lpw" autocomplete="current-password"')}</div>
   <div class="ferr" id="aerr" role="alert"></div>
   <div class="lacts"><span></span><button type="submit" class="btn" disabled>دخول</button></div><p class="fnote" data-fhint>زر «دخول» يتفعّل لما تكتب بريد صحيح وكلمة المرور.</p></form>
   <p class="lalt">ما عندك حساب؟ <button type="button" data-atab="up">أنشئ حساب جديد</button></p>`;
   setTimeout(()=>{if(!document.activeElement?.closest?.('#lform,#aform'))$('#i-email')?.focus()},150)}
  function pickRole(){
-  $('#lbox').innerHTML=`<div class="eyebrow">حساب جديد · الخطوة 1 من 2</div><h1 style="font-size:clamp(32px,4.5vw,48px)">مين أنت في المنشأة؟</h1>${tabs('up')}<p style="color:#CFC4B2;margin-top:14px">اختر دورك، ونجهّز لك الشاشة اللي تناسبك.</p><div class="lroles">${['emp','mgr','haya','top'].map(k=>`<button class="lrole" data-pick="${k}"><span class="ri">${RI[k]}</span><b>${ROLES[k].t}</b><span>${ROLES[k].d}</span></button>`).join('')}</div>
+  $('#lbox').innerHTML=`<div class="eyebrow">حساب جديد · الخطوة 1 من 2</div><h1 style="font-size:clamp(32px,4.5vw,48px)">مين أنت في المنشأة؟</h1>${authTabs('up')}<p style="color:#CFC4B2;margin-top:14px">اختر دورك، ونجهّز لك الشاشة اللي تناسبك.</p><div class="lroles">${['emp','mgr','haya','top'].map(k=>`<button class="lrole" data-pick="${k}"><span class="ri">${RI[k]}</span><b>${ROLES[k].t}</b><span>${ROLES[k].d}</span></button>`).join('')}</div>
   <p class="lalt">عندك حساب؟ <button type="button" data-atab="in">سجّل دخولك</button></p>`}
  function signUp(role){
   const r=ROLES[role];
@@ -1594,16 +1594,18 @@ const TEAM=[
 
  /* ---------- بعد الدخول: نحمّل بيانات الحساب ونقفل الواجهة على دوره ---------- */
  async function afterAuth(u,fresh,go=true){
-  S.logged=true;S.lock=u.role;S.role=u.role;S.profile={role:u.role,...u.profile,name:u.name,email:u.email};S.meId=u.employeeId;
+  S.logged=true;S.real=!u.demo;S.lock=u.role;S.role=u.role;S.profile={role:u.role,...u.profile,name:u.name,email:u.email};S.meId=u.employeeId;
   S.names[u.role]=u.name.split(' ')[0];if(u.role==='emp')S.meName=u.name;
   if(u.createdAt)S.cycleDay=Math.max(1,Math.min(90,Math.floor((Date.now()-new Date(u.createdAt))/864e5)+1));
   const b=await call('GET','/bootstrap').catch(()=>null);
   if(b&&b.ok){const d=b.d;
-   if(Array.isArray(d.employees)&&d.employees.length){EMP.splice(0,EMP.length,...d.employees);const a=EMP[0];S.fr=a.fr;S.lv={ai:a.ai,inv:a.inv,cap:a.cap};S.excel=a.xl}
+   if(Array.isArray(d.employees)&&(d.employees.length||S.real)){EMP.splice(0,EMP.length,...d.employees);const a=EMP[0];if(a){S.fr=a.fr;S.lv={ai:a.ai,inv:a.inv,cap:a.cap};S.excel=a.xl}}
    if(d.weights&&Object.keys(d.weights).length)S.W=d.weights;
-   if(Array.isArray(d.plans))S.plans=d.plans;
+   if(Array.isArray(d.plans))S.plans=d.plans.map(p=>({...p,sel:(p.sel||[]).map(id=>EMP.findIndex(e=>e.id===id)).filter(i=>i>=0)}));
+   S.applicants=Array.isArray(d.applicants)?d.applicants:[];
    if(Array.isArray(d.audit))S.audit=d.audit;
    if(Array.isArray(d.history))S.hist=d.history;
+   if(S.real&&S.lock!=='emp'){S.majed={interview:null,status:'none'};S.exc={status:'none',votes:{}}}
    if(d.me){S.ws=d.me.ws||{};S.courses=d.me.courses||{};S.content=d.me.content||{};S.applied=d.me.applied||{};S.mentorBook=!!d.me.mentorBook;S.leave=!!d.me.leave}}
   else toast('ما قدرنا نحمّل بياناتك، حدّث الصفحة');
   if(go){if(location.hash==='#app')route();else location.hash='#app'}
@@ -1684,6 +1686,90 @@ const TEAM=[
  const showFab=()=>{const on=S.logged&&location.hash==='#app';if(!on){$('#cfab').hidden=true;$('#cpanel').hidden=true}else if($('#cpanel').hidden)$('#cfab').hidden=false};
  addEventListener('hashchange',showFab);
  {const r0=render;render=function(){r0();showFab()}}
+
+
+ /* ---------- العالم الحقيقي: شاشات المدير والتطوير والإدارة العليا من الحسابات الحقيقية بس ---------- */
+ const allI=()=>EMP.map((e,i)=>i);
+ const myD=()=>{const d=+(S.profile?.dept??0);return DEPTS[d]?d:0};
+ const teamR=()=>allI().filter(i=>EMP[i].d===myD());
+ const avg=a=>a.length?Math.round(a.reduce((x,y)=>x+y,0)/a.length):0;
+ const emptyBox=(t,b)=>`<div class="empty" style="padding:22px 6px"><b style="display:block">${t}</b><span class="mut">${b}</span></div>`;
+ const fname=i=>esc(EMP[i].n.split(' ')[0]);
+ const proven=(i,k)=>{const c=compLv(i,k);return EMP[i].fresh?c>1:c>=1};
+ const pRow=i=>`<button class="nmrow rrow" data-act="rpal" data-i="${i}" style="width:100%;background:none;border:0;border-bottom:1px solid #EFE5D3;padding:10px 2px;text-align:start;cursor:pointer;font:inherit;color:inherit"><span><b>${esc(EMP[i].n)} ${isSa(EMP[i])?'<span class="chip sa">أولوية</span>':''}</b><span class="mut">${DEPTS[EMP[i].d]} · ${STN[stageOf(EMP[i].fr)]} · ${EMP[i].fr} سعفة</span></span><span class="chip" style="background:${GRP[grpOf(readyOf(i))][2]};color:#fff">${readyOf(i)}%</span></button>`;
+ const pList=ids=>ids.length?[...ids].sort((a,b)=>readyOf(b)-readyOf(a)).map(pRow).join(''):'';
+ const hero=(eb,t,p)=>`<div class="card night reveal hello"><span class="mut">${eb}</span><h1>${t}</h1><p style="color:#D9CFBE;margin:0">${p}</p></div>`;
+ const noKpi=(n,why)=>kpi(n,'—',why);
+ ACT.rpal=b=>{const i=+b.dataset.i,rd=readyOf(i),g=grpOf(rd);
+  const rows=TYPES.map(([ty])=>{const ks=Object.keys(SK).filter(k=>SK[k].t===ty);const met=ks.filter(k=>compLv(i,k)>=SK[k].req).length;return `<div class="tyrow"><span><b>${ty}</b></span>${bar(met/ks.length*100)}<span class="mut" style="color:#C3B8A6">${met} من ${ks.length}</span></div>`}).join('');
+  const pr=Object.keys(SK).filter(k=>proven(i,k));
+  modal(`<div class="psum"><div class="row between" style="align-items:center"><div style="text-align:start"><h2 id="mt" style="font-size:24px">${esc(EMP[i].n)}</h2><span class="mut" style="color:#C3B8A6">${DEPTS[EMP[i].d]} · ${STN[stageOf(EMP[i].fr)]} · ${EMP[i].fr} سعفة</span></div><span class="chip" style="background:${GRP[g][2]};color:#fff">${GRP[g][0]} · ${rd}%</span></div><div class="pss">${rows}</div>
+   <p class="mut" style="color:#D9CFBE;margin:10px 0 0">${pr.length?'جدارات مثبتة: '+pr.map(k=>SK[k].n).join('، '):'ما أثبت أي جدارة للحين.'}</p><p class="mut" style="color:#C3B8A6;margin:6px 0 0">${EMP[i].fresh?'حساب جديد: تقييم 360 والأداء يطلعون بعد أول دورة تقييم.':''}</p><button class="btn sand" data-act="closeModal" style="margin-top:14px">تمام</button></div>`)};
+ const plansList=(withActs)=>S.plans.length?S.plans.map((p,pi)=>{const P=PROG[p.k];const sa=p.sel.filter(i=>isSa(EMP[i])).length;return `<div class="plan"><div class="row between"><div><b>${P.n}</b><div class="mut">${p.sel.length} موظف (${sa} سعودي) · صافي التكلفة ${sar(p.net)}${p.hadaf?` · دعم هدف ${sar(p.hadaf)}`:''}</div></div><span class="chip ${p.st==='ok'?'g':p.st==='rej'?'r':'y'}">${p.st==='ok'?'معتمدة':p.st==='rej'?'مرفوضة':'بانتظار الإدارة العليا'}</span></div>
+   ${disc('الموظفين في الخطة',p.sel.map(pRow).join('')||'<span class="mut">—</span>')}
+   ${withActs==='top'&&p.st==='wait'?`<div class="row" style="gap:6px;margin-top:8px"><button class="btn" data-act="planOk" data-i="${pi}" style="min-height:42px">اعتمد</button><button class="btn ghost" data-act="planRej" data-i="${pi}" style="min-height:42px;color:var(--ink)">ارفض</button></div>`:''}
+   ${withActs==='haya'&&p.st==='rej'?`<button class="btn ghost" data-act="editPlan" data-i="${pi}" style="min-height:40px;margin-top:10px;color:var(--ink)">عدّلي وأعيدي الإرسال</button>`:''}</div>`}).join(''):'';
+ const budgetLine=()=>{const used=usedBudget();return `<div class="row" style="margin:12px 0 4px;gap:16px"><span class="mut">ميزانية التدريب <b style="color:var(--ink)">${sar(BUDGET.total)}</b></span><span class="mut">المعتمد <b style="color:var(--ink)">${sar(used)}</b></span><span class="mut">المتبقي <b style="color:var(--ok)">${sar(BUDGET.total-used)}</b></span></div>${bar(used/BUDGET.total*100,'linear-gradient(90deg,var(--teen),var(--teenL))')}`};
+
+ /* المدير المباشر */
+ const RM={
+  team(){const T=teamR(),d=DEPTS[myD()],exp=+S.profile?.team||0;const H=S.hist.filter(h=>T.some(i=>EMP[i].n===h.who));const R=T.filter(i=>readyOf(i)>=80);
+   return hero(`المدير المباشر · ${d} · ${T.length} ${T.length===1?'موظف':'موظفين'}${exp?` من ${exp} في فريقك`:''}`,`حياك ${esc(S.names.mgr)}`,`فريقك هم الموظفين اللي سجّلوا في «${d}». الاعتمادات تلقائية بمعايير معلنة، ودورك مقابلة الترقية.`)+
+   (T.length?`<div class="card night reveal"><div class="garden" style="margin:0"><div class="gtitle"><b>حديقة فريقك</b><span>كل نخلة موظف. اضغط على أي نخلة لملخص مهاراته.</span></div><div class="gpalms">${T.map(i=>`<button class="gp" data-act="rpal" data-i="${i}"><div class="gs">${palmSVG(EMP[i].fr)}</div><b>${fname(i)}</b><span>${EMP[i].fr} سعفة</span></button>`).join('')}</div></div></div>
+   <div class="g2"><div class="card reveal"><div class="row between"><h2 style="font-size:22px">آخر الاعتمادات التلقائية</h2><span class="mut">${H.length}</span></div>${H.length?`<div class="hist" style="margin-top:10px">${H.slice(0,5).map(h=>`<div class="hi"><span class="hd ${h.ok?'ok':'no'}">${h.ok?ICN.ok:ICN.no}</span><div><b>${esc(h.who)}</b><span class="mut">${esc(h.what)}</span></div><span>${esc(h.dec)}</span><span class="mut">${esc(h.when)}</span></div>`).join('')}</div>`:emptyBox('ما فيه اعتمادات للحين','لما يسلّم أحد من فريقك تحدي أو شهادة، النظام يقرر تلقائيًا ويطلع هنا.')}</div>
+    <div class="card reveal"><h3 style="font-size:20px">جاهزية فريقك</h3>${colorStrip(T)}${disc('عرض جاهزية كل موظف',pList(T))}</div></div>
+   <div class="card reveal"><h2 style="font-size:22px">ملفات الترقية</h2>${R.length?pList(R)+'<p class="mut small" style="margin-top:8px">وصلوا 80% أو أكثر. ملف الترقية يكتمل بعد تقييم 360، وبعدها تجري المقابلة.</p>':emptyBox('ما فيه أحد جاهز للترقية للحين','الملف يتجهز تلقائيًا لما يوصل موظف جاهزية 80% أو أكثر.')}</div>`
+   :`<div class="card reveal">${emptyBox('فريقك فاضي للحين',`لما يسجّل موظفين في «${d}» يظهرون هنا تلقائيًا، مع نخلتهم وجاهزيتهم واعتماداتهم.`)}</div>`)},
+  perf(){const T=teamR();return `<div class="g4">${[['أخطاء التجهيز'],['متوسط التأخير'],['دقة الجرد'],['طلبات في الساعة']].map(([n])=>noKpi(n,'تظهر لما يرتبط نظام إدارة المستودع')).join('')}</div>
+   <div class="card reveal">${kpiHelp(['err','late','inv','uph','load'])}</div>
+   <div class="g2"><div class="card reveal"><h3 style="font-size:20px">تحليل عبء العمل</h3>${emptyBox('ساعات العمل ما تُسجّل للحين',`يشتغل لما يرتبط نظام الحضور والمهام${T.length?` لفريقك (${T.length})`:''}.`)}</div>
+   <div class="card reveal"><h3 style="font-size:20px">اقتراحات التدوير الوظيفي</h3>${emptyBox('ما فيه اقتراحات للحين','النظام يقترح تدوير يوازن العبء وينقل المعرفة، لما يتوفر عبء عمل فعلي لفريقك.')}</div></div>`},
+  know(){const T=teamR();const K=['cap','inv','ai','wms','data','lead'];
+   return hero('إدارة المعرفة','المهارات الحرجة','مين في فريقك يتقن كل مهارة؟ المهارة اللي يتقنها شخص واحد أو ما أحد خطر على الفريق.')+
+   `<div class="card reveal">${T.length?K.map(k=>{const h=T.filter(i=>compLv(i,k)>=SK[k].req);const risk=h.length<2;return `<div class="crit-row"><div class="risk ${h.length===0?'hi':risk?'md':''}">${risk?ICN.warn:''}<b>${h.length}</b><span>${h.length===0?'ما أحد':h.length===1?'شخص واحد':'أشخاص'}</span></div><div style="flex:1"><b style="font-size:17px">${SK[k].n}</b><span class="mut" style="display:block">${h.length?'يتقنها: '+h.map(fname).join('، '):'ما أحد في فريقك أثبتها للحين'}</span><span class="mut small">المطلوب «${LV[SK[k].req-1]}»</span></div></div>`}).join(''):emptyBox('ما فيه فريق للحين','لما ينضم موظفين لفريقك، نكشف المهارات الحرجة من جداراتهم المثبتة.')}</div>`},
+  budget(){const T=teamR();const mine=S.plans.filter(p=>p.sel.some(i=>T.includes(i)));
+   return `<div class="card reveal"><h2 style="font-size:22px">خطط التطوير اللي فيها فريقك</h2>${mine.length?mine.map(p=>`<div class="nmrow" style="margin-top:8px"><span><b>${PROG[p.k].n}</b><span class="mut">${p.sel.filter(i=>T.includes(i)).map(fname).join('، ')}</span></span><span class="chip ${p.st==='ok'?'g':p.st==='rej'?'r':'y'}">${p.st==='ok'?'معتمدة':p.st==='rej'?'مرفوضة':'بانتظار الاعتماد'}</span></div>`).join(''):emptyBox('ما فيه خطط لفريقك للحين','مسؤولة التطوير تبني الخطط من المهارات الناقصة، والإدارة العليا تعتمدها.')}</div>`}};
+
+ /* مسؤول التطوير */
+ const RH={
+  talent(){const A=allI(),N=A.length;const fresh=A.filter(i=>EMP[i].fresh).length;
+   return `<div class="g4">${[['الموظفين في دبره',`${N}`,'سجّلوا حساباتهم',1],['جاهزون للترقية',`${A.filter(i=>readyOf(i)>=80).length} من ${N}`,'جاهزية 80% أو أكثر',0],['متوسط الجاهزية',`${avg(A.map(readyOf))}%`,'للوظيفة التالية',0],['بدون تقييم أداء',`${fresh}`,'ينتظرون أول دورة تقييم',0]].map(([n,v,w,nt])=>kpi(n,v,w,{night:nt})).join('')}</div>
+   <div class="card reveal"><h2 style="font-size:22px">مصفوفة المواهب</h2>${emptyBox('تظهر بعد أول دورة تقييم','المصفوفة تقسم الموظفين حسب الأداء والإمكانات، وتحتاج تقييم أداء و360 لكل موظف.')}</div>
+   <div class="card reveal"><h2 style="font-size:22px">كل الموظفين</h2>${N?pList(A):emptyBox('ما فيه موظفين للحين','لما يسجّل موظفين حساباتهم في دبره يظهرون هنا مع جاهزيتهم.')}</div>`},
+  needs(){const A=allI();return hero('تحليل الاحتياج التنظيمي','وش تحتاج الشركة فعلًا؟','الأرقام من الموظفين المسجّلين بس، وتكبر مع كل موظف ينضم.')+
+   `<div class="g3">${DEPTS.map((d,di)=>{const ids=A.filter(i=>EMP[i].d===di);return `<div class="card reveal dcard"><span class="mut">${d}</span><div class="big" style="margin:6px 0">${ids.length}</div><span class="mut">موظفين · متوسط الجاهزية ${ids.length?avg(ids.map(readyOf))+'%':'—'}</span></div>`}).join('')}</div>
+   <div class="card reveal"><h2 style="font-size:22px">إدارة الوظائف</h2>${emptyBox('ما فيه احتياج مسجّل','لما يتسجّل احتياج وظيفي، النظام يقترح: داخلي، داخلي مع ظل، إغلاق، أو خارجي.')}</div>
+   <div class="card reveal"><h3 style="font-size:20px">المتقدمين داخليًا</h3>${(S.applicants||[]).length?S.applicants.map(a=>`<div class="nmrow" style="margin-top:8px"><span><b>${esc(a.who)}</b><span class="mut">${esc(a.job)} · تجربة مؤقتة</span></span><span class="chip y">قيد المراجعة</span></div>`).join(''):'<p class="mut">ما فيه متقدمين للحين. لما يقدّم موظف على فرصة داخلية، يطلع هنا.</p>'}</div>`},
+  dev(){const A=allI(),N=A.length;const gaps=['cap','ai','inv'].map(k=>({k,ids:A.filter(i=>lvOf(i,k)<PROG[k].req)}));
+   return `<div class="card reveal"><h3 style="font-size:20px">أكثر المهارات الناقصة</h3>${N?gaps.map(({k,ids})=>disc(`<b>${PROG[k].n}</b> <span class="mut">· ${ids.length} من ${N} · ${ids.filter(i=>isSa(EMP[i])).length} سعودي</span>`,pList(ids)||'<span class="mut">كلهم وصلوا المطلوب</span>')).join(''):emptyBox('ما فيه موظفين للحين','الفجوات تُحسب من جدارات الموظفين المسجّلين.')}</div>
+   <div class="card reveal"><div class="row between"><h3 style="font-size:20px">خطط التطوير</h3>${N?'<button class="btn" data-act="newPlan" style="min-height:44px">خطة جديدة</button>':''}</div>${budgetLine()}${plansList('haya')||emptyBox('ما فيه خطط للحين','اختاري مهارة ناقصة، وحددي الموظفين، وشوفي التكلفة ودعم هدف قبل الإرسال للإدارة العليا.')}</div>`},
+  gov(){const W=S.W;return `<div class="card reveal"><h2 style="font-size:22px">ملف جدارات «مخطط عمليات»</h2><p class="mut">${Object.keys(SK).length} جدارة في أربعة أنواع. الأوزان تحدد الجاهزية، وتعديلها يمر على لجنة ويُسجَّل.</p>
+   ${TYPES.map(([ty])=>{const ks=Object.keys(SK).filter(k=>SK[k].t===ty);return disc(`<b>${ty}</b> <span class="mut">· ${ks.reduce((a,k)=>a+(W[k]||0),0)}%</span>`,ks.map(k=>`<div class="nmrow" style="margin-top:6px"><span><b>${SK[k].n}</b><span class="mut">المطلوب «${LV[SK[k].req-1]}»</span></span><b>${W[k]||0}%</b></div>`).join(''))}).join('')}
+   <p class="mut small" style="margin-top:10px">تعديل الأوزان يتفعّل لما تُربط منشأتك بدبره وتتشكّل لجنة الجدارات.</p></div>
+   <div class="g2"><div class="card reveal"><h3 style="font-size:20px">التظلّمات</h3><p class="mut">ما فيه تظلّمات. لو اعترض موظف على قرار تلقائي أو على نتيجة مقابلة، يطلع هنا.</p></div>
+   <div class="card reveal"><h3 style="font-size:20px">رصد التحيز في التقييم</h3>${emptyBox('يحتاج تقييمات 360','النظام يقارن التقييمات بالأدلة، ويكشف التحيز لما تتوفر تقييمات.')}</div></div>
+   <div class="card reveal"><h3 style="font-size:20px">سجل الحوكمة <span class="mut">(${S.audit.length})</span></h3>${S.audit.length?`<div class="hist">${S.audit.map(a=>`<div class="hi hi3"><b>${esc(a.who)}</b><span>${esc(a.what)}</span><span class="mut">${esc(a.when)}</span></div>`).join('')}</div>`:'<p class="mut">ما فيه قرارات مسجّلة للحين. كل اعتماد خطة أو تعديل يُسجَّل هنا.</p>'}</div>`}};
+
+ /* الإدارة العليا */
+ const RT={
+  files(){return hero('الإدارة العليا','حياك '+esc(S.names.top),'أي ترقية يرفضها مدير مباشر توصلك مع السبب، عشان القرار ما يعتمد على شخص واحد.')+
+   `<div class="card reveal"><h2 style="font-size:22px">ترقيات رفضها المدير</h2>${emptyBox('ما فيه ملفات محوّلة','لما يرفض مدير ترقية موظف أدلته قوية، يتحوّل الملف لك مع السبب.')}</div>
+   <div class="card reveal"><h3 style="font-size:20px">ترقيات استثنائية</h3>${emptyBox('ما فيه طلبات','الترقية الاستثنائية تحتاج موافقة المدير والتطوير والإدارة العليا.')}</div>`},
+  plans(){const used=usedBudget();return `<div class="g3">${[['ميزانية التدريب',sar(BUDGET.total)],['المعتمد',sar(used)],['المتبقي',sar(BUDGET.total-used)]].map(([n,v])=>kpi(n,v,'للخطط الحقيقية')).join('')}</div>
+   <div class="card reveal"><h2 style="font-size:22px">خطط التطوير</h2>${plansList('top')||emptyBox('ما فيه خطط تنتظر اعتمادك','مسؤولة التطوير ترسل الخطط مع تكلفتها ودعم هدف، وتعتمدها أنت أو ترفضها.')}</div>`},
+  champs(){const A=allI();const ch=DEPTS.map((d,di)=>{const ids=A.filter(i=>EMP[i].d===di&&readyOf(i)>0).sort((a,b)=>readyOf(b)-readyOf(a));return [d,ids[0]]});const any=ch.some(c=>c[1]!=null);
+   return `<div class="card night reveal champs"><span class="mut">لوحة الأبطال</span><h2 style="font-size:26px;margin:2px 0 0">أبطال الأقسام</h2>${any?`<div class="crowns">${ch.map(([d,i])=>`<div class="crown">${CROWN}<b>${i!=null?esc(EMP[i].n):'—'}</b><span>بطل ${d}</span><span class="cr2">${i!=null?`جاهزية ${readyOf(i)}%`:'ما فيه بطل للحين'}</span></div>`).join('')}</div>`:`<p style="color:#D9CFBE;margin:10px 0 0">الأبطال يطلعون لما يثبت الموظفين أول جداراتهم.</p>`}</div>${eomCard(false)}`},
+  overview(){const A=allI(),N=A.length;const pend=S.plans.filter(p=>p.st==='wait').length;
+   return `<div class="g4">${[['جاهزون للترقية',`${A.filter(i=>readyOf(i)>=80).length} من ${N}`],['متوسط الجاهزية',N?`${avg(A.map(readyOf))}%`:'—'],['يستخدمون الذكاء الاصطناعي',N?`${Math.round(A.filter(i=>lvOf(i,'ai')>=3).length/N*100)}%`:'—'],['خطط تنتظر قرارك',`${pend}`]].map(([n,v],j)=>kpi(n,v,'من الحسابات الحقيقية',{night:j===0})).join('')}</div>
+   <div class="g3">${DEPTS.map((d,di)=>{const ids=A.filter(i=>EMP[i].d===di);return `<div class="card reveal dcard"><span class="mut">${d} · ${ids.length} موظفين</span><div class="big" style="margin:6px 0">${ids.length?avg(ids.map(readyOf))+'%':'—'}</div><span class="mut">متوسط الجاهزية</span></div>`}).join('')}</div>${eomCard(true)}`}};
+ for(const [role,M,orig] of [['mgr',RM,V.mgr],['haya',RH,V.haya],['top',RT,V.top]]){const T={mgr:[['team','فريقي'],['perf','الأداء والعبء'],['know','المعرفة الحرجة'],['budget','الخطط والميزانية']],haya:[['talent','المواهب'],['needs','الاحتياج والوظائف'],['dev','التطوير والميزانية'],['gov','الحوكمة']],top:[['files','الملفات المحوّلة'],['plans','اعتماد الخطط'],['champs','الأبطال'],['overview','نظرة الشركة']]}[role];
+  V[role]=()=>S.real?tabs(role,T)+(M[S.tab[role]]||M[T[0][0]])():orig()}
+ /* تنبيهات العالم الحقيقي */
+ {const n0=notif;notif=function(){if(!(S.real&&S.lock&&S.lock!=='emp'))return n0();const it=[];
+  if(S.role==='mgr'){const T=teamR();it.push(['فريقك',T.length?`${T.length} ${T.length===1?'موظف':'موظفين'} في فريقك على دبره.`:'فريقك فاضي للحين.']);T.filter(i=>readyOf(i)>=80).forEach(i=>it.push(['جاهزية',`${EMP[i].n} وصل 80% أو أكثر.`]))}
+  if(S.role==='haya'){S.plans.forEach(p=>it.push(['خطة',PROG[p.k].n+': '+(p.st==='ok'?'معتمدة':p.st==='rej'?'مرفوضة':'بانتظار الاعتماد')]));(S.applicants||[]).forEach(a=>it.push(['نقل داخلي',`${a.who} قدّم على ${a.job}.`]))}
+  if(S.role==='top'){S.plans.filter(p=>p.st==='wait').forEach(p=>it.push(['خطة تطوير',PROG[p.k].n+' تنتظر اعتمادك.']))}
+  const vis=it.filter(([a,b])=>!S.dis.has(S.role+a+b));$('#bellN').textContent=vis.length;$('#bellN').hidden=!vis.length;$('#npanel').innerHTML=vis.length?vis.map(([a,b])=>`<div class="ni"><div><b>${esc(a)}</b><span>${esc(b)}</span></div><button class="nx" data-dis="${esc(S.role+a+b)}" aria-label="اطّلعت، احذف التنبيه">${ICN.no}</button></div>`).join('')+'<button class="nall" data-disall="1">اطّلعت على الكل</button>':'<div class="ni"><span class="mut">ما عندك تنبيهات جديدة</span></div>'}}
 
  /* رجوع الجلسة بعد تحديث الصفحة */
  call('GET','/auth/me').then(r=>{const u=r&&r.ok&&r.d.user;if(!u)return;
