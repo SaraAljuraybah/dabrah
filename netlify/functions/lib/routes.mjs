@@ -93,7 +93,10 @@ export async function handle(db, method, path, body = {}, ctx = {}) {
   };
   let m;
 
-  if ((m = R('GET', '/health'))) return json(200, { ok: true });
+  if ((m = R('GET', '/health'))) { // يتأكد إن قاعدة البيانات توصل فعلًا، بدون أي بيانات
+    const r = await one(db, 'SELECT count(*)::int n FROM app_users WHERE is_demo').catch(() => null);
+    return json(r ? 200 : 503, { ok: !!r, db: !!r });
+  }
 
   // ---------- الحسابات ----------
   if ((m = R('POST', '/auth/signup'))) {
