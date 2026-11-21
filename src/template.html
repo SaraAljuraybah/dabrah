@@ -1437,7 +1437,7 @@ function loginStep(role){
  $('#lbox').innerHTML=`<div class="eyebrow">تسجيل الدخول · الخطوة 2 من 2</div><h1 style="font-size:clamp(30px,4vw,44px)">بياناتك الأساسية · ${r.t}</h1><p style="color:#CFC4B2;margin-top:10px">الحقول المعلّمة بـ <span class="req">*</span> مطلوبة.</p>
  <form class="lform" id="lform" novalidate data-lrole="${role}"><div class="fillbar"><span>تعرض المنصة لأحد؟ عبّئ كل الحقول ببيانات تجريبية بضغطة.</span><button type="button" class="btn ghost" data-lfill style="min-height:40px;color:var(--ink)">عبّئ ببيانات تجريبية</button></div><div class="fgrid">${r.f.map(fieldHTML).join('')}</div>
  <div class="lacts"><button type="button" class="btn ghost" data-pick="" style="color:var(--ink)">غيّر الدور</button><span class="grp"><button type="button" class="btn ghost" data-lclear style="color:var(--ink)">امسح</button><button type="submit" class="btn" disabled>دخول</button></span></div><p class="fnote" data-fhint>زر «دخول» يتفعّل لما تكمل كل الحقول المطلوبة صح.</p></form>`;
- setTimeout(()=>$('#i-name')?.focus(),200)}
+ setTimeout(()=>{if(!document.activeElement?.closest?.('#lform,#aform'))$('#i-name')?.focus()},200)}
 const fieldErr=el=>{const k=el.dataset.k;const v=SEL[k]||k==='password'||k==='confirm'||k==='loginpw'?el.value:clean(el.value);return VAL[k](v,+el.dataset.min,+el.dataset.max)};
 const syncBtn=f=>{if(!f)return;const okAll=[...f.querySelectorAll('[data-k]')].every(el=>!fieldErr(el));const b=f.querySelector('[type=submit]');if(b&&!f.dataset.busy)b.disabled=!okAll;const h=f.querySelector('[data-fhint]');if(h)h.hidden=okAll};
 const showErr=(el,m)=>{const w=el.closest('.fld');w.classList.toggle('bad',!!m);w.querySelector('.err').textContent=m||'';el.setAttribute('aria-invalid',!!m)};
@@ -1515,7 +1515,7 @@ const TEAM=[
   <div class="ferr" id="aerr" role="alert"></div>
   <div class="lacts"><span></span><button type="submit" class="btn" disabled>دخول</button></div><p class="fnote" data-fhint>زر «دخول» يتفعّل لما تكتب بريد صحيح وكلمة المرور.</p></form>
   <p class="lalt">ما عندك حساب؟ <button type="button" data-atab="up">أنشئ حساب جديد</button></p>`;
-  setTimeout(()=>$('#i-email')?.focus(),150)}
+  setTimeout(()=>{if(!document.activeElement?.closest?.('#lform,#aform'))$('#i-email')?.focus()},150)}
  function pickRole(){
   $('#lbox').innerHTML=`<div class="eyebrow">حساب جديد · الخطوة 1 من 2</div><h1 style="font-size:clamp(32px,4.5vw,48px)">مين أنت في المنشأة؟</h1>${tabs('up')}<p style="color:#CFC4B2;margin-top:14px">اختر دورك، ونجهّز لك الشاشة اللي تناسبك.</p><div class="lroles">${['emp','mgr','haya','top'].map(k=>`<button class="lrole" data-pick="${k}"><span class="ri">${RI[k]}</span><b>${ROLES[k].t}</b><span>${ROLES[k].d}</span></button>`).join('')}</div>
   <p class="lalt">عندك حساب؟ <button type="button" data-atab="in">سجّل دخولك</button></p>`}
@@ -1526,7 +1526,7 @@ const TEAM=[
   <div class="ferr" id="aerr" role="alert"></div>
   <div class="lacts"><button type="button" class="btn ghost" data-atab="up" style="color:var(--ink)">غيّر الدور</button><button type="submit" class="btn" disabled>إنشاء الحساب</button></div><p class="fnote" data-fhint>زر «إنشاء الحساب» يتفعّل لما تكمل كل الحقول المطلوبة صح.</p></form>
   <p class="lalt">عندك حساب؟ <button type="button" data-atab="in">سجّل دخولك</button></p>`;
-  setTimeout(()=>$('#i-name')?.focus(),150)}
+  setTimeout(()=>{if(!document.activeElement?.closest?.('#lform,#aform'))$('#i-name')?.focus()},150)}
  loginStep=function(role){if(S.logged){location.hash='#app';return}role?signUp(role):signIn()};
  document.addEventListener('click',e=>{const t=e.target.closest('[data-atab]');if(!t)return;t.dataset.atab==='in'?signIn():pickRole()});
 
