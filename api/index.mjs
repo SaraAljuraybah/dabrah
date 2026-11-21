@@ -7,7 +7,9 @@ import { handle } from '../netlify/functions/lib/routes.mjs';
 let pool;
 function db() {
   if (pool) return pool;
-  const url = new URL(process.env.DATABASE_URL);
+  let url;
+  try { url = new URL(process.env.DATABASE_URL); }
+  catch { throw Object.assign(new Error('DATABASE_URL مو رابط صحيح'), { code: 'BAD_URL' }); }
   const local = ['localhost', '127.0.0.1'].includes(url.hostname) || url.searchParams.get('sslmode') === 'disable';
   url.searchParams.delete('sslmode');
   pool = new pg.Pool({
@@ -32,7 +34,13 @@ async function main(req) {
   let body = {};
   if (!['GET', 'HEAD'].includes(req.method)) { try { body = await req.json(); } catch { body = {}; } }
   body.role = body.role || req.headers.get('x-dabrah-role') || 'emp';
-  const client = await db().connect();
+  let client;
+  try { client = await db().connect(); }
+  catch (e) {
+    console.error('DB connect failed:', e.code, e.message);
+    const msg = e.code === '28P01' ? 'كلمة مرور قاعدة البيانات غلط في DATABASE_URL' : 'ما قدرنا نتصل بقاعدة البيانات';
+    return Response.json({ error: msg }, { status: 503, headers: { 'Cache-Control': 'no-store' } });
+  }
   try {
     await client.query('BEGIN');
     const out = await handle(client, req.method, path, body);
