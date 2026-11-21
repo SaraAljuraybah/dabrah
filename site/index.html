@@ -290,6 +290,12 @@ label.f{display:block;font-weight:700;margin:10px 0 6px}
 .fld input:focus,.fld select:focus{outline:none;border-color:var(--teen);box-shadow:0 0 0 4px rgba(164,100,60,.15)}
 .fld .err{color:#A33A16;font-size:13.5px;min-height:20px;display:block}
 .fld.bad input{border-color:#C0502A}
+.req{color:#C0392B;font-weight:800;margin-inline-start:3px}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none!important;box-shadow:none}
+.pww{position:relative}.pww input{padding-left:80px}.pwt{position:absolute;left:8px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:var(--teenD);font-weight:700;font-size:14px;min-height:36px;padding:0 8px;cursor:pointer}
+.fnote{color:var(--mut);font-size:14px;margin:8px 0 0}.ferr{background:#FBEAE3;border:1.5px solid #E6B9A4;color:#8A2E12;border-radius:14px;padding:10px 14px;margin-top:14px;font-weight:600}.ferr:empty{display:none}
+.atabs{display:inline-flex;gap:6px;background:rgba(241,231,214,.08);border-radius:999px;padding:5px;margin-top:22px}.atabs button{border:0;background:transparent;color:var(--jes);font:700 16px inherit;padding:10px 22px;border-radius:999px;min-height:44px;cursor:pointer}.atabs button[aria-selected=true]{background:var(--jes);color:var(--ink)}
+.lalt{margin-top:16px;color:#CFC4B2}.lalt button{background:none;border:0;color:var(--sand);font-weight:800;text-decoration:underline;cursor:pointer;font-size:inherit;padding:4px}
 
 .bellw{position:relative}
 .bell{position:relative;width:44px;height:44px;border-radius:50%;border:0;background:rgba(241,231,214,.08);color:var(--jes);display:grid;place-items:center}
@@ -906,13 +912,15 @@ const lvOf=(i,k)=>i===0&&S.lv[k]!=null?S.lv[k]:EMP[i][k];
 const cl=v=>Math.max(1,Math.min(5,Math.round(v)));
 /* الجدارات غير الفنية مشتقة من مصادرها: 360 والأداء والأدلة الفنية */
 const DER={fc:i=>cl(lvOf(i,'cap')+1),wms:i=>cl(lvOf(i,'inv')),data:i=>cl(lvOf(i,'ai')+(xlOk(i)?1:0)),com:i=>cl(EMP[i].b360-1),team:i=>cl(EMP[i].b360+.2-1),prob:i=>cl(EMP[i].b360-.3-1),dec:i=>cl((lvOf(i,'ai')+lvOf(i,'cap'))/2),dev:i=>cl(lvOf(i,'lead')-1),safe:i=>cl(EMP[i].perf+1),cust:i=>cl(EMP[i].perf+(EMP[i].b360>=4?1:0)),integ:i=>3+(EMP[i].perf===3?1:0)};
+for(const k of ['com','team','prob','safe','cust','integ']){const f=DER[k];DER[k]=i=>EMP[i].fresh?1:f(i)}
 const xlOk=i=>(i===0?S.excel:EMP[i].xl)==='g';
 const compLv=(i,k)=>k==='xl'?(xlOk(i)?3:2):DER[k]?DER[k](i):lvOf(i,k);
 const dispLv=(i,k)=>k==='xl'?3:compLv(i,k);
 const readyOf=i=>{let t=0,w=0;for(const k in S.W){t+=S.W[k]*Math.min(1,compLv(i,k)/SK[k].req);w+=S.W[k]}return w?Math.round(t/w*100):0};
 const typeStat=(i,ty)=>{const ks=Object.keys(SK).filter(k=>SK[k].t===ty);return {n:ks.length,met:ks.filter(k=>compLv(i,k)>=SK[k].req).length,w:ks.reduce((a,k)=>a+(S.W[k]||0),0)}};
 const ready=()=>readyOf(0);
-const enm=i=>i===0?S.names.emp+' الشمري':EMP[i].n;
+const myTitle=()=>S.profile?.title||'مشرف مستودع',myDept=()=>{const d=+(S.profile?.dept??0);return DEPTS[d]?d:0};
+const enm=i=>i===0?(S.meName||S.names.emp+' الشمري'):EMP[i].n;
 const missing=k=>EMP.map((e,i)=>i).filter(i=>k==='xl'?(i===0?S.excel==='y':EMP[i].xl==='y'):lvOf(i,k)<PROG[k].req);
 const passF=(i,f,k)=>{const e=EMP[i];const rd=readyOf(i);return (!f.g||e.g===f.g)&&(!f.nat||(f.nat==='sa'?isSa(e):!isSa(e)))&&(f.d===''||e.d===+f.d)&&(!f.lv||k==='xl'||lvOf(i,k)===+f.lv)&&(!f.rd||(f.rd==='l'?rd<40:f.rd==='m'?rd>=40&&rd<60:rd>=60))};
 const prio=(a,b)=>(isSa(EMP[b])-isSa(EMP[a]))||(readyOf(a)-readyOf(b));
@@ -928,7 +936,7 @@ const frond=()=>`<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="tr
 const fronds=n=>`<span class="frs" role="img" aria-label="${n} سعفات">${Array.from({length:n},frond).join('')}</span>`;
 function houses(n,req,light=true){let o='';for(let i=0;i<5;i++)o+=`<span class="hm ${i===req-1?'req':''}">${house(i,i<n,.34,light)}</span>`;return `<span class="hrow" role="img" aria-label="المستوى ${LV[n-1]||'—'}، المطلوب ${LV[req-1]||'—'}">${o}</span>`}
 function ring(v){const C=2*Math.PI*62;return `<div class="ring" role="img" aria-label="جاهزية ${v}%"><svg width="150" height="150"><circle class="bg" cx="75" cy="75" r="62"/><circle class="fg" cx="75" cy="75" r="62" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${C.toFixed(1)}" data-to="${(C*(1-v/100)).toFixed(1)}"/></svg><div class="v"><div><span data-count="${v}">0</span>%<small>جاهز للترقية</small></div></div></div>`}
-const nm=t=>t.replaceAll('عبدالله',S.names.emp).replaceAll('محمد',S.names.mgr).replaceAll('هيا',S.names.haya).replaceAll('فيصل',S.names.top);
+const nm=t=>t.replaceAll('عبدالله الشمري',S.meName||'عبدالله الشمري').replaceAll('عبدالله',S.names.emp).replaceAll('محمد',S.names.mgr).replaceAll('هيا',S.names.haya).replaceAll('فيصل',S.names.top);
 const tabs=(role,list)=>`<div class="tabs" role="tablist" aria-label="أقسام الصفحة">${list.map(([k,t])=>`<button role="tab" aria-selected="${S.tab[role]===k}" data-tab="${k}">${t}</button>`).join('')}</div>`;
 const critList=(C,r)=>`<div class="crits">${C.map((c,i)=>`<div class="crit ${r?(r[i]?'p':'f'):''}"><span class="ci">${r?(r[i]?ICN.ok:ICN.no):i+1}</span><div><b>${c[0]}</b><span class="mut">${c[1]}</span></div></div>`).join('')}</div>`;
 const disc=(sum,body,o='')=>`<details class="disc" ${o}><summary><span>${sum}</span><span class="chev" aria-hidden="true">${ICN.chev}</span></summary><div class="dbody">${body}</div></details>`;
@@ -972,7 +980,7 @@ function empPath(){const rs=S.rep.status,cs=S.cert.status;const stg=stageOf(S.fr
  ${cs==='back'?`<div class="banner y reveal"><b>شهادتك:</b><span style="flex:1">${esc(S.cert.note)}</span></div>`:''}
  <div class="g2">
   <div class="card night reveal hello">
-   <div class="row between" style="align-items:center;gap:20px"><div style="flex:1 1 260px"><span class="mut">مشرف مستودع · المستودع المركزي</span><h1>حياك عبدالله</h1><p style="color:#D9CFBE;margin:0">${rem?`باقي لك ${jd(rem)} وتكون جاهز للترقية.`:'أنت جاهز للترقية!'}</p></div>${ring(ready())}</div>
+   <div class="row between" style="align-items:center;gap:20px"><div style="flex:1 1 260px"><span class="mut">${esc(myTitle())} · ${DEPTS[myDept()]}</span><h1>حياك عبدالله</h1><p style="color:#D9CFBE;margin:0">${rem?`باقي لك ${jd(rem)} وتكون جاهز للترقية.`:'أنت جاهز للترقية!'}</p></div>${ring(ready())}</div>
    <div class="paths">
     <div class="path"><span class="chip" style="background:var(--teen);color:#fff">المسار 1 · تحدي من شغلك</span><h3>${nx[0]}</h3><span class="mut">${nx[1]}</span>${nx[2]?`<button class="btn" data-act="openCase">ابدأ التحدي</button><span class="mut small">المحاولة ${S.attempts+1} من 2 هالشهر · الاعتماد تلقائي</span>`:''}</div>
     <div class="path"><span class="chip" style="background:var(--door);color:#fff">المسار 2 · شهادة خارجية</span><h3>${cs==='ok'?'شهادتك حُسبت':cs==='back'?'شهادتك سُجّلت نظرية':'عندك شهادة؟'}</h3><span class="mut">${cs==='back'?'طبّقها في شغلك، وأعد تحدي المواقف.':cs==='ok'?`${SK[S.cert.k].n}: ${LV[S.lv[S.cert.k]-1]} · ${fmtD(S.cert.date,S.cert.cal)}`:'ارفعها، وحل مواقف عملية تثبت إنك تطبّقها.'}</span>${cs==='idle'||cs==='back'?'<button class="btn sand" data-act="openCert">أضف شهادة</button>':''}</div>
@@ -990,7 +998,7 @@ function empPath(){const rs=S.rep.status,cs=S.cert.status;const stg=stageOf(S.fr
  ${cycleCard()}
  <div class="card reveal">
   <div class="row between"><h2 style="font-size:24px">جداراتي وطريقي للترقية</h2><span class="mut">الوزن = أهمية الجدارة في الوظيفة الجاية</span></div>
-  <div class="ladder"><div class="rung now"><b>مشرف مستودع</b>وظيفتك الحالية</div><span class="arrow" aria-hidden="true">←</span><div class="rung goal"><b>مخطط عمليات</b>رشّحتك لها هيا · ${ready()}% جاهز</div></div>
+  <div class="ladder"><div class="rung now"><b>${esc(myTitle())}</b>وظيفتك الحالية</div><span class="arrow" aria-hidden="true">←</span><div class="rung goal"><b>مخطط عمليات</b>رشّحتك لها هيا · ${ready()}% جاهز</div></div>
   <div class="hlegend mut"><span class="hm"><svg width="10" height="10"><circle cx="5" cy="5" r="4" fill="#E3C48F"/></svg></span> النقطة تحت البيت = المستوى المطلوب</div>
   ${TYPES.map(([ty,how],ti)=>{const L=skList().filter(x=>x.t===ty);const st=typeStat(0,ty);return disc(`<b>${ty}</b> <span class="mut">· وزنها ${st.w}% · ${st.met} من ${st.n} توصل المطلوب</span>`,`<p class="mut small" style="margin:0 0 4px">${how}</p>`+L.map(s=>`<div class="skill ${S.openSk[s.id]?'open':''}"><button data-act="toggle" data-id="${s.id}" aria-expanded="${!!S.openSk[s.id]}"><span class="nm"><b>${s.n}</b><span class="mut">${s.t} · وزنها ${s.w}% · ${s.d}</span></span>${houses(s.c,s.req)}<span class="req mut">${LV[s.c-1]} · المطلوب ${LV[s.req-1]}</span><span class="row" style="gap:8px;justify-content:flex-end">${s.c>=s.req?(s.h==='y'?'<span class="chip y">قربت تذبل</span>':'<span class="chip g">جاهزة</span>'):`<span class="chip">ناقصك ${s.req-s.c===1?'درجة':'درجتين'}</span>`}<span class="chev">${ICN.chev}</span></span></button><div class="more"><div><div class="in"><span>${s.plan}</span>${s.id==='xl'&&S.excel==='y'?`<div class="auto"><b>تذكير تلقائي ${S.leave?'متوقف أثناء الإجازة':'مفعّل'}</b><span>نذكّرك قبل 30 يوم وقبل 7 أيام من نزول المستوى.</span></div><div><button class="btn sand" data-act="renew" style="min-height:44px">ابدأ تحدي التجديد (3 أسئلة)</button></div>`:''}</div></div></div></div>`).join(''),ti===0?'open':'')}).join('')}
  </div>`}
@@ -1084,7 +1092,7 @@ function honorBoard(){const me=0,dIds=EMP.map((e,i)=>i).filter(i=>EMP[i].d===EMP
  <div class="podium">${top.map((i,n)=>`<div class="pd ${i===me?'me':''}"><span class="pn">${n+1}</span><b>${i===me?'أنت':enm(i)}</b><span class="mut">+${growthOf(i)} نقطة</span></div>`).join('')}</div>
  ${disc('وش يرفع ترتيبك؟','<ul class="plain"><li>كل تحدي معتمد يرفع جاهزيتك، والجاهزية هي أساس الترتيب.</li><li>الترتيب على التطور، مو على الأقدمية، فالجديد يقدر يتصدر.</li><li>عند التعادل يتقدم الأعلى جاهزية.</li></ul>')}</div>`}
 /* دورة 30-60-90 */
-function cycleCard(){const day=45;const m=[['30 يوم · تعلّم','جلسة مع المرشد أو محتوى من شركتك',!!(S.mentorBook||Object.keys(S.content).length||Object.keys(S.ws).length||Object.keys(S.courses).length)],['60 يوم · طبّق','سلّم تحدي من شغلك أو شهادة تثبتها',['ok','low'].includes(S.rep.status)||['ok','back'].includes(S.cert.status)],['90 يوم · أثبت','مهارة توصل المطلوب، ومؤشر يتحسن عن البداية',S.lv.ai>=3||S.cert.status==='ok']];
+function cycleCard(){const day=S.cycleDay||45;const m=[['30 يوم · تعلّم','جلسة مع المرشد أو محتوى من شركتك',!!(S.mentorBook||Object.keys(S.content).length||Object.keys(S.ws).length||Object.keys(S.courses).length)],['60 يوم · طبّق','سلّم تحدي من شغلك أو شهادة تثبتها',['ok','low'].includes(S.rep.status)||['ok','back'].includes(S.cert.status)],['90 يوم · أثبت','مهارة توصل المطلوب، ومؤشر يتحسن عن البداية',S.lv.ai>=3||S.cert.status==='ok']];
  return `<div class="card reveal"><div class="row between"><h3 style="font-size:20px">دورتك 30-60-90</h3><span class="mut">اليوم ${day} من 90</span></div>${bar(day/90*100)}
  <div class="cyc">${m.map(([t,d,ok],j)=>{const due=(j+1)*30;const st=ok?'تمت':day>due?'متأخرة':day>=due-30?'الحين':'قادمة';return `<div class="cy ${ok?'ok':st==='متأخرة'?'late':''}"><span class="cyn">${ok?ICN.ok:j+1}</span><div><b>${t}</b><span class="mut">${d}</span></div><span class="chip ${ok?'g':st==='متأخرة'?'r':st==='الحين'?'y':''}">${st}</span></div>`}).join('')}</div>
  <p class="mut small" style="margin-top:8px">بداية الدورة: جاهزية ${readyOf(0)-growthOf(0)}% ← الحين ${readyOf(0)}%</p></div>`}
@@ -1406,24 +1414,35 @@ const VAL={
  text:v=>!v?'اكتب مسماك الوظيفي':/[0-9٠-٩]/.test(v)?'المسمى يكون كلام، بدون أرقام':!/^[ء-يـa-zA-Z\s()\-]+$/.test(v)?'المسمى فيه رموز غير مقبولة':v.length<3?'المسمى قصير':v.length>40?'المسمى أطول من 40 حرف':'',
  org:v=>!v?'اكتب اسم المنشأة':!/[ء-يa-zA-Z]{2}/.test(v)?'اسم المنشأة لازم يكون فيه حروف':!/^[ء-يـa-zA-Z0-9\s&.()\-]+$/.test(v)?'اسم المنشأة فيه رموز غير مقبولة':v.length>60?'الاسم أطول من 60 حرف':'',
  dept:v=>v===''?'اختر الإدارة':'',
+ gender:v=>!['m','f'].includes(v)?'اختر الجنس':'',
+ nat:v=>!['sa','other'].includes(v)?'اختر الجنسية':'',
+ password:v=>!v?'اكتب كلمة المرور':v.length<8?'كلمة المرور 8 أحرف أو أكثر':v.length>64?'كلمة المرور أطول من 64 حرف':!/[A-Za-zء-ي]/.test(v)||!/\d/.test(v)?'كلمة المرور لازم يكون فيها حروف وأرقام':'',
+ confirm:v=>!v?'اكتب كلمة المرور مرة ثانية':v!==($('#i-password')?.value||'')?'كلمتا المرور مو متطابقتين':'',
+ loginpw:v=>!v?'اكتب كلمة المرور':'',
  num:(v,mn,mx)=>{v=normD(v);return !v?'اكتب الرقم':!/^\d+$/.test(v)?'اكتب رقم صحيح بس، بدون حروف أو كسور':+v<mn||+v>mx?`الرقم لازم يكون بين ${mn} و${mx.toLocaleString('en-US')}`:''}};
-function fieldHTML([id,l,k,demo,ph,mn,mx]){const inp=k==='dept'?`<select id="i-${id}" data-k="${k}"><option value="" selected disabled>اختر الإدارة</option>${DEPTS.map((d,i)=>`<option value="${i}">${d}</option>`).join('')}</select>`:`<input id="i-${id}" data-k="${k}" ${mn!=null?`data-min="${mn}" data-max="${mx}"`:''} type="${k==='email'?'email':'text'}" ${k==='email'?'dir="ltr" autocomplete="email" spellcheck="false"':k==='name'?'autocomplete="name"':'autocomplete="off"'} ${k==='id'||k==='num'?'inputmode="numeric"':''} maxlength="${k==='email'?80:k==='id'?8:k==='num'?6:60}" placeholder="${ph}" aria-describedby="e-${id}">`;
- return `<div class="fld" id="f-${id}"><label for="i-${id}">${l}</label>${inp}<span class="err" id="e-${id}" aria-live="polite"></span></div>`}
+const SEL={dept:['اختر الإدارة',DEPTS.map((d,i)=>[i,d])],gender:['اختر',[['m','ذكر'],['f','أنثى']]],nat:['اختر',[['sa','سعودي'],['other','غير سعودي']]]};
+function fieldHTML([id,l,k,demo,ph,mn,mx]){const pw=k==='password'||k==='confirm'||k==='loginpw';const inp=SEL[k]?`<select id="i-${id}" data-k="${k}" required aria-required="true" aria-describedby="e-${id}"><option value="" selected disabled>${SEL[k][0]}</option>${SEL[k][1].map(([v,t])=>`<option value="${v}">${t}</option>`).join('')}</select>`:pw?`<span class="pww"><input id="i-${id}" data-k="${k}" type="password" dir="ltr" required aria-required="true" autocomplete="${k==='loginpw'?'current-password':'new-password'}" maxlength="64" placeholder="${ph}" aria-describedby="e-${id}"><button type="button" class="pwt" data-pwt="i-${id}" aria-label="إظهار كلمة المرور" aria-pressed="false">إظهار</button></span>`:`<input id="i-${id}" data-k="${k}" ${mn!=null?`data-min="${mn}" data-max="${mx}"`:''} type="${k==='email'?'email':'text'}" ${k==='email'?'dir="ltr" autocomplete="email" spellcheck="false"':k==='name'?'autocomplete="name"':'autocomplete="off"'} ${k==='id'||k==='num'?'inputmode="numeric"':''} required aria-required="true" maxlength="${k==='email'?80:k==='id'?8:k==='num'?6:60}" placeholder="${ph}" aria-describedby="e-${id}">`;
+ return `<div class="fld" id="f-${id}"><label for="i-${id}">${l}<span class="req" aria-hidden="true">*</span></label>${inp}<span class="err" id="e-${id}" aria-live="polite"></span></div>`}
 function loginStep(role){
  if(!role){$('#lbox').innerHTML=`<div class="eyebrow">تسجيل الدخول · الخطوة 1 من 2</div><h1 style="font-size:clamp(32px,4.5vw,48px)">مين أنت في المنشأة؟</h1><p style="color:#CFC4B2;margin-top:10px">اختر دورك، ونجهّز لك الشاشة اللي تناسبك.</p><div class="lroles">${['emp','mgr','haya','top'].map(k=>[k,ROLES[k]]).map(([k,r])=>`<button class="lrole" data-pick="${k}"><span class="ri">${RI[k]}</span><b>${r.t}</b><span>${r.d}</span></button>`).join('')}</div>`;return}
  const r=ROLES[role];
- $('#lbox').innerHTML=`<div class="eyebrow">تسجيل الدخول · الخطوة 2 من 2</div><h1 style="font-size:clamp(30px,4vw,44px)">بياناتك الأساسية · ${r.t}</h1><p style="color:#CFC4B2;margin-top:10px">كل الحقول مطلوبة.</p>
+ $('#lbox').innerHTML=`<div class="eyebrow">تسجيل الدخول · الخطوة 2 من 2</div><h1 style="font-size:clamp(30px,4vw,44px)">بياناتك الأساسية · ${r.t}</h1><p style="color:#CFC4B2;margin-top:10px">الحقول المعلّمة بـ <span class="req">*</span> مطلوبة.</p>
  <form class="lform" id="lform" novalidate data-lrole="${role}"><div class="fillbar"><span>تعرض المنصة لأحد؟ عبّئ كل الحقول ببيانات تجريبية بضغطة.</span><button type="button" class="btn ghost" data-lfill style="min-height:40px;color:var(--ink)">عبّئ ببيانات تجريبية</button></div><div class="fgrid">${r.f.map(fieldHTML).join('')}</div>
- <div class="lacts"><button type="button" class="btn ghost" data-pick="" style="color:var(--ink)">غيّر الدور</button><span class="grp"><button type="button" class="btn ghost" data-lclear style="color:var(--ink)">امسح</button><button type="submit" class="btn">دخول</button></span></div></form>`;
+ <div class="lacts"><button type="button" class="btn ghost" data-pick="" style="color:var(--ink)">غيّر الدور</button><span class="grp"><button type="button" class="btn ghost" data-lclear style="color:var(--ink)">امسح</button><button type="submit" class="btn" disabled>دخول</button></span></div><p class="fnote" data-fhint>زر «دخول» يتفعّل لما تكمل كل الحقول المطلوبة صح.</p></form>`;
  setTimeout(()=>$('#i-name')?.focus(),200)}
-const fieldErr=el=>{const k=el.dataset.k;const v=k==='dept'?el.value:clean(el.value);return VAL[k](v,+el.dataset.min,+el.dataset.max)};
+const fieldErr=el=>{const k=el.dataset.k;const v=SEL[k]||k==='password'||k==='confirm'||k==='loginpw'?el.value:clean(el.value);return VAL[k](v,+el.dataset.min,+el.dataset.max)};
+const syncBtn=f=>{if(!f)return;const okAll=[...f.querySelectorAll('[data-k]')].every(el=>!fieldErr(el));const b=f.querySelector('[type=submit]');if(b&&!f.dataset.busy)b.disabled=!okAll;const h=f.querySelector('[data-fhint]');if(h)h.hidden=okAll};
 const showErr=(el,m)=>{const w=el.closest('.fld');w.classList.toggle('bad',!!m);w.querySelector('.err').textContent=m||'';el.setAttribute('aria-invalid',!!m)};
 document.addEventListener('click',e=>{const p=e.target.closest('[data-pick]');if(p){loginStep(p.dataset.pick||null);return}
- const f=e.target.closest('[data-lfill]');if(f){const fm=$('#lform');ROLES[fm.dataset.lrole].f.forEach(([id,,,demo])=>{const el=$('#i-'+id);el.value=demo;showErr(el,'')});fm.querySelector('[type=submit]')?.focus();toast('عبّينا الحقول ببيانات تجريبية');return}
- const c=e.target.closest('[data-lclear]');if(c){$$('#lform input,#lform select').forEach(el=>{el.value='';showErr(el,'')});$('#i-name')?.focus()}});
-document.addEventListener('focusout',e=>{const el=e.target;if(!el.closest||!el.closest('#lform')||!el.dataset.k)return;if(el.value!=='')showErr(el,fieldErr(el))});
-document.addEventListener('input',e=>{const el=e.target;if(!el.closest||!el.closest('#lform')||!el.dataset.k)return;if(el.closest('.fld').classList.contains('bad'))showErr(el,fieldErr(el))});
-document.addEventListener('change',e=>{const el=e.target;if(el.closest&&el.closest('#lform')&&el.dataset.k==='dept')showErr(el,fieldErr(el))});
+ const f=e.target.closest('[data-lfill]');if(f){const fm=$('#lform');ROLES[fm.dataset.lrole].f.forEach(([id,,,demo])=>{const el=$('#i-'+id);el.value=demo;showErr(el,'')});syncBtn(fm);fm.querySelector('[type=submit]')?.focus();toast('عبّينا الحقول ببيانات تجريبية');return}
+ const c=e.target.closest('[data-lclear]');if(c){$$('#lform input,#lform select').forEach(el=>{el.value='';delete el.dataset.t;showErr(el,'')});syncBtn($('#lform'));$('#i-name')?.focus()}});
+/* تحقق مباشر: الخطأ يطلع أول ما تبدأ تكتب في الحقل أو تطلع منه، والزر يتفعّل بس لما كل الحقول صح */
+const authForm=el=>el.closest&&el.closest('#lform,#aform');
+const liveCheck=el=>{el.dataset.t=1;showErr(el,fieldErr(el));if(el.dataset.k==='password'){const c=$('#i-confirm');if(c&&c.dataset.t)showErr(c,fieldErr(c))}syncBtn(authForm(el))};
+document.addEventListener('focusout',e=>{const el=e.target;if(!authForm(el)||!el.dataset.k)return;if(el.value!==''||el.dataset.t)liveCheck(el)});
+document.addEventListener('input',e=>{const el=e.target;if(!authForm(el)||!el.dataset.k)return;liveCheck(el)});
+document.addEventListener('change',e=>{const el=e.target;if(authForm(el)&&SEL[el.dataset.k])liveCheck(el)});
+document.addEventListener('click',e=>{const t=e.target.closest('[data-pwt]');if(!t)return;const i=document.getElementById(t.dataset.pwt);const show=i.type==='password';i.type=show?'text':'password';t.textContent=show?'إخفاء':'إظهار';t.setAttribute('aria-pressed',show);t.setAttribute('aria-label',show?'إخفاء كلمة المرور':'إظهار كلمة المرور')});
 document.addEventListener('submit',e=>{const f=e.target;if(f.id!=='lform')return;e.preventDefault();if(f.dataset.busy)return;const role=f.dataset.lrole;let first=null;
  $$('#lform [data-k]').forEach(el=>{if(el.dataset.k!=='dept')el.value=clean(el.dataset.k==='id'||el.dataset.k==='num'?normD(el.value):el.value);const m=fieldErr(el);showErr(el,m);if(m&&!first)first=el});
  if(first){first.focus();return}
@@ -1465,18 +1484,89 @@ const TEAM=[
  <div class="tf-foot"><span>دبره · المسار الأول: الكفاءات الوطنية ومستقبل العمل · السؤال 1.2 «مسيرة للمستقبل»<span class="tf-palms" aria-hidden="true">${PALM}${PALM}${PALM}</span></span><span>© 2026 فريق دبره</span></div></div>`;
  document.querySelectorAll('[data-team]').forEach(el=>{el.innerHTML=html});
 })();
-/* v14: جسر قاعدة البيانات — يشتغل بس إذا API_BASE معرّف (على Netlify عن طريق env.js)، وإلا تبقى المنصة على البيانات التجريبية */
+/* v15: الحسابات وجسر قاعدة البيانات — يشتغل بس إذا API_BASE معرّف (env.js)، وإلا تبقى المنصة على وضع العرض والبيانات التجريبية.
+   الدخول بالبريد وكلمة المرور، والجلسة في كوكي HttpOnly، وكل حساب يشوف واجهة دوره بس. */
 (function(){
  if(CONFIG.USE_MOCK)return;
  const base=CONFIG.API_BASE.replace(/\/$/,'');
- const ME=1; // عبدالله في البيانات التجريبية؛ بعد ربط الدخول الحقيقي يجي من الجلسة
- const send=(method,path,body)=>fetch(base+path,{method,headers:{'Content-Type':'application/json','X-Dabrah-Role':S.role},credentials:'same-origin',body:JSON.stringify({role:S.role,employeeId:ME,...(body||{})})})
-  .then(r=>{if(!r.ok)throw new Error(r.status)}).catch(e=>{console.warn('API',method,path,e);toast('ما قدرنا نحفظ التغيير على الخادم، جرّب مرة ثانية')});
+ const startHash=location.hash;
+ const call=(method,path,body)=>fetch(base+path,{method,headers:body?{'Content-Type':'application/json'}:{},credentials:'same-origin',body:body?JSON.stringify(body):undefined})
+  .then(async r=>{let d={};try{d=await r.json()}catch{}return {ok:r.ok,status:r.status,d}});
+ const expired=()=>{toast('انتهت جلستك، سجّل دخولك مرة ثانية');S.logged=false;location.hash='#login'};
+ const send=(method,path,body)=>call(method,path,body||{}).then(r=>{if(r.status===401)return expired();if(!r.ok)throw new Error(r.status+' '+(r.d.error||''))})
+  .catch(e=>{console.warn('API',method,path,e);toast('ما قدرنا نحفظ التغيير على الخادم، جرّب مرة ثانية')});
+
+ /* ---------- شاشات الدخول وإنشاء الحساب ---------- */
+ const EXTRA={emp:[['gender','الجنس','gender','',''],['nat','الجنسية','nat','','']]};
+ const PW=[['password','كلمة المرور','password','','8 أحرف أو أكثر، حروف وأرقام'],['confirm','تأكيد كلمة المرور','confirm','','اكتبها مرة ثانية']];
+ const signupFields=role=>{const f=ROLES[role].f.map(x=>x.slice());const at=f.findIndex(x=>x[0]==='email')+1;f.splice(at,0,...(EXTRA[role]||[]));return [...f,...PW]};
+ const tabs=sel=>`<div class="atabs" role="tablist"><button type="button" role="tab" aria-selected="${sel==='in'}" data-atab="in">تسجيل الدخول</button><button type="button" role="tab" aria-selected="${sel==='up'}" data-atab="up">حساب جديد</button></div>`;
+ function signIn(){
+  $('#lbox').innerHTML=`<div class="eyebrow">دبره · حسابك</div><h1 style="font-size:clamp(32px,4.5vw,48px)">حياك في دبره</h1>${tabs('in')}
+  <form class="lform" id="aform" novalidate data-amode="in"><p class="fnote" style="margin-top:0">الحقول المعلّمة بـ <span class="req">*</span> مطلوبة.</p><div class="fgrid">${[['email','البريد الإلكتروني للعمل','email','','name@company.sa'],['lpw','كلمة المرور','loginpw','','كلمة المرور']].map(fieldHTML).join('').replace('id="i-lpw"','id="i-lpw" autocomplete="current-password"')}</div>
+  <div class="ferr" id="aerr" role="alert"></div>
+  <div class="lacts"><span></span><button type="submit" class="btn" disabled>دخول</button></div><p class="fnote" data-fhint>زر «دخول» يتفعّل لما تكتب بريد صحيح وكلمة المرور.</p></form>
+  <p class="lalt">ما عندك حساب؟ <button type="button" data-atab="up">أنشئ حساب جديد</button></p>`;
+  setTimeout(()=>$('#i-email')?.focus(),150)}
+ function pickRole(){
+  $('#lbox').innerHTML=`<div class="eyebrow">حساب جديد · الخطوة 1 من 2</div><h1 style="font-size:clamp(32px,4.5vw,48px)">مين أنت في المنشأة؟</h1>${tabs('up')}<p style="color:#CFC4B2;margin-top:14px">اختر دورك، ونجهّز لك الشاشة اللي تناسبك.</p><div class="lroles">${['emp','mgr','haya','top'].map(k=>`<button class="lrole" data-pick="${k}"><span class="ri">${RI[k]}</span><b>${ROLES[k].t}</b><span>${ROLES[k].d}</span></button>`).join('')}</div>
+  <p class="lalt">عندك حساب؟ <button type="button" data-atab="in">سجّل دخولك</button></p>`}
+ function signUp(role){
+  const r=ROLES[role];
+  $('#lbox').innerHTML=`<div class="eyebrow">حساب جديد · الخطوة 2 من 2</div><h1 style="font-size:clamp(30px,4vw,44px)">بياناتك الأساسية · ${r.t}</h1><p style="color:#CFC4B2;margin-top:10px">الحقول المعلّمة بـ <span class="req">*</span> مطلوبة. ما نحتاج تأكيد بريد، تدخل على طول.</p>
+  <form class="lform" id="aform" novalidate data-amode="up" data-lrole="${role}"><div class="fgrid">${signupFields(role).map(fieldHTML).join('')}</div>
+  <div class="ferr" id="aerr" role="alert"></div>
+  <div class="lacts"><button type="button" class="btn ghost" data-atab="up" style="color:var(--ink)">غيّر الدور</button><button type="submit" class="btn" disabled>إنشاء الحساب</button></div><p class="fnote" data-fhint>زر «إنشاء الحساب» يتفعّل لما تكمل كل الحقول المطلوبة صح.</p></form>
+  <p class="lalt">عندك حساب؟ <button type="button" data-atab="in">سجّل دخولك</button></p>`;
+  setTimeout(()=>$('#i-name')?.focus(),150)}
+ loginStep=function(role){if(S.logged){location.hash='#app';return}role?signUp(role):signIn()};
+ document.addEventListener('click',e=>{const t=e.target.closest('[data-atab]');if(!t)return;t.dataset.atab==='in'?signIn():pickRole()});
+
+ const showServerErrs=(f,fields)=>{let first=null;for(const [k,m] of Object.entries(fields||{})){const el=$('#i-'+(k==='lpw'?'lpw':k));if(el){el.dataset.t=1;showErr(el,m);if(!first)first=el}}first?.focus()};
+ document.addEventListener('submit',async e=>{const f=e.target;if(f.id!=='aform')return;e.preventDefault();e.stopImmediatePropagation();if(f.dataset.busy)return;
+  let first=null;$$('#aform [data-k]').forEach(el=>{if(el.dataset.k==='id'||el.dataset.k==='num')el.value=normD(clean(el.value));const m=fieldErr(el);el.dataset.t=1;showErr(el,m);if(m&&!first)first=el});
+  if(first){first.focus();syncBtn(f);return}
+  const sb=f.querySelector('[type=submit]'),label=sb.textContent;f.dataset.busy=1;sb.disabled=true;sb.textContent='لحظة…';$('#aerr').textContent='';
+  const v={};$$('#aform [data-k]').forEach(el=>v[el.id.slice(2)]=el.value);
+  const r=f.dataset.amode==='in'?await call('POST','/auth/login',{email:v.email,password:v.lpw}).catch(()=>null)
+   :await call('POST','/auth/signup',{role:f.dataset.lrole,...v}).catch(()=>null);
+  delete f.dataset.busy;sb.textContent=label;
+  if(!r){$('#aerr').textContent='ما قدرنا نوصل للخادم. تأكد من الاتصال وجرّب مرة ثانية.';syncBtn(f);return}
+  if(!r.ok){$('#aerr').textContent=r.d.error||'صار خطأ، جرّب مرة ثانية';showServerErrs(f,r.d.fields);syncBtn(f);return}
+  await afterAuth(r.d.user,true)},true);
+
+ /* ---------- بعد الدخول: نحمّل بيانات الحساب ونقفل الواجهة على دوره ---------- */
+ async function afterAuth(u,fresh,go=true){
+  S.logged=true;S.lock=u.role;S.role=u.role;S.profile={role:u.role,...u.profile,name:u.name,email:u.email};S.meId=u.employeeId;
+  S.names[u.role]=u.name.split(' ')[0];if(u.role==='emp')S.meName=u.name;
+  if(u.createdAt)S.cycleDay=Math.max(1,Math.min(90,Math.floor((Date.now()-new Date(u.createdAt))/864e5)+1));
+  const b=await call('GET','/bootstrap').catch(()=>null);
+  if(b&&b.ok){const d=b.d;
+   if(Array.isArray(d.employees)&&d.employees.length){EMP.splice(0,EMP.length,...d.employees);const a=EMP[0];S.fr=a.fr;S.lv={ai:a.ai,inv:a.inv,cap:a.cap};S.excel=a.xl}
+   if(d.weights&&Object.keys(d.weights).length)S.W=d.weights;
+   if(Array.isArray(d.plans))S.plans=d.plans;
+   if(Array.isArray(d.audit))S.audit=d.audit;
+   if(Array.isArray(d.history))S.hist=d.history;
+   if(d.me){S.ws=d.me.ws||{};S.courses=d.me.courses||{};S.content=d.me.content||{};S.applied=d.me.applied||{};S.mentorBook=!!d.me.mentorBook;S.leave=!!d.me.leave}}
+  else toast('ما قدرنا نحمّل بياناتك، حدّث الصفحة');
+  if(go){if(location.hash==='#app')route();else location.hash='#app'}
+  if(fresh)setTimeout(()=>toast(`حياك ${S.names[u.role]}، سجّلت دخولك`),350)}
+
+ /* كل حساب يشوف واجهة دوره بس */
+ const _render=render;
+ render=function(){if(S.lock)S.role=S.lock;_render();if(!S.lock)return;
+  $$('.roles button').forEach(b=>b.hidden=b.dataset.role!==S.lock);
+  const tgt={goMgr:'mgr',goHaya:'haya',goEmp:'emp'};$$('#page [data-act]').forEach(b=>{const t=tgt[b.dataset.act];if(t&&t!==S.lock)b.hidden=true})};
+ document.addEventListener('click',e=>{const r=e.target.closest('.roles [data-role]');if(r&&S.lock&&r.dataset.role!==S.lock){e.stopImmediatePropagation();e.preventDefault()}},true);
+ for(const k of ['goMgr','goHaya','goEmp']){const o=ACT[k],t={goMgr:'mgr',goHaya:'haya',goEmp:'emp'}[k];ACT[k]=b=>{if(S.lock&&S.lock!==t)return;o(b)}}
+ ACT.logout=async()=>{await call('POST','/auth/logout',{}).catch(()=>null);location.hash='#login';location.reload()};
+
+ /* ---------- كل تغيير يتحفظ في قاعدة البيانات ---------- */
  const R={
   submitReport:s=>['POST','/submissions',{type:'report',skillId:'ai',text:s.text,verify:s.verify,fileName:s.file,score:s.score}],
   submitCert:c=>['POST','/submissions',{type:'certificate',skillId:c.k,title:c.title,issuer:c.issuer,date:c.date,cal:c.cal,fileName:c.file,answers:c.ans}],
   renewSkill:sc=>['POST','/skills/xl/renewals',{score:sc}],
-  toggleLeave:()=>['PATCH','/employees/'+ME+'/leave',{onLeave:S.leave}],
+  toggleLeave:()=>['PATCH','/employees/'+S.meId+'/leave',{onLeave:S.leave}],
   bookMentor:()=>['POST','/mentorship/sessions'],cancelMentor:()=>['DELETE','/mentorship/sessions/mine'],
   registerWorkshop:k=>['POST','/workshops/'+k+'/registrations'],cancelWorkshop:k=>['DELETE','/workshops/'+k+'/registrations/me'],
   registerCourse:k=>['POST','/courses/'+k+'/registrations'],cancelCourse:k=>['DELETE','/courses/'+k+'/registrations/me'],
@@ -1490,19 +1580,15 @@ const TEAM=[
   decidePosition:(k,v)=>['PATCH','/positions/'+k,{decision:v}],
   requestWeights:()=>['POST','/competency-profiles/ops-planner/change-requests',{weights:S.Wpending}],
   resolveWeights:ok=>['PATCH','/competency-profiles/ops-planner/change-requests/latest',{decision:ok?'approve':'reject'}],
-  createPlan:b=>['POST','/development-plans',{skillId:b.k,employeeIds:b.sel.map(i=>i+1)}],
+  createPlan:b=>['POST','/development-plans',{skillId:b.k,employeeIds:b.sel.map(i=>EMP[i].id||i+1)}],
   setPlanStatus:(i,st)=>['PATCH','/development-plans/by-skill/'+S.plans[i].k,{status:st}],
-  dismiss:key=>['PATCH','/notifications/'+encodeURIComponent(key)],
-  login:(role,prof)=>['POST','/auth/login',{role}]
+  dismiss:key=>['PATCH','/notifications/'+encodeURIComponent(key)]
  };
  for(const [name,mk] of Object.entries(R)){const orig=API[name];if(!orig)continue;API[name]=function(...a){const out=orig.apply(this,a);try{const [m,p,b]=mk(...a);send(m,p,b)}catch(e){console.warn('API map',name,e)}return out}}
- fetch(base+'/bootstrap',{credentials:'same-origin'}).then(r=>r.ok?r.json():null).then(d=>{if(!d)return;
-  if(Array.isArray(d.employees)&&d.employees.length){EMP.splice(0,EMP.length,...d.employees);const a=EMP[0];S.fr=a.fr;S.lv={ai:a.ai,inv:a.inv,cap:a.cap};S.excel=a.xl}
-  if(d.weights&&Object.keys(d.weights).length)S.W=d.weights;
-  if(Array.isArray(d.plans))S.plans=d.plans;
-  if(Array.isArray(d.audit)&&d.audit.length)S.audit=d.audit;
-  if(Array.isArray(d.history)&&d.history.length)S.hist=d.history;
-  if(S.logged)render()}).catch(e=>console.warn('bootstrap',e));
+
+ /* رجوع الجلسة بعد تحديث الصفحة */
+ call('GET','/auth/me').then(r=>{const u=r&&r.ok&&r.d.user;if(!u)return;
+  afterAuth(u,false,startHash==='#app'||startHash==='#login'||location.hash==='#login')}).catch(e=>console.warn('auth/me',e));
 })();
 window.DABRAH={S,API,ACT,readyOf,loadOf,CONFIG};/* مقبض للفحص الآلي */
 buildSky();parallax();drawLv();age();drawPalmL();observe();route();

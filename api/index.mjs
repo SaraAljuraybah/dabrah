@@ -3,6 +3,7 @@
 // vercel.json يحوّل /api/<المسار> إلى /api/index?__path=<المسار>
 import pg from 'pg';
 import { handle } from '../netlify/functions/lib/routes.mjs';
+import { readCookie } from '../netlify/functions/lib/auth.mjs';
 
 let pool;
 function db() {
@@ -33,7 +34,6 @@ async function main(req) {
   const path = apiPath(req);
   let body = {};
   if (!['GET', 'HEAD'].includes(req.method)) { try { body = await req.json(); } catch { body = {}; } }
-  body.role = body.role || req.headers.get('x-dabrah-role') || 'emp';
   let client;
   try { client = await db().connect(); }
   catch (e) {
@@ -43,9 +43,13 @@ async function main(req) {
   }
   try {
     await client.query('BEGIN');
-    const out = await handle(client, req.method, path, body);
+    const token = readCookie(req.headers.get('cookie'));
+    const secure = new URL(req.url, 'http://localhost').protocol === 'https:' || req.headers.get('x-forwarded-proto') === 'https';
+    const out = await handle(client, req.method, path, body, { token, secure });
     await client.query(out.status < 400 ? 'COMMIT' : 'ROLLBACK');
-    return Response.json(out.body, { status: out.status, headers: { 'Cache-Control': 'no-store' } });
+    const headers = { 'Cache-Control': 'no-store' };
+    if (out.cookie) headers['Set-Cookie'] = out.cookie;
+    return Response.json(out.body, { status: out.status, headers });
   } catch (e) {
     await client.query('ROLLBACK').catch(() => {});
     console.error(e);

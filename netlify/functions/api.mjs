@@ -2,6 +2,7 @@
 // تحتاج متغير البيئة DATABASE_URL (PostgreSQL: Neon أو Supabase أو غيرها، مع ?sslmode=require)
 import pg from 'pg';
 import { handle } from './lib/routes.mjs';
+import { readCookie } from './lib/auth.mjs';
 
 let pool;
 const db = () => (pool ??= new pg.Pool({ connectionString: process.env.DATABASE_URL, max: 3 }));
@@ -13,13 +14,12 @@ export default async (req) => {
   if (!process.env.DATABASE_URL) return Response.json({ error: 'DATABASE_URL غير معرّف في إعدادات Netlify' }, { status: 500 });
   let body = {};
   if (!['GET', 'HEAD'].includes(req.method)) { try { body = await req.json(); } catch { body = {}; } }
-  body.role = body.role || req.headers.get('x-dabrah-role') || 'emp';
   const client = await db().connect();
   try {
     await client.query('BEGIN');
-    const out = await handle(client, req.method, path, body);
+    const out = await handle(client, req.method, path, body, { token: readCookie(req.headers.get('cookie')), secure: url.protocol === 'https:' });
     await client.query(out.status < 400 ? 'COMMIT' : 'ROLLBACK');
-    return Response.json(out.body, { status: out.status, headers: { 'Cache-Control': 'no-store' } });
+    return Response.json(out.body, { status: out.status, headers: { 'Cache-Control': 'no-store', ...(out.cookie ? { 'Set-Cookie': out.cookie } : {}) } });
   } catch (e) {
     await client.query('ROLLBACK').catch(() => {});
     console.error(e);

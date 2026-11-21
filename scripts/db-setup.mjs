@@ -11,6 +11,7 @@ const run = async (f) => { await client.query(readFileSync(new URL(`../database/
 try {
   await run('schema.sql');
   if (!process.argv.includes('--no-seed')) await run('seed.sql');
+  await run('auth.sql');
   await run('security.sql');
 } catch (e) { console.error('✗', e.message); process.exitCode = 1; }
 finally { await client.end(); }

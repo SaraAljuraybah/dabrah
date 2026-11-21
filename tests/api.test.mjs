@@ -15,7 +15,11 @@ const db = { async query(text, params = []) {
   return { rows: isRead ? JSON.parse(out || '[]') : [] };
 } };
 
-const call = (m, p, b) => handle(db, m, p, b);
+// جلسات حقيقية لحسابات العرض: الموظف (عبدالله) للمسارات الشخصية، والمدير لمسارات الإدارة
+const login = async (email) => (await handle(db, 'POST', '/auth/login', { email, password: 'Dabrah2026' }, { secure: false })).cookie.match(/dabrah_session=([^;]+)/)[1];
+const EMP_T = await login('abdullah.alshammari@sharq.sa'), MGR_T = await login('mohammed.alanazi@sharq.sa');
+const PERSONAL = /^\/(bootstrap|submissions|skills|employees|mentorship|workshops|courses|content|internal-jobs|notifications)/;
+const call = (m, p, b, t) => handle(db, m, p, b, { token: t ?? (PERSONAL.test(p) ? EMP_T : MGR_T), secure: false });
 let n = 0; const ok = (name) => { n++; console.log('✓', name); };
 
 let r = await call('GET', '/bootstrap'); assert.equal(r.status, 200); assert.equal(r.body.employees.length, 21); assert.equal(r.body.employees[0].n, 'عبدالله الشمري');
@@ -24,9 +28,9 @@ r = await call('POST', '/submissions', { type: 'report', score: 8, text: 'تقر
 r = await call('POST', '/submissions', { type: 'certificate', skillId: 'inv', answers: [1, 1, 0, 1] }); assert.equal(r.body.score, 4); assert.equal(r.body.level, 4); ok('certificate graded on server → سنع');
 r = await call('POST', '/submissions', { type: 'certificate', skillId: 'cap', answers: [0, 0, 0, 0] }); assert.equal(r.body.approved, false); ok('weak certificate → theory');
 r = await call('POST', '/skills/xl/renewals', { score: 3 }); assert.equal(r.body.passed, true); ok('renewal');
-for (const [m, p, b] of [['POST', '/mentorship/sessions'], ['DELETE', '/mentorship/sessions/mine'], ['POST', '/workshops/wms/registrations'], ['DELETE', '/workshops/wms/registrations/me'], ['POST', '/courses/k1/registrations'], ['PATCH', '/content/c1/progress', { status: 'saved' }], ['PATCH', '/content/c1/progress', { status: 'done' }], ['POST', '/internal-jobs/p1/applications'], ['PATCH', '/employees/1/leave', { onLeave: true }], ['POST', '/rotations/r1/approval'], ['DELETE', '/rotations/r1/approval'], ['POST', '/shadowing', { skillId: 'wms' }], ['PATCH', '/positions/p3', { decision: 'إغلاق' }], ['PATCH', '/notifications/ready', { role: 'haya' }], ['POST', '/auth/login', { role: 'mgr' }]]) {
+for (const [m, p, b] of [['POST', '/mentorship/sessions'], ['DELETE', '/mentorship/sessions/mine'], ['POST', '/workshops/wms/registrations'], ['DELETE', '/workshops/wms/registrations/me'], ['POST', '/courses/k1/registrations'], ['PATCH', '/content/c1/progress', { status: 'saved' }], ['PATCH', '/content/c1/progress', { status: 'done' }], ['POST', '/internal-jobs/p1/applications'], ['PATCH', '/employees/1/leave', { onLeave: true }], ['POST', '/rotations/r1/approval'], ['DELETE', '/rotations/r1/approval'], ['POST', '/shadowing', { skillId: 'wms' }], ['PATCH', '/positions/p3', { decision: 'إغلاق' }], ['PATCH', '/notifications/ready', {}]]) {
   r = await call(m, p, b || {}); assert.ok(r.status < 300, `${m} ${p} → ${r.status} ${JSON.stringify(r.body)}`);
-} ok('learning, jobs, leave, rotations, shadowing, positions, notifications, login');
+} ok('learning, jobs, leave, rotations, shadowing, positions, notifications');
 r = await call('PATCH', '/promotions/1', { interview: 'fail', reason: 'قصير' }); assert.equal(r.status, 400); ok('rejection without reason is refused');
 r = await call('PATCH', '/promotions/1', { interview: 'fail', reason: 'ما قدر يشرح خطوات حل تحدي الجرد بنفسه' }); assert.equal(r.status, 200);
 r = await call('PATCH', '/promotions/1/escalation', { decision: 'overturn' }); assert.equal(r.status, 200); ok('reject with reason → escalation → overturn');
@@ -40,4 +44,32 @@ r = await call('POST', '/development-plans', { skillId: 'cap', employeeIds: [1, 
 r = await call('PATCH', '/development-plans/by-skill/cap', { status: 'ok' }); assert.equal(r.status, 200); ok('plan approved');
 r = await call('GET', '/bootstrap'); assert.equal(r.body.plans.length, 1); assert.deepEqual(r.body.plans[0].sel, [0, 2, 3]); assert.equal(r.body.employees[0].ai, 3); assert.equal(r.body.employees[0].inv, 4); assert.equal(r.body.weights.cap, 20); ok('bootstrap reflects all writes');
 r = await call('GET', '/nope'); assert.equal(r.status, 404); ok('unknown route → 404');
+
+// ---------- الحسابات ----------
+const raw = (m, p, b, t) => handle(db, m, p, b || {}, { token: t, secure: false });
+const tok = (r) => r.cookie.match(/dabrah_session=([^;]+)/)[1];
+r = await raw('GET', '/bootstrap'); assert.equal(r.status, 401); ok('no session → 401');
+r = await raw('POST', '/auth/login', { email: 'abdullah.alshammari@sharq.sa', password: 'wrong123' }); assert.equal(r.status, 401); assert.equal(r.body.error, 'البريد أو كلمة المرور غلط'); ok('wrong password refused');
+r = await raw('POST', '/auth/login', { email: 'ABDULLAH.alshammari@sharq.sa ', password: 'Dabrah2026' }); assert.equal(r.status, 200); assert.match(r.cookie, /HttpOnly/); assert.equal(r.body.user.employeeId, 1); ok('demo login (email case-insensitive) + HttpOnly cookie');
+r = await raw('POST', '/auth/signup', { role: 'emp' }); assert.equal(r.status, 400); for (const k of ['name', 'eid', 'email', 'gender', 'nat', 'title', 'dept', 'password']) assert.ok(r.body.fields[k], 'missing error for ' + k); ok('empty signup → every required field flagged');
+const good = { role: 'emp', name: 'ليان الحربي', eid: '٥٥٥١٢', email: 'Layan@Test.sa', gender: 'f', nat: 'sa', title: 'منسقة مخزون', dept: '1', password: 'Layan2026', confirm: 'Layan2026' };
+r = await raw('POST', '/auth/signup', { ...good, password: 'short', confirm: 'short' }); assert.equal(r.status, 400); assert.ok(r.body.fields.password); ok('weak password refused');
+r = await raw('POST', '/auth/signup', { ...good, confirm: 'Other2026' }); assert.equal(r.status, 400); assert.ok(r.body.fields.confirm); ok('password confirmation must match');
+r = await raw('POST', '/auth/signup', { ...good, email: 'abdullah.alshammari@sharq.sa' }); assert.equal(r.status, 409); assert.ok(r.body.fields.email); ok('duplicate email refused');
+r = await raw('POST', '/auth/signup', { ...good, eid: '10482' }); assert.equal(r.status, 409); assert.ok(r.body.fields.eid); ok('duplicate employee number refused');
+r = await raw('POST', '/auth/signup', good); assert.equal(r.status, 201); const NEW_T = tok(r); assert.equal(r.body.user.email, 'layan@test.sa'); ok('new employee signs up, no email confirmation, logged in at once');
+r = await raw('GET', '/bootstrap', null, NEW_T); const nb = r.body;
+assert.equal(nb.employees[0].n, 'ليان الحربي'); assert.equal(nb.employees[0].fresh, true); assert.equal(nb.employees[0].fr, 0);
+assert.deepEqual([nb.employees[0].cap, nb.employees[0].ai, nb.employees[0].inv, nb.employees[0].lead], [1, 1, 1, 1]); assert.equal(nb.employees[0].d, 1);
+assert.deepEqual([nb.me.ws, nb.me.courses, nb.me.content, nb.me.applied, nb.me.mentorBook], [{}, {}, {}, {}, false]); ok('new account starts empty (level 1, 0 fronds, no registrations)');
+r = await call('GET', '/bootstrap', null, MGR_T); assert.equal(r.body.employees.length, 21); assert.ok(!r.body.employees.some((e) => e.n === 'ليان الحربي')); ok('new sign-up not in manager team lists');
+r = await raw('POST', '/workshops/ai/registrations', {}, NEW_T); assert.equal(r.status, 201);
+r = await raw('GET', '/bootstrap', null, NEW_T); assert.deepEqual(r.body.me.ws, { ai: 1 });
+r = await raw('GET', '/bootstrap', null, EMP_T); assert.ok(!r.body.me.ws.ai || r.body.me.employeeId === 1); assert.equal(r.body.employees[0].n, 'عبدالله الشمري'); ok('each account saves to its own record');
+r = await raw('PATCH', '/employees/1/leave', { onLeave: true }, NEW_T); assert.equal(r.status, 403); ok("can't change someone else's leave");
+r = await raw('POST', '/rotations/r1/approval', {}, NEW_T); assert.equal(r.status, 403); ok('employee blocked from manager actions');
+r = await raw('POST', '/submissions', { type: 'report', score: 8 }, MGR_T); assert.equal(r.status, 403); ok('manager has no personal employee record');
+r = await raw('POST', '/auth/signup', { role: 'haya', name: 'نوف السالم', eid: '7788', email: 'nouf@test.sa', org: 'منشأة تجربة', count: '30', password: 'Nouf2026x', confirm: 'Nouf2026x' }); assert.equal(r.status, 201); assert.equal(r.body.user.employeeId, null); ok('non-employee roles sign up without an employee record');
+r = await raw('POST', '/auth/logout', {}, NEW_T); assert.match(r.cookie, /Max-Age=0/);
+r = await raw('GET', '/auth/me', null, NEW_T); assert.equal(r.body.user, null); r = await raw('GET', '/bootstrap', null, NEW_T); assert.equal(r.status, 401); ok('logout ends the session');
 console.log(`\n${n} اختبار نجحت`);

@@ -2,8 +2,9 @@
 // يستقبل db فيه query(text, params) → {rows}، عشان نقدر نختبره محليًا.
 // كل نقطة هنا تقابل دالة في طبقة الـ API داخل المنصة (site/index.html).
 
+import { hashPassword, verifyPassword, newToken, tokenHash, sessionCookie, clearCookie, validateSignup, SESSION_DAYS } from './auth.mjs';
+
 const LV = ['مبتدئ', 'شاطر', 'ذيب', 'سنع', 'دبره'];
-const DEMO_EMPLOYEE_ID = 1; // عبدالله الشمري في البيانات التجريبية. استبدله بهوية المستخدم بعد ربط الدخول.
 
 const json = (status, body) => ({ status, body });
 const bad = (msg) => json(400, { error: msg });
@@ -25,13 +26,15 @@ async function setLevel(db, emp, skill, level) {
 async function addFronds(db, emp, n) { await db.query('UPDATE employees SET fronds=fronds+$2 WHERE id=$1', [emp, n]); }
 
 // ---------- GET /bootstrap: كل اللي تحتاجه الواجهة عند الفتح ----------
-async function bootstrap(db) {
+async function bootstrap(db, user) {
+  const mine = user?.employee_id || null;
   const emps = (await db.query(`
     SELECT e.id, e.full_name n, e.gender g, CASE WHEN e.is_saudi THEN 'sa' ELSE e.nationality END nat, e.department_id - 1 d,
            e.fronds fr, COALESCE(MAX(s.level) FILTER (WHERE s.skill_code='cap'),1) cap, COALESCE(MAX(s.level) FILTER (WHERE s.skill_code='ai'),1) ai,
            COALESCE(MAX(s.level) FILTER (WHERE s.skill_code='inv'),1) inv, COALESCE(MAX(s.level) FILTER (WHERE s.skill_code='lead'),1) lead,
            CASE WHEN e.excel_health='green' THEN 'g' ELSE 'y' END xl, e.score_360::float b360, e.performance perf, e.potential pot, e.weekly_hours hrs, e.on_leave
-    FROM employees e LEFT JOIN employee_skills s ON s.employee_id=e.id GROUP BY e.id ORDER BY e.id`)).rows;
+    FROM employees e LEFT JOIN employee_skills s ON s.employee_id=e.id
+    WHERE e.is_listed OR e.id = $1 GROUP BY e.id ORDER BY (e.id = $1) DESC, e.id`, [mine])).rows;
   const weights = Object.fromEntries((await db.query(`SELECT skill_code, weight FROM job_profile_weights WHERE job_code='ops-planner'`)).rows.map(r => [r.skill_code, r.weight]));
   const plans = (await db.query(`
     SELECT p.id, p.skill_code k, p.net_cost::float net, p.hadaf_support::float hadaf, p.status st,
@@ -39,14 +42,43 @@ async function bootstrap(db) {
     FROM development_plans p LEFT JOIN plan_members m ON m.plan_id=p.id GROUP BY p.id ORDER BY p.id`)).rows.map(p => ({ ...p, open: false }));
   const auditRows = (await db.query('SELECT actor who, action what, COALESCE(when_text, to_char(created_at, \'YYYY-MM-DD\')) "when" FROM audit_log ORDER BY created_at DESC, id DESC LIMIT 50')).rows;
   const history = (await db.query('SELECT employee_name who, item what, decision dec, COALESCE(when_text, \'اليوم\') "when", CASE WHEN approved THEN 1 ELSE 0 END ok FROM approvals_log ORDER BY created_at DESC, id DESC LIMIT 20')).rows;
-  return json(200, { employees: emps.map(({ id, on_leave, ...e }) => e), weights, plans, audit: auditRows, history });
+  // الموظف الجديد ما عنده تقييم 360 ولا أداء بعد: نعلّمه «جديد» والواجهة تبدأ جداراته من «مبتدئ»
+  const employees = emps.map(({ on_leave, ...e }) => e.b360 == null ? { ...e, fresh: true, b360: 1, perf: 1, pot: 1, hrs: e.hrs ?? 40 } : e);
+  let me = null;
+  if (user) {
+    me = { ...userOut(user), ws: {}, courses: {}, content: {}, applied: {}, mentorBook: false, leave: false };
+    if (mine) {
+      for (const r of (await db.query('SELECT workshop_code k FROM workshop_registrations WHERE employee_id=$1', [mine])).rows) me.ws[r.k] = 1;
+      for (const r of (await db.query('SELECT course_code k FROM course_registrations WHERE employee_id=$1', [mine])).rows) me.courses[r.k] = 1;
+      for (const r of (await db.query('SELECT content_code k, status FROM content_progress WHERE employee_id=$1', [mine])).rows) me.content[r.k] = r.status;
+      for (const r of (await db.query('SELECT job_code k FROM job_applications WHERE employee_id=$1', [mine])).rows) me.applied[r.k] = 1;
+      me.mentorBook = !!(await one(db, `SELECT 1 x FROM mentorship_sessions WHERE mentee_id=$1 AND status='booked' LIMIT 1`, [mine]));
+      me.leave = !!emps.find((e) => e.id === mine)?.on_leave;
+    }
+  }
+  return json(200, { me, employees, weights, plans, audit: auditRows, history });
 }
 
+const userOut = (u) => ({ id: u.id, role: u.role, name: u.full_name, email: u.email, employeeId: u.employee_id, profile: u.profile || {}, createdAt: u.created_at });
+async function startSession(db, userId) {
+  const token = newToken();
+  await db.query(`INSERT INTO sessions (token_hash, user_id, expires_at) VALUES ($1,$2, now() + interval '${SESSION_DAYS} days')`, [tokenHash(token), userId]);
+  await db.query('DELETE FROM sessions WHERE expires_at < now()');
+  return token;
+}
+// المسارات اللي تخص الموظف نفسه (تحتاج حساب موظف)، والمسارات اللي تخص الإدارة (مدير، تطوير، إدارة عليا)
+const PERSONAL = /^\/(submissions|skills|employees|mentorship|workshops|courses|content|internal-jobs)(\/|$)/;
+const COMPANY = /^\/(promotions|rotations|shadowing|positions|competency-profiles|development-plans)(\/|$)/;
+
 // ---------- الراوتر ----------
-export async function handle(db, method, path, body = {}) {
+export async function handle(db, method, path, body = {}, ctx = {}) {
   const p = path.replace(/\/+$/, '').split('/').filter(Boolean); // ['submissions'] …
-  const me = intParam(body.employeeId) || DEMO_EMPLOYEE_ID;
-  const role = body.role || 'emp';
+  const clean = '/' + p.join('/');
+  // الهوية والدور من الجلسة، مو من الطلب
+  const user = ctx.token ? await one(db, `SELECT u.* FROM sessions s JOIN app_users u ON u.id=s.user_id WHERE s.token_hash=$1 AND s.expires_at > now()`, [tokenHash(ctx.token)]) : null;
+  const me = user?.employee_id || null;
+  const role = user?.role || null;
+  const secure = ctx.secure !== false;
   const R = (m, pattern) => {
     if (m !== method) return null;
     const parts = pattern.split('/').filter(Boolean);
@@ -58,13 +90,47 @@ export async function handle(db, method, path, body = {}) {
   let m;
 
   if ((m = R('GET', '/health'))) return json(200, { ok: true });
-  if ((m = R('GET', '/bootstrap'))) return bootstrap(db);
 
-  // POST /auth/login — تجريبي: يرجّع الدور. اربطه بمزوّد هوية حقيقي قبل البيانات الفعلية.
-  if ((m = R('POST', '/auth/login'))) {
-    if (!['emp', 'mgr', 'haya', 'top'].includes(body.role)) return bad('دور غير معروف');
-    return json(200, { ok: true, role: body.role, demo: true });
+  // ---------- الحسابات ----------
+  if ((m = R('POST', '/auth/signup'))) {
+    const v = validateSignup(body);
+    if (v.errors) return json(400, { error: 'راجع الحقول المعلّمة', fields: v.errors });
+    const d = v.data;
+    if (await one(db, 'SELECT 1 x FROM app_users WHERE email=$1', [d.email])) return json(409, { error: 'البريد مسجّل من قبل', fields: { email: 'البريد مسجّل من قبل. سجّل دخولك بدال ما تنشئ حساب جديد' } });
+    if (await one(db, 'SELECT 1 x FROM app_users WHERE staff_no=$1', [d.eid])) return json(409, { error: 'الرقم الوظيفي مسجّل من قبل', fields: { eid: 'الرقم الوظيفي مسجّل من قبل' } });
+    let empId = null;
+    if (d.role === 'emp') {
+      const e = await one(db, `INSERT INTO employees (full_name, gender, nationality, is_saudi, department_id, job_title, email, fronds, excel_health, is_listed)
+        VALUES ($1,$2,$3,$4,$5,$6,$7,0,'green',false) RETURNING id`, [d.name, d.gender, d.nat === 'sa' ? 'سعودي' : 'غير سعودي', d.nat === 'sa', Number(d.dept) + 1, d.title, d.email]);
+      empId = e.id;
+    }
+    const { name, eid, email, password, role: _r, ...profile } = d;
+    const u = await one(db, `INSERT INTO app_users (email, role, employee_id, full_name, staff_no, password_hash, profile)
+      VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *`, [email, d.role, empId, name, eid, await hashPassword(password), JSON.stringify(profile)]);
+    const token = await startSession(db, u.id);
+    return { status: 201, body: { user: userOut(u) }, cookie: sessionCookie(token, secure) };
   }
+  if ((m = R('POST', '/auth/login'))) {
+    const email = String(body.email || '').trim().toLowerCase(), pw = String(body.password || '');
+    if (!email || !pw) return json(400, { error: 'اكتب بريدك وكلمة المرور' });
+    const u = await one(db, 'SELECT * FROM app_users WHERE email=$1', [email]);
+    if (!u || !(await verifyPassword(pw, u.password_hash))) return json(401, { error: 'البريد أو كلمة المرور غلط' });
+    const token = await startSession(db, u.id);
+    return { status: 200, body: { user: userOut(u) }, cookie: sessionCookie(token, secure) };
+  }
+  if ((m = R('GET', '/auth/me'))) return json(200, { user: user ? userOut(user) : null });
+  if ((m = R('POST', '/auth/logout'))) {
+    if (ctx.token) await db.query('DELETE FROM sessions WHERE token_hash=$1', [tokenHash(ctx.token)]);
+    return { status: 200, body: { ok: true }, cookie: clearCookie(secure) };
+  }
+
+  // كل اللي بعد هذا يحتاج دخول
+  if (!user) return json(401, { error: 'سجّل دخولك أول' });
+  if (PERSONAL.test(clean) && !me) return json(403, { error: 'هذي الخدمة لحسابات الموظفين' });
+  if (COMPANY.test(clean) && role === 'emp') return json(403, { error: 'ما عندك صلاحية لهذا الإجراء' });
+  const actor = (user.full_name || '').split(' ')[0] || 'مستخدم';
+
+  if ((m = R('GET', '/bootstrap'))) return bootstrap(db, user);
 
   // POST /submissions — تقرير تحدي، أو شهادة خارجية تُصحّح على الخادم
   if ((m = R('POST', '/submissions'))) {
@@ -121,6 +187,7 @@ export async function handle(db, method, path, body = {}) {
 
   if ((m = R('PATCH', '/employees/:id/leave'))) {
     const id = intParam(m.id); if (!id) return bad('معرّف غير صالح');
+    if (id !== me) return json(403, { error: 'تقدر تعدّل إجازتك بس' });
     await db.query('UPDATE employees SET on_leave=$2 WHERE id=$1', [id, !!body.onLeave]); return json(200, { ok: true });
   }
 
@@ -208,8 +275,8 @@ export async function handle(db, method, path, body = {}) {
   if ((m = R('POST', '/competency-profiles/:job/change-requests'))) {
     const w = body.weights || {}; const total = Object.values(w).reduce((a, b) => a + Number(b || 0), 0);
     if (total !== 100) return bad('مجموع الأوزان لازم يكون 100%');
-    const r = await one(db, 'INSERT INTO weight_change_requests (job_code, weights, requested_by) VALUES ($1,$2,$3) RETURNING id', [m.job, JSON.stringify(w), 'هيا']);
-    await audit(db, 'هيا', 'طلبت تعديل أوزان «مخطط عمليات»');
+    const r = await one(db, 'INSERT INTO weight_change_requests (job_code, weights, requested_by) VALUES ($1,$2,$3) RETURNING id', [m.job, JSON.stringify(w), actor]);
+    await audit(db, actor, 'طلب تعديل أوزان «مخطط عمليات»');
     return json(201, r);
   }
   if ((m = R('PATCH', '/competency-profiles/:job/change-requests/latest'))) {
@@ -233,14 +300,14 @@ export async function handle(db, method, path, body = {}) {
     await db.query(`DELETE FROM development_plans WHERE skill_code=$1 AND status='rej'`, [k]);
     const money = (x) => Math.round(x * 100) / 100;
     const net = money(ids.length * prog.cost * (1 - prog.hadaf)), hadaf = money(ids.length * prog.cost * prog.hadaf);
-    const r = await one(db, 'INSERT INTO development_plans (skill_code, net_cost, hadaf_support, created_by) VALUES ($1,$2,$3,$4) RETURNING id', [k, net, hadaf, 'هيا']);
+    const r = await one(db, 'INSERT INTO development_plans (skill_code, net_cost, hadaf_support, created_by) VALUES ($1,$2,$3,$4) RETURNING id', [k, net, hadaf, actor]);
     for (const e of ids) await db.query('INSERT INTO plan_members (plan_id, employee_id) VALUES ($1,$2) ON CONFLICT DO NOTHING', [r.id, e]);
     return json(201, { id: r.id, net, hadaf });
   }
   if ((m = R('PATCH', '/development-plans/by-skill/:k'))) {
     if (!['ok', 'rej', 'wait'].includes(body.status)) return bad('حالة غير صالحة');
     const r = await one(db, `UPDATE development_plans SET status=$2 WHERE id=(SELECT id FROM development_plans WHERE skill_code=$1 ORDER BY id DESC LIMIT 1) RETURNING id`, [m.k, body.status]);
-    if (r && body.status !== 'wait') await audit(db, 'فيصل', body.status === 'ok' ? 'اعتمد خطة تطوير' : 'رفض خطة تطوير');
+    if (r && body.status !== 'wait') await audit(db, actor, body.status === 'ok' ? 'اعتمد خطة تطوير' : 'رفض خطة تطوير');
     return r ? json(200, { ok: true }) : json(404, { error: 'الخطة غير موجودة' });
   }
 
